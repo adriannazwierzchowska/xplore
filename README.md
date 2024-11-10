@@ -1,2 +1,2 @@
 # xplore
-Aplikacja do planowania podróży.
+Your travel planner.
