@@ -10,3 +10,10 @@ class UserResponseCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class UserResponseListView(generics.ListAPIView):
+    serializer_class = UserResponseSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return UserResponse.objects.filter(user=self.request.user)
