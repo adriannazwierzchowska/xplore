@@ -45,11 +45,15 @@ const Home = () => {
 
     return (
         <div>
-            <h1>Let's xplore</h1>
-            <button type="button1" onClick={handleLetsGo}>Let's Go!</button>
-            <button type="button2">Favorites</button>
-            {isAuthenticated && <button type="button2" onClick={handleLogout}>Log Out</button>}
-            {username ? <p>Hi, {username}</p> : null}
+            <form>
+                <h1>Let's xplore</h1>
+                    <div className="button-group">
+                    <button type="button1" onClick={handleLetsGo}>Let's Go!</button>
+                    <button type="button2">Favorites</button>
+                    {isAuthenticated && <button type="button2" onClick={handleLogout}>Log Out</button>}
+                    {username ? <p>Hi, {username}</p> : null}
+                </div>
+            </form>
         </div>
     );
 };
