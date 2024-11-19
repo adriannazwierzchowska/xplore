@@ -24,8 +24,8 @@ const Register = () => {
 
     return (
         <div>
-            <h2>Register</h2>
             <form onSubmit={handleRegister}>
+            <h1>Register</h1>
                 <input
                     type="text"
                     placeholder="Username"
@@ -47,7 +47,10 @@ const Register = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                 />
+                
+                <div className="button-group">
                 <button type="button1">Register</button>
+                </div>
             </form>
             {message && <p>{message}</p>}
         </div>
