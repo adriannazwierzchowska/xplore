@@ -30,7 +30,18 @@ form {
     padding: 20px;
     border-radius: 10px;
     margin-left: 20px;
+    flex: 1; /* Added flex property */
 }
+
+.form {
+    display: flex;
+    flex-wrap: wrap; /* Added flex-wrap property */
+    align-items: flex-start; /* Added alignment property */
+    justify-content: space-between; /* Added justify-content property */
+    position: relative; /* Added position property */
+    padding-right: 220px; /* Added padding to avoid overlap */
+}
+
 
 label {
     margin-top: 10px;
@@ -43,7 +54,25 @@ input {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    width: 100%;
+    width: 200px;
+}
+
+select {
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 220px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none; 
+    background-color: white; 
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-width="2" d="M7 10l5 5 5-5"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
 }
 
 .button-group {
@@ -52,30 +81,170 @@ input {
     margin-top: 10px;
 }
 
+.bottom-button-group {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* Adjusted width */
+    position: fixed; /* Changed position to fixed */
+    bottom: 20px; /* Adjusted bottom property */
+    left: 0; /* Adjusted left property */
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+.right-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 button {
     padding: 10px 20px;
     border-radius: 10px;
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.3s, color 0.3s;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    display: flex;
+    border: 1.5px solid var(--blue-2);
 }
 
 button[type="button1"] {
     background-color: var(--blue-2);
     color: white;
-    border: 2px solid var(--blue-2);
-}
-
-button[type="button1"]:hover {
-    background-color: var(--blue-1);
 }
 
 button[type="button2"] {
     background-color: transparent;
     color: var(--blue-2);
-    border: 2px solid var(--blue-2);
 }
 
-button[type="button2"]:hover {
+
+button[type="button3"] {
     background-color: var(--blue-1);
+    color: white;
+}
+
+button:hover {
+    background-color: var(--beige-2);
+    color: var(--blue-3);
+}
+button:hover .chevron-left {
+    background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%2304384B" stroke-width="2" d="M14 6l-6 6 6 6"/%3E%3C/svg%3E');
+    transition: background-image 0.3s;
+}
+
+button:hover .chevron-right {
+    background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%2304384B" stroke-width="2" d="M10 6l6 6-6 6"/%3E%3C/svg%3E');
+    transition: background-image 0.3s;
+}
+
+button .chevron-left, button .chevron-right {
+    display: inline-block;
+    width: 20px;  /* Zwiększ szerokość */
+    height: 20px; /* Zwiększ wysokość */
+    margin: 0 0px;
+    vertical-align: middle;
+}
+
+button .chevron-left {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="none" stroke="white" stroke-width="2" d="M14 6l-6 6 6 6"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+button .chevron-right {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="none" stroke="white" stroke-width="2" d="M10 6l6 6-6 6"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.page-icon {
+    position: fixed; /* Changed position to fixed */
+    right: 20px; /* Adjusted right property */
+    top: 50%; /* Adjusted top property */
+    transform: translateY(-50%); /* Adjusted transform property */
+    color: var(--blue-3);
+    z-index: 1; /* Ensured z-index property */
+}
+.slider {
+    -webkit-appearance: none;
+    width: 300px;
+    height: 8px; 
+    background: var(--beige-1);
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    margin-top: 0;
+    padding: 0;
+    border-radius: 25px;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: var(--blue-3);
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--blue-3);
+    cursor: pointer;
+  }
+
+  .filter-tag {
+    cursor: pointer;
+    padding: 0px 15px; /* Adjusted padding */
+    margin: 5px 5px 0 0; /* Adjusted margin */
+    border-radius: 5px;
+    display: inline-flex; /* Added display property */
+    align-items: center; /* Added alignment property */
+}
+
+.clicked {
+    background-color: var(--blue-3);
+    color: var(--beige-1);
+    border-radius: 10px;
+    font-size: 1.1em;
+    transition: background-color 0.3s, color 0.3s;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    padding-left: 40px; /* Increased padding */
+    background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%23E7C9AF" stroke-width="2" d="M5 12l5 5L20 7"/%3E%3C/svg%3E'); /* Changed color to beige-1 */
+    background-repeat: no-repeat;
+    background-position: left 10px center;
+    background-size: 20px;
+}
+
+.unclicked {
+    background-color: var(--beige-1);
+    color: #53483e;
+    border-radius: 10px;
+    font-size: 1.1em;
+    transition: background-color 0.3s, color 0.3s;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+}
+
+.unclicked:hover {
+    background-color: var(--beige-2);
+}
+
+.filter-tags.wrap {
+    display: flex;
+    flex-wrap: wrap;
 }
