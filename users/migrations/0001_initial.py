@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='UserResponse',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('month', models.CharField(max_length=20)),
+                ('month', models.IntegerField()),
                 ('weather', models.IntegerField()),
                 ('acc_hotel', models.BooleanField(default=False)),
                 ('acc_hostel', models.BooleanField(default=False)),
