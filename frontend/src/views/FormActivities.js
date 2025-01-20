@@ -61,11 +61,18 @@ const FormActivities = () => {
                     <button type="button3" onClick={() => {
                         selectedTags.forEach(tag => sessionStorage.removeItem(tag));
                         setSelectedTags([]);
-                        navigate('/questionnaire_6');
+                        navigate('/cuisine');
                     }}>
                         Skip
                     </button>
-                    <button type="button1" onClick={() => navigate('/questionnaire_6')}>
+                    <button type="button1" onClick={() => {
+                            if (selectedTags.length === 0) {
+                                alert("Please select at least one activity.");
+                            } else {
+                                navigate('/cuisine');
+                            }
+                        }}
+                    >
                         Next <span className="chevron-right"></span>
                     </button>
                 </div>
