@@ -6,6 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import UserFavorite
+from .serializers import UserFavoriteSerializer
 
 
 
@@ -43,3 +45,39 @@ def logout_user(request):
 # @permission_classes([IsAuthenticated])
 # def current_user(request):
 #     return Response({"username": request.user.username}, status=200)
+
+@api_view(['POST'])
+def add_favorite(request):
+    token = request.headers.get('Authorization')
+    if not token:
+        return Response({'error': 'Authorization token is required'}, status=401)
+
+    try:
+        user = User.objects.get(username=token)
+    except User.DoesNotExist:
+        return Response({'error': 'Invalid token or user does not exist'}, status=401)
+
+    place = request.data.get('place')
+    if not place:
+        return Response({'error': 'Place is required'}, status=400)
+
+    favorite, created = UserFavorite.objects.get_or_create(user=user, place=place)
+    if created:
+        return Response({'message': 'Added to favorites'}, status=201)
+    return Response({'message': 'Already in favorites'}, status=200)
+
+
+@api_view(['GET'])
+def list_favorites(request):
+    token = request.headers.get('Authorization')  # Pobranie tokena z nagłówka
+    if not token:
+        return Response({'error': 'Authorization token is required'}, status=401)
+
+    try:
+        user = User.objects.get(username=token)  # Znajdź użytkownika na podstawie tokena (username)
+    except User.DoesNotExist:
+        return Response({'error': 'Invalid token or user does not exist'}, status=401)
+
+    favorites = UserFavorite.objects.filter(user=user)  # Pobranie ulubionych miejsc użytkownika
+    serializer = UserFavoriteSerializer(favorites, many=True)
+    return Response(serializer.data)

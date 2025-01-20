@@ -10,7 +10,7 @@ const FormWeather = () => {
     const addWeather = async (e) => {
         e.preventDefault();
         sessionStorage.setItem('weather', weather);
-        navigate('/questionnaire_3');
+        navigate('/stay');
     };
 
     return (
@@ -38,7 +38,7 @@ const FormWeather = () => {
                     <span className="chevron-left"></span> Go Back
                 </button>
                 <div className="right-buttons">
-                    <button type="button3" onClick={() => navigate('/questionnaire_3')}>
+                    <button type="button3" onClick={() => navigate('/stay')}>
                         Skip
                     </button>
                     <button type="button1" onClick={addWeather}>

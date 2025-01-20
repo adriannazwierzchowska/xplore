@@ -5,4 +5,4 @@ class UserResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserResponse
         fields = '__all__'
-        read_only_fields = ('user',)  # Make user field read-only
+        read_only_fields = ('user',)
