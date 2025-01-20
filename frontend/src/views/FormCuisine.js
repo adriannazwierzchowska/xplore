@@ -16,7 +16,7 @@ const FormCuisine = () => {
     return (
         <div className="form">
             <form>
-            <h1>What kind of weather do you prefer?</h1>
+            <h1>How important is local cuisine to you?</h1>
             <div className="slidecontainer">
                 <div className="slider-labels">
                     <span style={{ float: 'left', marginBottom: '10px' }}>Not important</span>

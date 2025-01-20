@@ -9,16 +9,6 @@ const Home = () => {
     const [username, setUsername] = useState(localStorage.getItem('authToken') || null);
     const [message, setMessage] = useState('');
 
-    // useEffect(() => {
-    //     try {
-    //         const response = currentUser();
-    //         setUsername(response.data.username);
-    //         setIsAuthenticated(true);
-    //     } catch (error) {
-    //         setMessage(error.response?.data?.error || '"Error fetching user info"');
-    //     }
-    // }, []);
-
     useEffect(() => {
         const token = localStorage.getItem('authToken');
         setIsAuthenticated(!!token);
@@ -26,7 +16,7 @@ const Home = () => {
 
     const handleLetsGo = () => {
         if (isAuthenticated) {
-            navigate('/questionnaire_1');
+            navigate('/month');
         } else {
             navigate('/login');
         }
@@ -43,13 +33,21 @@ const Home = () => {
         }
     };
 
+    const handleFavorites = () => {
+        if (isAuthenticated) {
+            navigate('/favorites');
+        } else {
+            navigate('/login');
+        }
+    };
+
     return (
         <div>
             <form>
                 <h1>Let's xplore</h1>
                     <div className="button-group">
                     <button type="button1" onClick={handleLetsGo}>Let's Go!</button>
-                    <button type="button2">Favorites</button>
+                    <button type="button2" onClick={handleFavorites}>Favorites</button>
                     {isAuthenticated && <button type="button2" onClick={handleLogout}>Log Out</button>}
                     {username ? <p>Hi, {username}</p> : null}
                 </div>

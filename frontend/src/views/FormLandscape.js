@@ -58,11 +58,18 @@ const FormLandscape = () => {
                     <button type="button3" onClick={() => {
                         selectedTags.forEach(tag => sessionStorage.removeItem(tag));
                         setSelectedTags([]);
-                        navigate('/questionnaire_5');
+                        navigate('/activities');
                     }}>
                         Skip
                     </button>
-                    <button type="button1" onClick={() => navigate('/questionnaire_5')}>
+                    <button type="button1" onClick={() => {
+                            if (selectedTags.length === 0) {
+                                alert("Please select at least one type of landscape.");
+                            } else {
+                                navigate('/activities');
+                            }
+                        }}
+                    >
                         Next <span className="chevron-right"></span>
                     </button>
                 </div>

@@ -10,26 +10,26 @@ const FormMonth = () => {
         e.preventDefault();
         const selectedMonth = document.getElementById('month').value;
         sessionStorage.setItem('selectedMonth', selectedMonth);
-        navigate('/questionnaire_2');
+        navigate('/weather');
     };
 
     return (
         <div className="form-month-container">
             <form>
             <h1>Which month would you like to travel in?</h1>
-            <select name="month" id="month">
-            <option value="0">January</option>
-            <option value="1">February</option>
-            <option value="2">March</option>
-            <option value="3">April</option>
-            <option value="4">May</option>
-            <option value="5">June</option>
-            <option value="6">July</option>
-            <option value="7">August</option>
-            <option value="8">September</option>
-            <option value="9">October</option>
-            <option value="10">November</option>
-            <option value="11">December</option>
+            <select name="month" id="month" defaultValue="1">
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
             </select>
             </form>
             <div className="bottom-button-group">
@@ -37,7 +37,7 @@ const FormMonth = () => {
                     <span className="chevron-left"></span> Go Back
                 </button>
                 <div className="right-buttons">
-                    <button type="button3" onClick={() => navigate('/questionnaire_2')}>
+                    <button type="button3" onClick={() => navigate('/weather')}>
                         Skip
                     </button>
                     <button type="button1" onClick={addMonth}>
