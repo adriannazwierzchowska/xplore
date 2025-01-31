@@ -1,13 +1,16 @@
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+OPENCAGE_API_KEY = os.getenv('OPENCAGE_API_KEY')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v*yrg0(y1pt+jhrq65c3^(l((#66mrcidnlf7g%^4_4k0+9yr+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
