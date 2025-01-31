@@ -6,12 +6,14 @@ from rest_framework.response import Response
 import joblib
 from opencage.geocoder import OpenCageGeocode
 import pandas as pd
+from django.conf import settings
 
-OPENCAGE_API_KEY = ""
+OPENCAGE_API_KEY = settings.OPENCAGE_API_KEY
 geocoder = OpenCageGeocode(OPENCAGE_API_KEY)
 
 PIPELINE_MODEL_PATH = "./model/pipeline_model.joblib"
 DESTINATION_CUISINE_PATH = "./model/destination_cuisine_rates.csv"
+DESTINATION_KEYWORDS_PATH = "./model/destinations_key_words.csv"
 model_pipeline = joblib.load(PIPELINE_MODEL_PATH)
 @api_view(['POST'])
 def classify(request):
@@ -49,7 +51,10 @@ def classify(request):
         })
 
         destination_cuisine_df = pd.read_csv(DESTINATION_CUISINE_PATH)
+        destination_keywords_df = pd.read_csv(DESTINATION_KEYWORDS_PATH)
+
         final_df = prob_df.merge(destination_cuisine_df, on="destination")
+        final_df = final_df.merge(destination_keywords_df, on="destination")
 
         importance_weight = (cuisine_importance - 1) / 4
         final_df["final_score"] = (
@@ -76,7 +81,7 @@ def classify(request):
                 "probability": row["probability"],
                 "cuisine": row["cuisine"],
                 "final_score": row["final_score"],
-                "keywords": ["Crowded", "Swimming", "Warm"],
+                "keywords": [row["w1"], row["w2"], row["w3"]],
                 "coordinates": coordinates,
             })
 
