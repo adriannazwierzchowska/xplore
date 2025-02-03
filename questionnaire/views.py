@@ -10,6 +10,9 @@ from django.conf import settings
 
 OPENCAGE_API_KEY = settings.OPENCAGE_API_KEY
 geocoder = OpenCageGeocode(OPENCAGE_API_KEY)
+import logging
+
+logger = logging.getLogger(__name__)
 
 PIPELINE_MODEL_PATH = "./model/pipeline_model.joblib"
 DESTINATION_CUISINE_PATH = "./model/destination_cuisine_rates.csv"
@@ -17,6 +20,7 @@ DESTINATION_KEYWORDS_PATH = "./model/destinations_key_words.csv"
 model_pipeline = joblib.load(PIPELINE_MODEL_PATH)
 @api_view(['POST'])
 def classify(request):
+    print("classify")
     try:
         user_input = pd.DataFrame({
             "month": [int(request.data['month'])],
@@ -88,6 +92,7 @@ def classify(request):
         return Response({"predictions": predictions}, status=200)
 
     except Exception as e:
+        print(e)
         return Response({'error': str(e)}, status=500)
 
 class UserResponseCreateView(generics.CreateAPIView):
