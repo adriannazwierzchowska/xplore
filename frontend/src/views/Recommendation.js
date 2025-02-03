@@ -76,7 +76,6 @@ const Recommendation = () => {
     const handleMarkerClick = async (place) => {
         try {
             const summary = await fetchCitySummary(place.place);
-            console.log("📌 Ustawienie selectedPlace dla:", place.place);
 
             setSelectedPlace({
                 name: place.place,
@@ -85,11 +84,10 @@ const Recommendation = () => {
                 imageUrl: summary.imageUrl
             });
         } catch (error) {
-            console.error("❌ Błąd podczas ustawiania selectedPlace:", error);
             setSelectedPlace({
                 name: place.place,
                 tags: place.keywords,
-                details: "Brak opisu dla tego miasta.",
+                details: "No description for this city.",
                 imageUrl: null
             });
         }
