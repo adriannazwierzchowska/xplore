@@ -45,10 +45,8 @@ const FormActivities = () => {
     }, [navigate]);
 
     return (
-        <div>
-            <div>
-                <h1>Analyzing... </h1>
-            </div>
+        <div className="analyzing-container">
+            <h1 className="analyzing-text">Analyzing...</h1>
 
             <div className="bottom-button-group">
                 <button type="button3" onClick={() => navigate(-1)}>
