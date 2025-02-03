@@ -4,17 +4,14 @@ import '../front.css';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
-
 import L from 'leaflet';
 
 delete L.Icon.Default.prototype._getIconUrl;
-
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
-
 
 const Recommendation = () => {
     const location = useLocation();
@@ -26,7 +23,13 @@ const Recommendation = () => {
         const fetchRecommendations = async () => {
             try {
                 if (location.state?.recommendation) {
-                    setPlaces(location.state.recommendation);
+                    const updatedPlaces = await Promise.all(
+                        location.state.recommendation.map(async (place) => {
+                            const summary = await fetchCitySummary(place.place);
+                            return { ...place, details: summary.details, imageUrl: summary.imageUrl };
+                        })
+                    );
+                    setPlaces(updatedPlaces);
                 }
             } catch (error) {
                 console.error('Error fetching recommendations:', error);
@@ -36,12 +39,60 @@ const Recommendation = () => {
         fetchRecommendations();
     }, [location.state]);
 
-    const handleMarkerClick = (place) => {
-        setSelectedPlace({
-            name: place.place,
-            tags: place.keywords,
-            details: `Coordinates: (${place.coordinates.lat}, ${place.coordinates.lng})`,
-        });
+    const getCityNameForWikipedia = (fullCityName) => {
+        if (fullCityName.includes(',')) {
+            const parts = fullCityName.split(',');
+            return parts[1].trim();
+        }
+        return fullCityName.trim();
+    };
+
+    const fetchCitySummary = async (cityName) => {
+        try {
+            const processedCityName = getCityNameForWikipedia(cityName);
+            const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(processedCityName)}`;
+            const response = await axios.get(wikiUrl);
+
+            if (response.data.type === "disambiguation") {
+                return {
+                    details: `📌 ${processedCityName} ma wiele znaczeń. <a href="${response.data.content_urls.desktop.page}" target="_blank">Zobacz na Wikipedii</a>`,
+                    imageUrl: null
+                };
+            }
+
+            const imageUrl = response.data.thumbnail ? response.data.thumbnail.source : null;
+            const details = response.data.extract || "Brak opisu dla tego miasta.";
+
+            return { details, imageUrl };
+        } catch (error) {
+            console.error("❌ Błąd podczas pobierania danych z Wikipedii:", error);
+            return {
+                details: "Brak opisu dla tego miasta.",
+                imageUrl: null
+            };
+        }
+    };
+
+    const handleMarkerClick = async (place) => {
+        try {
+            const summary = await fetchCitySummary(place.place);
+            console.log("📌 Ustawienie selectedPlace dla:", place.place);
+
+            setSelectedPlace({
+                name: place.place,
+                tags: place.keywords,
+                details: summary.details,
+                imageUrl: summary.imageUrl
+            });
+        } catch (error) {
+            console.error("❌ Błąd podczas ustawiania selectedPlace:", error);
+            setSelectedPlace({
+                name: place.place,
+                tags: place.keywords,
+                details: "Brak opisu dla tego miasta.",
+                imageUrl: null
+            });
+        }
     };
 
     const addToFavorites = async (place) => {
@@ -88,12 +139,14 @@ const Recommendation = () => {
                                     }}
                                 >
                                     <Tooltip>
-                                        <h2>{place.place}</h2>
-                                        <ul>
-                                            {place.keywords.map((keyword, i) => (
-                                                <li key={i}>{keyword}</li>
-                                            ))}
-                                        </ul>
+                                        <div>
+                                            <h2>{place.place}</h2>
+                                            <ul>
+                                                {place.keywords.map((keyword, i) => (
+                                                    <li key={i}>{keyword}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
                                     </Tooltip>
                                 </Marker>
                             ) : null
@@ -103,16 +156,28 @@ const Recommendation = () => {
 
                 <div style={{ flex: 1, padding: "20px", borderLeft: "1px solid #ccc" }}>
                     {selectedPlace ? (
-                        <div>
-                            <h2>{selectedPlace.name}</h2>
-                            <h3>Tags:</h3>
-                            <ul>
-                                {selectedPlace.tags.map((tag, index) => (
-                                    <li key={index}>{tag}</li>
-                                ))}
-                            </ul>
-                            <button onClick={() => addToFavorites(selectedPlace.name)}>Add to Favorites</button>
-                            <button onClick={() => alert('To be implemented')}>See More</button>
+                        <div style={{ display: "flex", flexDirection: "row" }}>
+                            {selectedPlace.imageUrl && (
+                                <div style={{ marginRight: "20px" }}>
+                                    <img
+                                        src={selectedPlace.imageUrl}
+                                        alt={selectedPlace.name}
+                                        style={{ width: '300px', height: 'auto', borderRadius: '8px' }}
+                                    />
+                                </div>
+                            )}
+                            <div>
+                                <h2>{selectedPlace.name}</h2>
+                                <h3>Tags:</h3>
+                                <ul>
+                                    {selectedPlace.tags.map((tag, index) => (
+                                        <li key={index}>{tag}</li>
+                                    ))}
+                                </ul>
+                                <p className="selected-place" dangerouslySetInnerHTML={{ __html: selectedPlace.details }}></p>
+                                <button onClick={() => addToFavorites(selectedPlace.name)}>Add to Favorites</button>
+                                <button onClick={() => alert('To be implemented')}>See More</button>
+                            </div>
                         </div>
                     ) : (
                         <p>Click on a pin to see details about the place.</p>
