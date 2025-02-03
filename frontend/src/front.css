@@ -30,16 +30,16 @@ form {
     padding: 20px;
     border-radius: 10px;
     margin-left: 20px;
-    flex: 1; /* Added flex property */
+    flex: 1;
 }
 
 .form {
     display: flex;
-    flex-wrap: wrap; /* Added flex-wrap property */
-    align-items: flex-start; /* Added alignment property */
-    justify-content: space-between; /* Added justify-content property */
-    position: relative; /* Added position property */
-    padding-right: 220px; /* Added padding to avoid overlap */
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    padding-right: 220px;
 }
 
 
@@ -55,6 +55,12 @@ input {
     border-radius: 5px;
     border: 1px solid #ccc;
     width: 200px;
+}
+
+.selected-place {
+    max-width: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 select {
@@ -84,10 +90,10 @@ select {
 .bottom-button-group {
     display: flex;
     justify-content: space-between;
-    width: 100%; /* Adjusted width */
-    position: fixed; /* Changed position to fixed */
-    bottom: 20px; /* Adjusted bottom property */
-    left: 0; /* Adjusted left property */
+    width: 100%;
+    position: fixed;
+    bottom: 20px;
+    left: 0;
     padding: 0 20px;
     box-sizing: border-box;
 }
@@ -141,8 +147,8 @@ button:hover .chevron-right {
 
 button .chevron-left, button .chevron-right {
     display: inline-block;
-    width: 20px;  /* Zwiększ szerokość */
-    height: 20px; /* Zwiększ wysokość */
+    width: 20px;
+    height: 20px;
     margin: 0 0px;
     vertical-align: middle;
 }
@@ -162,12 +168,12 @@ button .chevron-right {
 }
 
 .page-icon {
-    position: fixed; /* Changed position to fixed */
-    right: 20px; /* Adjusted right property */
-    top: 50%; /* Adjusted top property */
-    transform: translateY(-50%); /* Adjusted transform property */
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--blue-3);
-    z-index: 1; /* Ensured z-index property */
+    z-index: 1;
 }
 .slider {
     -webkit-appearance: none;
@@ -206,11 +212,11 @@ button .chevron-right {
 
   .filter-tag {
     cursor: pointer;
-    padding: 0px 15px; /* Adjusted padding */
-    margin: 5px 5px 0 0; /* Adjusted margin */
+    padding: 0px 15px;
+    margin: 5px 5px 0 0;
     border-radius: 5px;
-    display: inline-flex; /* Added display property */
-    align-items: center; /* Added alignment property */
+    display: inline-flex;
+    align-items: center;
 }
 
 .clicked {
@@ -222,7 +228,7 @@ button .chevron-right {
     align-items: center;
     justify-content: center;
     height: 45px;
-    padding-left: 40px; /* Increased padding */
+    padding-left: 40px;
     background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%23E7C9AF" stroke-width="2" d="M5 12l5 5L20 7"/%3E%3C/svg%3E'); /* Changed color to beige-1 */
     background-repeat: no-repeat;
     background-position: left 10px center;
