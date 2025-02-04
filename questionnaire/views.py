@@ -20,31 +20,40 @@ DESTINATION_KEYWORDS_PATH = "./model/destinations_key_words.csv"
 model_pipeline = joblib.load(PIPELINE_MODEL_PATH)
 @api_view(['POST'])
 def classify(request):
-    print("classify")
     try:
-        user_input = pd.DataFrame({
-            "month": [int(request.data['month'])],
-            "weather": [int(request.data['weather'])],
-            "land_city": [int(request.data['land_city'])],
-            "land_mountains": [int(request.data['land_mountains'])],
-            "land_sea": [int(request.data['land_sea'])],
-            "land_lake": [int(request.data['land_lake'])],
-            "act_water": [int(request.data['act_water'])],
-            "act_sightseeing": [int(request.data['act_sightseeing'])],
-            "act_museums": [int(request.data['act_museums'])],
-            "act_beach": [int(request.data['act_beach'])],
-            "act_nature": [int(request.data['act_nature'])],
-            "act_ex_sports": [int(request.data['act_sports'])],
-            "act_nightlife": [int(request.data['act_nightlife'])],
-            "acc_agrotourism": [int(request.data['acc_agrotourism'])],
-            "acc_airbnb": [int(request.data['acc_airbnb'])],
-            "acc_camping": [int(request.data['acc_camping'])],
-            "acc_guesthouse": [int(request.data['acc_guesthouse'])],
-            "acc_hostel": [int(request.data['acc_hostel'])],
-            "acc_hotel": [int(request.data['acc_hotel'])],
-        })
+        months = request.data.get('months', [])
+        if not months:
+            month = request.data.get('month')
+            if month:
+                months = [month]
+            else:
+                return Response({'error': 'No months provided'}, status=400)
 
+        all_predictions = []
         cuisine_importance = int(request.data['cuisine'])
+
+        for month in months:
+            user_input = pd.DataFrame({
+                "month": [int(month)],
+                "weather": [int(request.data['weather'])],
+                "land_city": [int(request.data['land_city'])],
+                "land_mountains": [int(request.data['land_mountains'])],
+                "land_sea": [int(request.data['land_sea'])],
+                "land_lake": [int(request.data['land_lake'])],
+                "act_water": [int(request.data['act_water'])],
+                "act_sightseeing": [int(request.data['act_sightseeing'])],
+                "act_museums": [int(request.data['act_museums'])],
+                "act_beach": [int(request.data['act_beach'])],
+                "act_nature": [int(request.data['act_nature'])],
+                "act_ex_sports": [int(request.data['act_sports'])],
+                "act_nightlife": [int(request.data['act_nightlife'])],
+                "acc_agrotourism": [int(request.data['acc_agrotourism'])],
+                "acc_airbnb": [int(request.data['acc_airbnb'])],
+                "acc_camping": [int(request.data['acc_camping'])],
+                "acc_guesthouse": [int(request.data['acc_guesthouse'])],
+                "acc_hostel": [int(request.data['acc_hostel'])],
+                "acc_hotel": [int(request.data['acc_hotel'])],
+            })
 
         probabilities = model_pipeline.predict_proba(user_input)[0]
         destinations = model_pipeline.classes_
@@ -66,21 +75,21 @@ def classify(request):
                 final_df["cuisine"] * importance_weight * 0.2
         )
 
-        final_df = final_df.sort_values(by="final_score", ascending=False).head(3)
+        final_df = final_df.sort_values(by="final_score", ascending=False)
+        predictions_limit = 6 if len(months) > 1 else 3
+        final_df = final_df.head(predictions_limit)
 
-        predictions = []
         for _, row in final_df.iterrows():
             query = row["destination"]
             result = geocoder.geocode(query)
+            coordinates = {"lat": None, "lng": None}
             if result:
                 coordinates = {
                     "lat": result[0]["geometry"]["lat"],
                     "lng": result[0]["geometry"]["lng"]
                 }
-            else:
-                coordinates = {"lat": None, "lng": None}
 
-            predictions.append({
+            all_predictions.append({
                 "place": query,
                 "probability": row["probability"],
                 "cuisine": row["cuisine"],
@@ -89,7 +98,7 @@ def classify(request):
                 "coordinates": coordinates,
             })
 
-        return Response({"predictions": predictions}, status=200)
+        return Response({"predictions": all_predictions}, status=200)
 
     except Exception as e:
         print(e)
