@@ -16,11 +16,18 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 h1 {
     color: var(--blue-3);
     font-size: 3em;
+    animation: fadeIn 1s ease-out;
+}
+
+.drop-shadow-xl {
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 form {
@@ -107,12 +114,17 @@ button {
     border-radius: 10px;
     cursor: pointer;
     font-size: 0.9em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s, color 0.3s;
     align-items: center;
     justify-content: center;
     height: 45px;
     display: flex;
     border: 1.5px solid var(--blue-2);
+
 }
 
 button[type="button1"] {
@@ -254,3 +266,4 @@ button .chevron-right {
     display: flex;
     flex-wrap: wrap;
 }
+
