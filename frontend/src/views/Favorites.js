@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { motion } from 'framer-motion'; // Importujemy framer-motion
 
 const Favorites = () => {
     const [favorites, setFavorites] = useState([]);
@@ -30,21 +30,45 @@ const Favorites = () => {
         fetchFavorites();
     }, []);
 
-
     return (
-        <div>
+        <motion.div
+            className="favorites-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+        >
             <h1>Your Favorite Places</h1>
-            <ul>
+
+            {/* Animacja dla każdego elementu listy */}
+            <motion.ul
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.2 }}
+            >
                 {favorites.map((favorite, index) => (
-                    <li key={index}>{favorite.place}</li>
+                    <motion.li
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: index * 0.1 }}
+                    >
+                        {favorite.place}
+                    </motion.li>
                 ))}
-            </ul>
+            </motion.ul>
+
             <div className="button-group">
-                <button type="button1" onClick={() => navigate('/')}>
+                <motion.button
+                    type="button1"
+                    onClick={() => navigate('/')}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="back-button"
+                >
                     Home
-                </button>
+                </motion.button>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
