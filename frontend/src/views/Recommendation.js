@@ -119,72 +119,79 @@ const Recommendation = () => {
 
     return (
         <div className="recommendation">
-            <h1>Recommended Places</h1>
-            <div style={{ display: "flex" }}>
-                <div style={{ flex: 3 }}>
-                    <MapContainer center={[30.8566, 31.3522]} zoom={3} style={{ height: "500px", width: "1400px" }}>
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution="&copy; OpenStreetMap contributors"
-                        />
-                        {places.map((place, index) =>
-                            place.coordinates ? (
-                                <Marker
-                                    key={index}
-                                    position={[place.coordinates.lat, place.coordinates.lng]}
-                                    eventHandlers={{
-                                        click: () => handleMarkerClick(place),
-                                    }}
-                                >
-                                    <Tooltip>
-                                        <div>
-                                            <h2>{place.place}</h2>
-                                            <ul>
-                                                {place.keywords.map((keyword, i) => (
-                                                    <li key={i}>{keyword}</li>
-                                                ))}
-                                            </ul>
+            <h1 className="recommendation-heading">
+              You should <span className="turquoise-text">xplore</span> these places
+            </h1>
+            <div className="map-container">
+                <MapContainer center={[30.8566, 31.3522]} zoom={3} style={{ height: "500px", width: "1400px" }}>
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution="&copy; OpenStreetMap contributors"
+                    />
+                    {places.map((place, index) =>
+                        place.coordinates ? (
+                            <Marker
+                                key={index}
+                                position={[place.coordinates.lat, place.coordinates.lng]}
+                                eventHandlers={{
+                                    click: () => handleMarkerClick(place),
+                                }}
+                            >
+                                <Tooltip>
+                                    <div className="custom-tooltip">
+                                        <h2>{place.place}</h2>
+                                        <div className="tags-container">
+                                          {place.keywords.map((keyword, i) => (
+                                            <span key={i} className="tag">{keyword}</span>
+                                          ))}
                                         </div>
-                                    </Tooltip>
-                                </Marker>
-                            ) : null
-                        )}
-                    </MapContainer>
-                </div>
-
-                <div style={{ flex: 1, padding: "20px", borderLeft: "1px solid #ccc" }}>
-                    {selectedPlace ? (
-                        <div style={{ display: "flex", flexDirection: "row" }}>
-                            {selectedPlace.imageUrl && (
-                                <div style={{ marginRight: "20px" }}>
-                                    <img
-                                        src={selectedPlace.imageUrl}
-                                        alt={selectedPlace.name}
-                                        style={{ width: '300px', height: 'auto', borderRadius: '8px' }}
-                                    />
-                                </div>
-                            )}
-                            <div>
-                                <h2>{selectedPlace.name}</h2>
-                                <h3>Tags:</h3>
-                                <ul>
-                                    {selectedPlace.tags.map((tag, index) => (
-                                        <li key={index}>{tag}</li>
-                                    ))}
-                                </ul>
-                                <p className="selected-place" dangerouslySetInnerHTML={{ __html: selectedPlace.details }}></p>
-                                <button onClick={() => addToFavorites(selectedPlace.name)}>Add to Favorites</button>
-                                <button onClick={() => alert('To be implemented')}>See More</button>
-                            </div>
-                        </div>
-                    ) : (
-                        <p>Click on a pin to see details about the place.</p>
+                                    </div>
+                                </Tooltip>
+                            </Marker>
+                        ) : null
                     )}
-                </div>
+                </MapContainer>
             </div>
 
+            {selectedPlace && (
+                <>
+                  <div className="overlay" onClick={() => setSelectedPlace(null)} />
+                  <div className="sidebar active">
+                    <div className="sidebar-content">
+                      {selectedPlace.imageUrl && (
+                        <img
+                          src={selectedPlace.imageUrl}
+                          alt={selectedPlace.name}
+                          className="sidebar-image"
+                        />
+                      )}
+                    <div>
+                      <h2>{selectedPlace.name}</h2>
+                        <div className="tags-container">
+                          {selectedPlace.tags.map((tag, index) => (
+                            <span key={index} className="tag">{tag}</span>
+                          ))}
+                        </div>
+                        <p
+                          className="selected-place"
+                          dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
+                        />
+                        <div className="sidebar-buttons">
+                          <button onClick={() => addToFavorites(selectedPlace.name)}>
+                            Add to Favorites
+                          </button>
+                          <button onClick={() => alert('To be implemented')}>
+                            See More
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
             <div className="button-group">
-                <button type="button1" onClick={() => navigate('/')}>
+                <button type="button-home" onClick={() => navigate('/')}>
                     Home
                 </button>
             </div>

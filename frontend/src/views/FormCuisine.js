@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiForkAndKnife } from "react-icons/ci";
+import { motion } from 'framer-motion'; // Importujemy framer-motion
 import '../front.css';
 
 const FormCuisine = () => {
@@ -14,42 +15,83 @@ const FormCuisine = () => {
     };
 
     return (
-        <div className="form">
-            <form>
-            <h1>How important is local cuisine to you?</h1>
-            <div className="slidecontainer">
-                <div className="slider-labels">
-                    <span style={{ float: 'left', marginBottom: '10px' }}>Not important</span>
-                    <span style={{ float: 'right', marginBottom: '10px' }}>Very important</span>
+        <motion.div
+            className="form"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+        >
+            <motion.form
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8 }}
+            >
+                <h1>How important is local cuisine to you?</h1>
+                <div className="slidecontainer">
+                    <div className="slider-labels">
+                        <span style={{ float: 'left', marginBottom: '10px' }}>Not important</span>
+                        <span style={{ float: 'right', marginBottom: '10px' }}>Very important</span>
+                    </div>
+                    <motion.input
+                        type="range"
+                        min="1"
+                        max="5"
+                        value={cuisine}
+                        className="slider"
+                        id="weatherRange"
+                        onChange={(e) => setCuisineRange(e.target.value)}
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.6 }}
+                    />
                 </div>
-                <input 
-                    type="range" 
-                    min="1" 
-                    max="5" 
-                    value={cuisine} 
-                    className="slider" 
-                    id="weatherRange" 
-                    onChange={(e) => setCuisineRange(e.target.value)} 
-                />
-            </div>
-            </form>
-            <div className="bottom-button-group">
-                <button type="button3" onClick={() => navigate(-1)}>
+            </motion.form>
+
+            <motion.div
+                className="bottom-button-group"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+            >
+                <motion.button
+                    type="button3"
+                    onClick={() => navigate(-1)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="chevron-left"
+                >
                     <span className="chevron-left"></span> Go Back
-                </button>
+                </motion.button>
                 <div className="right-buttons">
-                    <button type="button3" onClick={() => navigate('/analise')}>
+                    <motion.button
+                        type="button3"
+                        onClick={() => navigate('/analise')}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
                         Skip
-                    </button>
-                    <button type="button1" onClick={addCuisine}>
+                    </motion.button>
+
+                    <motion.button
+                        type="button1"
+                        onClick={addCuisine}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
                         Next <span className="chevron-right"></span>
-                    </button>
+                    </motion.button>
                 </div>
-            </div>
-            <div className="page-icon">
+            </motion.div>
+
+            <motion.div
+                className="page-icon"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 1 }}
+            >
                 <CiForkAndKnife size={200} />
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 
