@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiLifebuoyThin } from "react-icons/pi";
+import { motion } from 'framer-motion'; // Importujemy framer-motion
 import '../front.css';
 
 const FormActivities = () => {
@@ -35,52 +36,100 @@ const FormActivities = () => {
         }
     };
 
-
     return (
-        <div className="form">
-            <form>
-                <h1>What activities are you interested in? </h1>
-                <div className="filter-tags wrap">
+        <motion.div
+            className="form"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+        >
+            <motion.form
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8 }}
+            >
+                <h1>What activities are you interested in? </h1>
+
+                <motion.div
+                    className="filter-tags wrap"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.2 }}
+                >
                     {Object.keys(activitiesTag).map(tag => (
-                        <span
+                        <motion.span
                             key={tag}
                             className={`filter-tag ${selectedTags.includes(tag) ? 'clicked' : 'unclicked'}`}
                             onClick={() => handleTagClick(tag)}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: Object.keys(activitiesTag).indexOf(tag) * 0.1 }}
                         >
                             {activitiesTag[tag]}
-                        </span>
+                        </motion.span>
                     ))}
+                </motion.div>
+
                 <div className="filter-keys"></div>
-                </div>
-            </form>
-            <div className="bottom-button-group">
-                <button type="button3" onClick={() => navigate(-1)}>
+            </motion.form>
+
+            <motion.div
+                className="bottom-button-group"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+            >
+                <motion.button
+                    type="button3"
+                    onClick={() => navigate(-1)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="chevron-left"
+                >
                     <span className="chevron-left"></span> Go Back
-                </button>
+                </motion.button>
                 <div className="right-buttons">
-                    <button type="button3" onClick={() => {
-                        selectedTags.forEach(tag => sessionStorage.removeItem(tag));
-                        setSelectedTags([]);
-                        navigate('/cuisine');
-                    }}>
+                    <motion.button
+                        type="button3"
+                        onClick={() => {
+                            selectedTags.forEach(tag => sessionStorage.removeItem(tag));
+                            setSelectedTags([]);
+                            navigate('/cuisine');
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
                         Skip
-                    </button>
-                    <button type="button1" onClick={() => {
+                    </motion.button>
+
+                    <motion.button
+                        type="button1"
+                        onClick={() => {
                             if (selectedTags.length === 0) {
                                 alert("Please select at least one activity.");
                             } else {
                                 navigate('/cuisine');
                             }
                         }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
                     >
                         Next <span className="chevron-right"></span>
-                    </button>
+                    </motion.button>
                 </div>
-            </div>
-            <div className="page-icon">
+            </motion.div>
+
+            <motion.div
+                className="page-icon"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 1 }}
+            >
                 <PiLifebuoyThin size={200} />
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 

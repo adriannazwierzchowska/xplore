@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiMountainsLight } from "react-icons/pi";
+import { motion } from 'framer-motion'; // Importujemy framer-motion
 import '../front.css';
 
 const FormLandscape = () => {
@@ -18,7 +19,6 @@ const FormLandscape = () => {
         setSelectedTags(storedTags);
     }, []);
 
-
     const handleTagClick = (tag) => {
         const updatedTags = selectedTags.includes(tag)
             ? selectedTags.filter(t => t !== tag)
@@ -34,50 +34,89 @@ const FormLandscape = () => {
     };
 
     return (
-        <div className="form">
-            <form>
+        <motion.div
+            className="form"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+        >
+            <motion.form
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8 }}
+            >
                 <h1>What landscape interests you? </h1>
                 <div className="filter-tags">
                     {Object.keys(landscapeKeys).map(tag => (
-                        <span
+                        <motion.span
                             key={tag}
                             className={`filter-tag ${selectedTags.includes(tag) ? 'clicked' : 'unclicked'}`}
                             onClick={() => handleTagClick(tag)}
+                            initial={{ scale: 0.9 }}
+                            animate={{ scale: 1 }}
+                            transition={{ duration: 0.3 }}
                         >
                             {landscapeKeys[tag]}
-                        </span>
+                        </motion.span>
                     ))}
-                <div className="filter-keys"></div>
+                    <div className="filter-keys"></div>
                 </div>
-            </form>
-            <div className="bottom-button-group">
-                <button type="button3" onClick={() => navigate(-1)}>
+            </motion.form>
+
+            <motion.div
+                className="bottom-button-group"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+            >
+                <motion.button
+                    type="button3"
+                    onClick={() => navigate(-1)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                >
                     <span className="chevron-left"></span> Go Back
-                </button>
+                </motion.button>
                 <div className="right-buttons">
-                    <button type="button3" onClick={() => {
-                        selectedTags.forEach(tag => sessionStorage.removeItem(tag));
-                        setSelectedTags([]);
-                        navigate('/activities');
-                    }}>
+                    <motion.button
+                        type="button3"
+                        onClick={() => {
+                            selectedTags.forEach(tag => sessionStorage.removeItem(tag));
+                            setSelectedTags([]);
+                            navigate('/activities');
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
                         Skip
-                    </button>
-                    <button type="button1" onClick={() => {
+                    </motion.button>
+
+                    <motion.button
+                        type="button1"
+                        onClick={() => {
                             if (selectedTags.length === 0) {
                                 alert("Please select at least one type of landscape.");
                             } else {
                                 navigate('/activities');
                             }
                         }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
                     >
                         Next <span className="chevron-right"></span>
-                    </button>
+                    </motion.button>
                 </div>
-            </div>
-            <div className="page-icon">
+            </motion.div>
+
+            <motion.div
+                className="page-icon"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 1 }}
+            >
                 <PiMountainsLight size={200} />
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 
