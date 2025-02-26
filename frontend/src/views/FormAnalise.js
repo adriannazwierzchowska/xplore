@@ -4,13 +4,13 @@ import { PiLifebuoyThin } from "react-icons/pi";
 import '../front.css';
 import axios from 'axios';
 
-const FormActivities = () => {
+const FormAnalise = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
         const analyzeData = async () => {
             const data = {
-                month: sessionStorage.getItem('selectedMonth'),
+                months: JSON.parse(sessionStorage.getItem('selectedMonths') || '[]'),
                 weather: sessionStorage.getItem('weather'),
                 acc_hotel: sessionStorage.getItem('acc_hotel') === 'true' ? 1 : 0,
                 acc_hostel: sessionStorage.getItem('acc_hostel') === 'true' ? 1 : 0,
@@ -45,10 +45,8 @@ const FormActivities = () => {
     }, [navigate]);
 
     return (
-        <div>
-            <div>
-                <h1>Analyzing... </h1>
-            </div>
+        <div className="analyzing-container">
+            <h1 className="analyzing-text">Analyzing...</h1>
 
             <div className="bottom-button-group">
                 <button type="button3" onClick={() => navigate(-1)}>
@@ -60,4 +58,4 @@ const FormActivities = () => {
     );
 };
 
-export default FormActivities;
+export default FormAnalise;
