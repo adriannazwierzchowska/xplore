@@ -453,3 +453,27 @@ button[type="button-home"] {
     align: left;
     margin-right: 1270px;
 }
+
+.like-container {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 5px;
+    transition: transform 0.2s;
+}
+
+.like-button:hover {
+    transform: scale(1.2);
+}
+
+.like-count {
+    font-size: 18px;
+    color: #333;
+}

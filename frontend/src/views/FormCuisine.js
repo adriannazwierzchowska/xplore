@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiForkAndKnife } from "react-icons/ci";
-import { motion } from 'framer-motion'; // Importujemy framer-motion
+import { motion } from 'framer-motion';
 import '../front.css';
 
 const FormCuisine = () => {
@@ -17,13 +17,13 @@ const FormCuisine = () => {
     return (
         <motion.div
             className="form"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
         >
             <motion.form
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
             >
                 <h1>How important is local cuisine to you?</h1>
@@ -47,24 +47,24 @@ const FormCuisine = () => {
                 </div>
             </motion.form>
 
+            {/* Sekcja przycisków */}
             <motion.div
                 className="bottom-button-group"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
             >
                 <motion.button
-                    type="button3"
+                    type="button"
                     onClick={() => navigate(-1)}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="chevron-left"
                 >
                     <span className="chevron-left"></span> Go Back
                 </motion.button>
                 <div className="right-buttons">
                     <motion.button
-                        type="button3"
+                        type="button"
                         onClick={() => navigate('/analise')}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
@@ -73,7 +73,7 @@ const FormCuisine = () => {
                     </motion.button>
 
                     <motion.button
-                        type="button1"
+                        type="button"
                         onClick={addCuisine}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
@@ -83,11 +83,12 @@ const FormCuisine = () => {
                 </div>
             </motion.div>
 
+            {/* Ikona na dole */}
             <motion.div
                 className="page-icon"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 1 }}
+                transition={{ delay: 0.8, duration: 1 }}
             >
                 <CiForkAndKnife size={200} />
             </motion.div>

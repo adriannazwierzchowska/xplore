@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiMountainsLight } from "react-icons/pi";
-import { motion } from 'framer-motion'; // Importujemy framer-motion
+import { motion } from 'framer-motion';
 import '../front.css';
 
 const FormLandscape = () => {
@@ -33,41 +33,54 @@ const FormLandscape = () => {
         }
     };
 
+    const handleNext = () => {
+        if (selectedTags.length === 0) {
+            alert("Please select at least one type of landscape.");
+            return;
+        }
+
+        navigate('/activities');
+    };
+
     return (
         <motion.div
-            className="form"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            className="form-landscape-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
         >
             <motion.form
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
             >
-                <h1>What landscape interests you? </h1>
-                <div className="filter-tags">
+                <h1>What landscape interests you?</h1>
+                <motion.div
+                    className="filter-tags"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                >
                     {Object.keys(landscapeKeys).map(tag => (
                         <motion.span
                             key={tag}
                             className={`filter-tag ${selectedTags.includes(tag) ? 'clicked' : 'unclicked'}`}
                             onClick={() => handleTagClick(tag)}
-                            initial={{ scale: 0.9 }}
-                            animate={{ scale: 1 }}
-                            transition={{ duration: 0.3 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
                         >
                             {landscapeKeys[tag]}
                         </motion.span>
                     ))}
-                    <div className="filter-keys"></div>
-                </div>
+                </motion.div>
             </motion.form>
 
             <motion.div
                 className="bottom-button-group"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
             >
                 <motion.button
                     type="button3"
@@ -93,13 +106,7 @@ const FormLandscape = () => {
 
                     <motion.button
                         type="button1"
-                        onClick={() => {
-                            if (selectedTags.length === 0) {
-                                alert("Please select at least one type of landscape.");
-                            } else {
-                                navigate('/activities');
-                            }
-                        }}
+                        onClick={handleNext}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -112,7 +119,7 @@ const FormLandscape = () => {
                 className="page-icon"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
             >
                 <PiMountainsLight size={200} />
             </motion.div>

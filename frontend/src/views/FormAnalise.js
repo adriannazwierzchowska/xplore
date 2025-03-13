@@ -9,31 +9,62 @@ const FormAnalise = () => {
 
     useEffect(() => {
         const analyzeData = async () => {
+            const selectedMonths = sessionStorage.getItem('selectedMonths');
+            const weather = sessionStorage.getItem('weather');
+            const accHotel = sessionStorage.getItem('acc_hotel');
+            const accHostel = sessionStorage.getItem('acc_hostel');
+            const accGuesthouse = sessionStorage.getItem('acc_guesthouse');
+            const accAgrotourism = sessionStorage.getItem('acc_agrotourism');
+            const accCamping = sessionStorage.getItem('acc_camping');
+            const accAirbnb = sessionStorage.getItem('acc_airbnb');
+            const landMountains = sessionStorage.getItem('land_mountains');
+            const landSea = sessionStorage.getItem('land_sea');
+            const landLake = sessionStorage.getItem('land_lake');
+            const landCity = sessionStorage.getItem('land_city');
+            const actWater = sessionStorage.getItem('act_water');
+            const actSightseeing = sessionStorage.getItem('act_sightseeing');
+            const actMuseums = sessionStorage.getItem('act_museums');
+            const actNightlife = sessionStorage.getItem('act_nightlife');
+            const actBeach = sessionStorage.getItem('act_beach');
+            const actNature = sessionStorage.getItem('act_nature');
+            const actSports = sessionStorage.getItem('act_sports');
+            const cuisine = sessionStorage.getItem('cuisine');
+
+            console.log('Selected Months:', selectedMonths);
+            console.log('Weather:', weather);
+            console.log('Accommodation Types:', { accHotel, accHostel, accGuesthouse, accAgrotourism, accCamping, accAirbnb });
+            console.log('Land Preferences:', { landMountains, landSea, landLake, landCity });
+            console.log('Activities:', { actWater, actSightseeing, actMuseums, actNightlife, actBeach, actNature, actSports });
+            console.log('Cuisine:', cuisine);
+
             const data = {
-                months: JSON.parse(sessionStorage.getItem('selectedMonths') || '[]'),
-                weather: sessionStorage.getItem('weather'),
-                acc_hotel: sessionStorage.getItem('acc_hotel') === 'true' ? 1 : 0,
-                acc_hostel: sessionStorage.getItem('acc_hostel') === 'true' ? 1 : 0,
-                acc_guesthouse: sessionStorage.getItem('acc_guesthouse') === 'true' ? 1 : 0,
-                acc_agrotourism: sessionStorage.getItem('acc_agrotourism') === 'true' ? 1 : 0,
-                acc_camping: sessionStorage.getItem('acc_camping') === 'true' ? 1 : 0,
-                acc_airbnb: sessionStorage.getItem('acc_airbnb') === 'true' ? 1 : 0,
-                land_mountains: sessionStorage.getItem('land_mountains') === 'true' ? 1 : 0,
-                land_sea: sessionStorage.getItem('land_sea') === 'true' ? 1 : 0,
-                land_lake: sessionStorage.getItem('land_lake') === 'true' ? 1 : 0,
-                land_city: sessionStorage.getItem('land_city') === 'true' ? 1 : 0,
-                act_water: sessionStorage.getItem('act_water') === 'true' ? 1 : 0,
-                act_sightseeing: sessionStorage.getItem('act_sightseeing') === 'true' ? 1 : 0,
-                act_museums: sessionStorage.getItem('act_museums') === 'true' ? 1 : 0,
-                act_nightlife: sessionStorage.getItem('act_nightlife') === 'true' ? 1 : 0,
-                act_beach: sessionStorage.getItem('act_beach') === 'true' ? 1 : 0,
-                act_nature: sessionStorage.getItem('act_nature') === 'true' ? 1 : 0,
-                act_sports: sessionStorage.getItem('act_sports') === 'true' ? 1 : 0,
-                cuisine: sessionStorage.getItem('cuisine'),
+                months: selectedMonths ? JSON.parse(selectedMonths) : [],
+                weather: weather || 'default-weather',
+                acc_hotel: accHotel === 'true' ? 1 : 0,
+                acc_hostel: accHostel === 'true' ? 1 : 0,
+                acc_guesthouse: accGuesthouse === 'true' ? 1 : 0,
+                acc_agrotourism: accAgrotourism === 'true' ? 1 : 0,
+                acc_camping: accCamping === 'true' ? 1 : 0,
+                acc_airbnb: accAirbnb === 'true' ? 1 : 0,
+                land_mountains: landMountains === 'true' ? 1 : 0,
+                land_sea: landSea === 'true' ? 1 : 0,
+                land_lake: landLake === 'true' ? 1 : 0,
+                land_city: landCity === 'true' ? 1 : 0,
+                act_water: actWater === 'true' ? 1 : 0,
+                act_sightseeing: actSightseeing === 'true' ? 1 : 0,
+                act_museums: actMuseums === 'true' ? 1 : 0,
+                act_nightlife: actNightlife === 'true' ? 1 : 0,
+                act_beach: actBeach === 'true' ? 1 : 0,
+                act_nature: actNature === 'true' ? 1 : 0,
+                act_sports: actSports === 'true' ? 1 : 0,
+                cuisine: cuisine || 'default-cuisine',
             };
+
+            console.log('Data to send to API:', data);
 
             try {
                 const response = await axios.post('http://127.0.0.1:8000/questionnaire/classify/', data);
+                console.log('API Response:', response.data);
                 navigate('/recommendation', { state: { recommendation: response.data.predictions } });
             } catch (error) {
                 console.error('Error analyzing data:', error);
@@ -52,7 +83,6 @@ const FormAnalise = () => {
                 <button type="button3" onClick={() => navigate(-1)}>
                     <span className="chevron-left"></span> Go Back
                 </button>
-
             </div>
         </div>
     );
