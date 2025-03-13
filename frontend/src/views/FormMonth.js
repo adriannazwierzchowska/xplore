@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiCalendarDate } from "react-icons/ci";
 import '../front.css';
+import { motion } from 'framer-motion';
 
 const FormMonth = () => {
     const navigate = useNavigate();
@@ -20,7 +21,6 @@ const FormMonth = () => {
         '11': 'November',
         '12': 'December'
     };
-
 
     const handleMonthClick = (monthValue) => {
         if (selectedMonths.includes(monthValue)) {
@@ -41,39 +41,83 @@ const FormMonth = () => {
     };
 
     return (
-        <div className="form-month-container">
-            <form>
+        <motion.div
+            className="form-month-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+        >
+            <motion.form
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
                 <h1>Which months would you like to travel in?</h1>
-                <div className="filter-tags wrap">
+                <motion.div
+                    className="filter-tags wrap"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.5 }}
+                >
                     {Object.entries(months).map(([value, name]) => (
-                        <span
+                        <motion.span
                             key={value}
                             className={`filter-tag ${selectedMonths.includes(value) ? 'clicked' : 'unclicked'}`}
                             onClick={() => handleMonthClick(value)}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3, duration: 0.5 }}
                         >
                             {name}
-                        </span>
+                        </motion.span>
                     ))}
-                </div>
-            </form>
+                </motion.div>
+            </motion.form>
 
-            <div className="bottom-button-group">
-                <button type="button3" onClick={() => navigate(-1)}>
+            <motion.div
+                className="bottom-button-group"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.5 }}
+            >
+                <motion.button
+                    type="button3"
+                    onClick={() => navigate(-1)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                >
                     <span className="chevron-left"></span> Go Back
-                </button>
+                </motion.button>
                 <div className="right-buttons">
-                    <button type="button3" onClick={() => navigate('/weather')}>
+                    <motion.button
+                        type="button3"
+                        onClick={() => navigate('/weather')}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
                         Skip
-                    </button>
-                    <button type="button1" onClick={handleNext}>
+                    </motion.button>
+
+                    <motion.button
+                        type="button1"
+                        onClick={handleNext}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
                         Next <span className="chevron-right"></span>
-                    </button>
+                    </motion.button>
                 </div>
-            </div>
-            <div className="page-icon">
+            </motion.div>
+
+            <motion.div
+                className="page-icon"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+            >
                 <CiCalendarDate size={200} />
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 

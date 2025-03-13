@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Importujemy framer-motion
+import { motion } from 'framer-motion';
 
 const Favorites = () => {
     const [favorites, setFavorites] = useState([]);
@@ -39,7 +39,6 @@ const Favorites = () => {
         >
             <h1>Your Favorite Places</h1>
 
-            {/* Animacja dla każdego elementu listy */}
             <motion.ul
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

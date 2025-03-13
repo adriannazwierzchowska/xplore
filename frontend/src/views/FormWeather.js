@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiCloud } from "react-icons/ci";
-import { motion } from 'framer-motion'; // Importujemy framer-motion
+import { motion } from 'framer-motion';
 import '../front.css';
 
 const FormWeather = () => {
@@ -17,13 +17,13 @@ const FormWeather = () => {
     return (
         <motion.div
             className="form"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
         >
             <motion.form
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
             >
                 <h1>What kind of weather do you prefer?</h1>
@@ -40,7 +40,10 @@ const FormWeather = () => {
                         className="slider"
                         id="weatherRange"
                         onChange={(e) => setWeatherRange(e.target.value)}
-                        whileHover={{ scale: 1.1 }} // Efekt powiększenia przy najechaniu
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                        whileHover={{ scale: 1.1 }}
                         transition={{ duration: 0.2 }}
                     />
                 </div>
@@ -50,10 +53,10 @@ const FormWeather = () => {
                 className="bottom-button-group"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
             >
                 <motion.button
-                    type="button3"
+                    type="button"
                     onClick={() => navigate(-1)}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
@@ -62,7 +65,7 @@ const FormWeather = () => {
                 </motion.button>
                 <div className="right-buttons">
                     <motion.button
-                        type="button3"
+                        type="button"
                         onClick={() => navigate('/stay')}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
@@ -71,7 +74,7 @@ const FormWeather = () => {
                     </motion.button>
 
                     <motion.button
-                        type="button1"
+                        type="button"
                         onClick={addWeather}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
@@ -85,7 +88,7 @@ const FormWeather = () => {
                 className="page-icon"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
             >
                 <CiCloud size={200} />
             </motion.div>
