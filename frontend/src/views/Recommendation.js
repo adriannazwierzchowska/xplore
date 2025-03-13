@@ -18,6 +18,7 @@ const Recommendation = () => {
     const navigate = useNavigate();
     const [places, setPlaces] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState(null);
+    const [likes, setLikes] = useState({});
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -30,6 +31,8 @@ const Recommendation = () => {
                         })
                     );
                     setPlaces(updatedPlaces);
+
+                    fetchLikes(location.state.recommendation.map(p => p.place));
                 }
             } catch (error) {
                 console.error('Error fetching recommendations:', error);
@@ -38,6 +41,44 @@ const Recommendation = () => {
 
         fetchRecommendations();
     }, [location.state]);
+
+    const fetchLikes = async (placesNames) => {
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/get_likes/', { places: placesNames });
+            setLikes(response.data.likes);
+        } catch (error) {
+            console.error('Error fetching likes:', error);
+        }
+    };
+
+    const addLike = async (placeName) => {
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('You need to log in to like!');
+                return;
+            }
+
+            await axios.post(
+                'http://127.0.0.1:8000/api/add_like/',
+                { place: placeName },
+                {
+                    headers: {
+                        Authorization: token,
+                    },
+                }
+            );
+
+            // Po kliknięciu aktualizuj licznik lajków
+            setLikes(prevLikes => ({
+                ...prevLikes,
+                [placeName]: (prevLikes[placeName] || 0) + 1
+            }));
+        } catch (error) {
+            console.error('Error adding like:', error);
+            alert('Failed to add like. Please try again.');
+        }
+    };
 
     const getCityNameForWikipedia = (fullCityName) => {
         if (fullCityName.includes(',')) {
@@ -93,35 +134,12 @@ const Recommendation = () => {
         }
     };
 
-    const addToFavorites = async (place) => {
-        try {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('You need to log in to add favorites!');
-                return;
-            }
-
-            const response = await axios.post(
-                'http://127.0.0.1:8000/api/add_favorite/',
-                { place },
-                {
-                    headers: {
-                        Authorization: token,
-                    },
-                }
-            );
-            alert(response.data.message);
-        } catch (error) {
-            console.error('Error adding to favorites:', error);
-            alert('Failed to add to favorites. Please try again.');
-        }
-    };
-
     return (
         <div className="recommendation">
             <h1 className="recommendation-heading">
               You should <span className="turquoise-text">xplore</span> these places
             </h1>
+
             <div className="map-container">
                 <MapContainer center={[30.8566, 31.3522]} zoom={3} style={{ height: "500px", width: "1400px" }}>
                     <TileLayer
@@ -140,10 +158,26 @@ const Recommendation = () => {
                                 <Tooltip>
                                     <div className="custom-tooltip">
                                         <h2>{place.place}</h2>
+
+                                        <div className="like-container">
+                                            <button
+                                                className="like-button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    addLike(place.place);
+                                                }}
+                                            >
+                                                ❤️
+                                            </button>
+                                            <span className="like-count">
+                                                {likes[place.place] || 0}
+                                            </span>
+                                        </div>
+
                                         <div className="tags-container">
-                                          {place.keywords.map((keyword, i) => (
-                                            <span key={i} className="tag">{keyword}</span>
-                                          ))}
+                                            {place.keywords.map((keyword, i) => (
+                                                <span key={i} className="tag">{keyword}</span>
+                                            ))}
                                         </div>
                                     </div>
                                 </Tooltip>
@@ -155,40 +189,53 @@ const Recommendation = () => {
 
             {selectedPlace && (
                 <>
-                  <div className="overlay" onClick={() => setSelectedPlace(null)} />
-                  <div className="sidebar active">
-                    <div className="sidebar-content">
-                      {selectedPlace.imageUrl && (
-                        <img
-                          src={selectedPlace.imageUrl}
-                          alt={selectedPlace.name}
-                          className="sidebar-image"
-                        />
-                      )}
-                    <div>
-                      <h2>{selectedPlace.name}</h2>
-                        <div className="tags-container">
-                          {selectedPlace.tags.map((tag, index) => (
-                            <span key={index} className="tag">{tag}</span>
-                          ))}
+                    <div className="overlay" onClick={() => setSelectedPlace(null)} />
+                    <div className="sidebar active">
+                        <div className="sidebar-content">
+                            {selectedPlace.imageUrl && (
+                                <img
+                                    src={selectedPlace.imageUrl}
+                                    alt={selectedPlace.name}
+                                    className="sidebar-image"
+                                />
+                            )}
+
+                            <div>
+                                <h2>{selectedPlace.name}</h2>
+
+                                <div className="like-container">
+                                    <button
+                                        className="like-button"
+                                        onClick={() => addLike(selectedPlace.name)}
+                                    >
+                                        ❤️
+                                    </button>
+                                    <span className="like-count">
+                                        {likes[selectedPlace.name] || 0}
+                                    </span>
+                                </div>
+
+                                <div className="tags-container">
+                                    {selectedPlace.tags.map((tag, index) => (
+                                        <span key={index} className="tag">{tag}</span>
+                                    ))}
+                                </div>
+
+                                <p
+                                    className="selected-place"
+                                    dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
+                                />
+
+                                <div className="sidebar-buttons">
+                                    <button onClick={() => alert('See more to be implemented')}>
+                                        See More
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <p
-                          className="selected-place"
-                          dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
-                        />
-                        <div className="sidebar-buttons">
-                          <button onClick={() => addToFavorites(selectedPlace.name)}>
-                            Add to Favorites
-                          </button>
-                          <button onClick={() => alert('To be implemented')}>
-                            See More
-                          </button>
-                        </div>
-                      </div>
                     </div>
-                  </div>
                 </>
-              )}
+            )}
 
             <div className="button-group">
                 <button type="button-home" onClick={() => navigate('/')}>

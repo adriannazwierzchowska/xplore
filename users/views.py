@@ -8,6 +8,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import UserFavorite
 from .serializers import UserFavoriteSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import Place, UserLike
 
 
 
@@ -81,3 +85,62 @@ def list_favorites(request):
     favorites = UserFavorite.objects.filter(user=user)  # Pobranie ulubionych miejsc użytkownika
     serializer = UserFavoriteSerializer(favorites, many=True)
     return Response(serializer.data)
+
+class LikePlaceView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        place_name = request.data.get('place')
+        if not place_name:
+            return Response({'error': 'Place is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        place, created = Place.objects.get_or_create(name=place_name)
+
+        if UserLike.objects.filter(user=request.user, place=place).exists():
+            return Response({'message': 'You already liked this place!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Dodajemy polubienie
+        UserLike.objects.create(user=request.user, place=place)
+        place.likes += 1
+        place.save()
+
+        return Response({'message': 'Place liked!', 'likes': place.likes}, status=status.HTTP_201_CREATED)
+
+class UnlikePlaceView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        place_name = request.data.get('place')
+        if not place_name:
+            return Response({'error': 'Place is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            place = Place.objects.get(name=place_name)
+        except Place.DoesNotExist:
+            return Response({'error': 'Place not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            user_like = UserLike.objects.get(user=request.user, place=place)
+            user_like.delete()
+
+            if place.likes > 0:
+                place.likes -= 1
+                place.save()
+
+            return Response({'message': 'Place unliked', 'likes': place.likes}, status=status.HTTP_200_OK)
+
+        except UserLike.DoesNotExist:
+            return Response({'error': 'You haven\'t liked this place yet'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def get_likes(request):
+    places = request.data.get('places', [])
+    if not places:
+        return Response({'error': 'Places list is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    likes_data = {}
+    for place_name in places:
+        place = Place.objects.filter(name=place_name).first()
+        likes_data[place_name] = place.likes if place else 0
+
+    return Response({'likes': likes_data}, status=status.HTTP_200_OK)
