@@ -21,7 +21,7 @@ const Home = () => {
         setIsAnimated(true);
         setTimeout(() => {
             navigate(isAuthenticated ? "/month" : "/login");
-        }, 2000);
+        }, 300);
     };
 
     const handleLogout = async () => {
@@ -42,12 +42,12 @@ const Home = () => {
     return (
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white min-h-screen flex flex-col items-center justify-center relative">
             <motion.h1
-                className="text-5xl font-bold mb-8"
+                className="text-5xl font-bold mb-8 drop-shadow-xl"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
             >
-                Let's Xplore
+                Let's xplore
             </motion.h1>
 
             <motion.div
@@ -93,14 +93,13 @@ const Home = () => {
                     className="absolute"
                     initial={{ x: 0, y: 0, scale: 1, opacity: 0.8 }}
                     animate={{
-                        x: window.innerWidth * 2,
+                        x: window.innerWidth * 1.5,
                         y: 0,
                         scale: 10,
-                        opacity: 0,
+                        opacity: 1,
                     }}
                     transition={{
-                        duration: 2,
-                        ease: "easeOut"
+                        duration: 6,
                     }}
                 >
                     <FaPlaneDeparture className="text-4xl text-yellow-500" />
