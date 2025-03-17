@@ -19,6 +19,8 @@ const Recommendation = () => {
     const [places, setPlaces] = useState([]);
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [likes, setLikes] = useState({});
+    const [nearbyPlaces, setNearbyPlaces] = useState({});
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -69,7 +71,6 @@ const Recommendation = () => {
                 }
             );
 
-            // Po kliknięciu aktualizuj licznik lajków
             setLikes(prevLikes => ({
                 ...prevLikes,
                 [placeName]: (prevLikes[placeName] || 0) + 1
@@ -96,19 +97,19 @@ const Recommendation = () => {
 
             if (response.data.type === "disambiguation") {
                 return {
-                    details: `📌 ${processedCityName} ma wiele znaczeń. <a href="${response.data.content_urls.desktop.page}" target="_blank">Zobacz na Wikipedii</a>`,
+                    details: `📌 ${processedCityName} has more than one meaning. <a href="${response.data.content_urls.desktop.page}" target="_blank">Zobacz na Wikipedii</a>`,
                     imageUrl: null
                 };
             }
 
             const imageUrl = response.data.thumbnail ? response.data.thumbnail.source : null;
-            const details = response.data.extract || "Brak opisu dla tego miasta.";
+            const details = response.data.extract || "No description for this city.";
 
             return { details, imageUrl };
         } catch (error) {
-            console.error("❌ Błąd podczas pobierania danych z Wikipedii:", error);
+            console.error("Error while getting description from Wikipedia:", error);
             return {
-                details: "Brak opisu dla tego miasta.",
+                details: "No description for this city.",
                 imageUrl: null
             };
         }
@@ -124,6 +125,8 @@ const Recommendation = () => {
                 details: summary.details,
                 imageUrl: summary.imageUrl
             });
+
+            fetchPlaceDetails(place);
         } catch (error) {
             setSelectedPlace({
                 name: place.place,
@@ -134,12 +137,120 @@ const Recommendation = () => {
         }
     };
 
+    const fetchPlaceDetails = async (place) => {
+      try {
+        const nearbyRes = await axios.post('http://127.0.0.1:8000/places/nearby-places/', {
+          lat: place.coordinates.lat,
+          lng: place.coordinates.lng
+        });
+        if (nearbyRes.data && typeof nearbyRes.data === 'object') {
+          setSelectedPlace(prev => ({
+            ...prev,
+            nearby: nearbyRes.data || {}
+          }));
+        } else {
+          throw new Error('Invalid response format');
+        }
+      } catch (error) {
+        console.error('Error fetching details:', error);
+        setSelectedPlace(prev => ({
+          ...prev,
+          nearby: { error: error.message }
+        }));
+      }
+    };
+
+    const renderNearbyPlaces = () => {
+      if (!selectedPlace.nearby || typeof selectedPlace.nearby !== 'object') {
+        return <div className="loading-message">Loading nearby places...</div>;
+      }
+
+      if (Object.keys(selectedPlace.nearby).length === 0) {
+        return <div className="no-results">No nearby places found</div>;
+      }
+
+      if (selectedCategory) {
+        const categoryPlaces = selectedPlace.nearby[selectedCategory] || [];
+        return (
+            <div className="category-details">
+                <div className="places-list">
+                    {categoryPlaces.slice(0,5).map((place, index) => (
+                        <div key={index} className="place-card" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${place.photo || 'placeholder.jpg'})`}}>
+                            <div className="place-content">
+                                <div className="place-link" onClick={() => {
+                                    if (place.website) {
+                                        window.open(place.website, '_blank');
+                                    } else {
+                                        alert('No website available for this place');
+                                    }
+                                }} />
+
+                                <div className="place-header">
+                                    {place.rating && renderStarRating(place.rating)}
+                                </div>
+                                <h4>{place.name}</h4>
+                                <div className="place-footer">
+                                    {place.reviews?.[0]?.text && (
+                                        <p className="place-description">
+                                            "{place.reviews[0].text}"
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+      }
+
+      const categories = ['Accommodation', 'Food', 'Entertainment', 'Sightseeing'];
+
+      return (
+            <div className="category-grid">
+                {categories.map((category) => {
+                    const places = selectedPlace.nearby?.[category] || [];
+                    const firstPlace = places[0];
+                    const photoUrl = firstPlace?.photo || 'placeholder.jpg';
+
+                    return (
+                        <div
+                            key={category}
+                            className="category-card"
+                            onClick={() => setSelectedCategory(category)}
+                            style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${photoUrl})`, }} >
+                            <h3 className="category-title">{category}</h3>
+                            {firstPlace?.name && (
+                                <p className="place-name">{firstPlace.name}</p>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
+    const renderStarRating = (rating) => {
+        const fullStars = Math.floor(rating);
+        return (
+            <div className="rating-container">
+                <div className="star-rating">
+                    {[...Array(5)].map((_, index) => (
+                        <span key={index} className={index < fullStars ? "star" : "star empty-star"} >
+                            ★
+                        </span>
+                    ))}
+                </div>
+                <span className="rating-number">{rating.toFixed(1)}</span>
+            </div>
+        );
+    };
+
     return (
         <div className="recommendation">
             <h1 className="recommendation-heading">
               You should <span className="turquoise-text">xplore</span> these places
             </h1>
-
             <div className="map-container">
                 <MapContainer center={[30.8566, 31.3522]} zoom={3} style={{ height: "500px", width: "1400px" }}>
                     <TileLayer
@@ -148,13 +259,10 @@ const Recommendation = () => {
                     />
                     {places.map((place, index) =>
                         place.coordinates ? (
-                            <Marker
-                                key={index}
-                                position={[place.coordinates.lat, place.coordinates.lng]}
+                            <Marker key={index} position={[place.coordinates.lat, place.coordinates.lng]}
                                 eventHandlers={{
                                     click: () => handleMarkerClick(place),
-                                }}
-                            >
+                                }} >
                                 <Tooltip>
                                     <div className="custom-tooltip">
                                         <h2>{place.place}</h2>
@@ -167,11 +275,9 @@ const Recommendation = () => {
                                                     addLike(place.place);
                                                 }}
                                             >
-                                                ❤️
+                                                ❤️ {likes[place.place] || 0}
                                             </button>
-                                            <span className="like-count">
-                                                {likes[place.place] || 0}
-                                            </span>
+
                                         </div>
 
                                         <div className="tags-container">
@@ -190,49 +296,55 @@ const Recommendation = () => {
             {selectedPlace && (
                 <>
                     <div className="overlay" onClick={() => setSelectedPlace(null)} />
-                    <div className="sidebar active">
+                    <div className={`sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
                         <div className="sidebar-content">
-                            {selectedPlace.imageUrl && (
-                                <img
-                                    src={selectedPlace.imageUrl}
-                                    alt={selectedPlace.name}
-                                    className="sidebar-image"
-                                />
-                            )}
+                            {!selectedCategory ? (
+                                <>
+                                    {selectedPlace.imageUrl && (
+                                        <img src={selectedPlace.imageUrl} alt={selectedPlace.name} className="sidebar-image" />
+                                    )}
+                                <div>
+                                    <div className="like-container">
+                                        <h2>{selectedPlace.name}</h2>
+                                        <button
+                                            className="like-button"
+                                            onClick={() => addLike(selectedPlace.name)}
+                                        >
+                                            ❤️
+                                        </button>
+                                        <span className="like-count">
+                                            {likes[selectedPlace.name] || 0}
+                                        </span>
+                                    </div>
 
-                            <div>
-                                <h2>{selectedPlace.name}</h2>
+                                    <div className="tags-container">
+                                        {selectedPlace.tags.map((tag, index) => (
+                                            <span key={index} className="tag">{tag}</span>
+                                        ))}
+                                    </div>
 
-                                <div className="like-container">
-                                    <button
-                                        className="like-button"
-                                        onClick={() => addLike(selectedPlace.name)}
-                                    >
-                                        ❤️
-                                    </button>
-                                    <span className="like-count">
-                                        {likes[selectedPlace.name] || 0}
-                                    </span>
+                                    <div className="nearby-section">
+                                        {renderNearbyPlaces()}
+                                    </div>
+
+                                    <p
+                                        className="selected-place"
+                                        dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
+                                    />
                                 </div>
-
-                                <div className="tags-container">
-                                    {selectedPlace.tags.map((tag, index) => (
-                                        <span key={index} className="tag">{tag}</span>
-                                    ))}
-                                </div>
-
-                                <p
-                                    className="selected-place"
-                                    dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
-                                />
-
-                                <div className="sidebar-buttons">
-                                    <button onClick={() => alert('See more to be implemented')}>
-                                        See More
-                                    </button>
-                                </div>
+                            </>
+                        ) : (
+                            <div className="category-details">
+                                <button
+                                    className="button3"
+                                    onClick={() => setSelectedCategory(null)}
+                                >
+                                    &lt; Go back to {selectedPlace.name}
+                                </button>
+                                {renderNearbyPlaces()}
                             </div>
-                        </div>
+                        )}
+                    </div>
                     </div>
                 </>
             )}
