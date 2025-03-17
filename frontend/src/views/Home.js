@@ -21,7 +21,7 @@ const Home = () => {
         setIsAnimated(true);
         setTimeout(() => {
             navigate(isAuthenticated ? "/month" : "/login");
-        }, 4000);
+        }, 300);
     };
 
     const handleLogout = async () => {
@@ -47,7 +47,7 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
             >
-                Let's Xplore
+                Let's xplore
             </motion.h1>
 
             <motion.div

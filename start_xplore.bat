@@ -5,6 +5,7 @@ title Xplore App Starter
 start cmd /k "py manage.py runserver"
 
 :: Start React frontend server
+start cmd /k "cd frontend && npm install"
 start cmd /k "cd frontend && npm start"
 
 echo Xplore application is starting...
