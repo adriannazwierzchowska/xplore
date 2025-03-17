@@ -30,13 +30,6 @@ const FormAnalise = () => {
             const actSports = sessionStorage.getItem('act_sports');
             const cuisine = sessionStorage.getItem('cuisine');
 
-            console.log('Selected Months:', selectedMonths);
-            console.log('Weather:', weather);
-            console.log('Accommodation Types:', { accHotel, accHostel, accGuesthouse, accAgrotourism, accCamping, accAirbnb });
-            console.log('Land Preferences:', { landMountains, landSea, landLake, landCity });
-            console.log('Activities:', { actWater, actSightseeing, actMuseums, actNightlife, actBeach, actNature, actSports });
-            console.log('Cuisine:', cuisine);
-
             const data = {
                 months: selectedMonths ? JSON.parse(selectedMonths) : [],
                 weather: weather || 'default-weather',
@@ -60,11 +53,8 @@ const FormAnalise = () => {
                 cuisine: cuisine || 'default-cuisine',
             };
 
-            console.log('Data to send to API:', data);
-
             try {
                 const response = await axios.post('http://127.0.0.1:8000/questionnaire/classify/', data);
-                console.log('API Response:', response.data);
                 navigate('/recommendation', { state: { recommendation: response.data.predictions } });
             } catch (error) {
                 console.error('Error analyzing data:', error);
