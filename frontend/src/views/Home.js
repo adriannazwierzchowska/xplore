@@ -21,7 +21,7 @@ const Home = () => {
         setIsAnimated(true);
         setTimeout(() => {
             navigate(isAuthenticated ? "/month" : "/login");
-        }, 4000);
+        }, 2000);
     };
 
     const handleLogout = async () => {
@@ -93,13 +93,14 @@ const Home = () => {
                     className="absolute"
                     initial={{ x: 0, y: 0, scale: 1, opacity: 0.8 }}
                     animate={{
-                        x: window.innerWidth * 1.5,
+                        x: window.innerWidth * 2,
                         y: 0,
                         scale: 10,
-                        opacity: 1,
+                        opacity: 0,
                     }}
                     transition={{
-                        duration: 6,
+                        duration: 2,
+                        ease: "easeOut"
                     }}
                 >
                     <FaPlaneDeparture className="text-4xl text-yellow-500" />
