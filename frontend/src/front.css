@@ -398,6 +398,16 @@ button .chevron-right {
     margin-top: 20px;
 }
 
+.favorite-count {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e63946;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+}
+
 .sidebar-enter {
     right: -400px;
 }
