@@ -112,23 +112,21 @@ button {
     justify-content: center;
     height: 45px;
     display: flex;
+    background-color: var(--blue-2);
     border: 1.5px solid var(--blue-2);
 }
 
 button[type="button1"] {
     background-color: var(--blue-2);
-    color: white;
 }
 
 button[type="button2"] {
-    background-color: transparent;
-    color: var(--blue-2);
+    background-color: var(--blue-2);
 }
 
 
 button[type="button3"] {
-    background-color: var(--blue-1);
-    color: white;
+    background-color: var(--blue-2);
 }
 
 button:hover {
@@ -371,6 +369,14 @@ button .chevron-right {
     padding: 20px;
 }
 
+.favorite-count.filled .heart-icon {
+  fill: red;
+}
+
+.favorite-count.filled {
+  color: red;
+}
+
 .sidebar-image {
     width: 100%;
     height: 200px;
@@ -386,13 +392,16 @@ button .chevron-right {
 }
 
 .favorite-count {
-    font-size: 20px;
-    font-weight: bold;
-    color: #e63946;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 50px;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.heart-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  transition: all 0.3s ease;
 }
 
 .sidebar-enter {
