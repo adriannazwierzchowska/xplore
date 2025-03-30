@@ -365,15 +365,9 @@ const Recommendation = () => {
                                     <img src={selectedPlace.imageUrl} alt={selectedPlace.name} className="sidebar-image" />
                                 )}
                                 <div>
-                                    <h2>{selectedPlace.name}</h2>
-                                    <div className="sidebar-buttons">
-                                        <span
-                                            className={`favorite-count ${isFavorite ? 'filled' : ''}`}
-                                            onClick={() =>
-                                                isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
-                                            }
-                                            style={{ cursor: 'pointer' }}
-                                        >
+                                    <h2 className="place-name">
+                                        {selectedPlace.name}
+                                        <span className="favorite-count">
                                             <motion.svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
@@ -389,6 +383,24 @@ const Recommendation = () => {
                                             </motion.svg>
                                             {selectedPlace.favoriteCount ?? 0}
                                         </span>
+                                    </h2>
+
+                                    <div className="sidebar-buttons">
+                                        <span
+                                            className={`favorite-count ${isFavorite ? 'filled' : ''}`}
+                                            onClick={() =>
+                                                isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
+                                            }
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                        </span>
+                                    </div>
+
+
+                                    <div className="tags-container">
+                                        {selectedPlace.tags.map((tag, index) => (
+                                            <span key={index} className="tag">{tag}</span>
+                                        ))}
                                     </div>
 
                                     <div className="nearby-section">

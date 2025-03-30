@@ -441,7 +441,8 @@ button[type="button-home"] {
 }
 
 .favorite-count {
-  font-size: 18px;
+  margin-left: 20px;
+  font-size: 20px;
   display: inline-flex;
   align-items: center;
 }
@@ -588,8 +589,8 @@ button[type="button-home"] {
 }
 
 .place-name {
-    margin: 5px 0 0;
-    font-size: 0.9em;
+    margin: 2px 5px 5px;
+    font-size: 2em;
     opacity: 0.9;
     z-index: 1;
 }
