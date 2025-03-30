@@ -5,6 +5,8 @@ import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import L from 'leaflet';
+import { motion } from "framer-motion";
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -17,13 +19,8 @@ const Recommendation = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [places, setPlaces] = useState([]);
-    const [selectedPlace, setSelectedPlace] = useState({
-    name: '',
-    tags: [],
-    details: '',
-    imageUrl: null,
-    favoriteCount: '',
-});
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
 
     useEffect(() => {
@@ -33,7 +30,8 @@ const Recommendation = () => {
                     const updatedPlaces = await Promise.all(
                         location.state.recommendation.map(async (place) => {
                             const summary = await fetchCitySummary(place.place);
-                            return { ...place, details: summary.details, imageUrl: summary.imageUrl };
+                            const count = await fetchFavoriteCount(place.place)
+                            return { ...place, details: summary.details, imageUrl: summary.imageUrl, favoriteCount: count };
                         })
                     );
                     setPlaces(updatedPlaces);
@@ -62,19 +60,15 @@ const Recommendation = () => {
 
             if (response.data.type === "disambiguation") {
                 return {
-                    details: `📌 ${processedCityName} ma wiele znaczeń. <a href="${response.data.content_urls.desktop.page}" target="_blank">Zobacz na Wikipedii</a>`,
                     imageUrl: null
                 };
             }
 
             const imageUrl = response.data.thumbnail ? response.data.thumbnail.source : null;
-            const details = response.data.extract || "Brak opisu dla tego miasta.";
-
+            const details = response.data.extract;
             return { details, imageUrl };
         } catch (error) {
-            console.error("❌ Błąd podczas pobierania danych z Wikipedii:", error);
             return {
-                details: "Brak opisu dla tego miasta.",
                 imageUrl: null
             };
         }
@@ -84,6 +78,7 @@ const Recommendation = () => {
         try {
             const summary = await fetchCitySummary(place.place);
             const favoriteCount = await fetchFavoriteCount(place.place);
+            const isFavorite = await checkIfFavorite(place.place);
 
             setSelectedPlace({
                 name: place.place,
@@ -92,18 +87,57 @@ const Recommendation = () => {
                 imageUrl: summary.imageUrl,
                 favoriteCount: favoriteCount,
             });
+
+           setIsFavorite(isFavorite);
         } catch (error) {
             setSelectedPlace({
                 name: place.place,
                 tags: place.keywords,
                 details: "No description for this city.",
                 imageUrl: null,
-                favoriteCount: 0
+                favoriteCount: 0,
             });
+
+            setIsFavorite(false);
         }
     };
 
-    const addToFavorites = async (place) => {
+    const addToFavorites = async (placeName) => {
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('You need to log in to add favorites!');
+                return;
+            }
+
+            const response = await axios.post(
+                'http://127.0.0.1:8000/api/add_favorite/',
+                { place: placeName },
+                { headers: { Authorization: `${token}` } }
+            );
+
+            const updatedFavoriteCount = await fetchFavoriteCount(placeName);
+
+            setSelectedPlace(prevState => ({
+                ...prevState,
+                favoriteCount: updatedFavoriteCount
+            }));
+
+            setPlaces(prevPlaces =>
+                prevPlaces.map(place =>
+                    place.place === placeName ? { ...place, favoriteCount: updatedFavoriteCount } : place
+                )
+            );
+
+            setIsFavorite(true);
+            alert(response.data.message);
+        } catch (error) {
+            console.error('Error adding to favorites:', error);
+            alert('Failed to add to favorites. Please try again.');
+        }
+    };
+
+    const removeFromFavorites = async (placeName) => {
         try {
             const token = localStorage.getItem('authToken');
             console.log('Token:', token);
@@ -112,8 +146,8 @@ const Recommendation = () => {
                 return;
             }
             const response = await axios.post(
-                'http://127.0.0.1:8000/api/add_favorite/',
-                { place },
+                'http://127.0.0.1:8000/api/remove_favorite/',
+                { place: placeName },
                 {
                     headers: {
                         Authorization: `${token}`,
@@ -121,33 +155,60 @@ const Recommendation = () => {
                 }
             );
 
-            const updatedFavoriteCount = await fetchFavoriteCount(place)
+            const updatedFavoriteCount = await fetchFavoriteCount(placeName)
+            const isFavorite = await checkIfFavorite(placeName)
             setSelectedPlace(prevState => ({
                 ...prevState,
                 favoriteCount: updatedFavoriteCount
             }));
-
+            setPlaces(prevPlaces =>
+                prevPlaces.map(place =>
+                    place.place === placeName ? { ...place, favoriteCount: updatedFavoriteCount } : place
+                )
+            );
+            setIsFavorite(false)
             alert(response.data.message);
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 alert('You need to log in again! Your session has expired.');
             } else {
-                console.error('Error adding to favorites:', error);
-                alert('Failed to add to favorites. Please try again.');
+                console.error('Error removing from favorites:', error);
+                alert('Failed to remove from favorites. Please try again.');
             }
         }
     };
 
-    const fetchFavoriteCount = async (placeName) => {
-    try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/favorite_count/?place=${encodeURIComponent(placeName)}`);
-        return response.data.favorite_count;
-    } catch (error) {
-        console.error('Error fetching favorite count:', error);
-        return 0;
-    }
-};
+    const checkIfFavorite = async (placeName) => {
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('You need to log in to add favorites!');
+                return;
+            }
+            const response = await axios.get(
+                `http://127.0.0.1:8000/api/is_favorite/?place=${encodeURIComponent(placeName)}`,
+                {
+                    headers: { Authorization: `${token}` },
+                }
+            );
+            console.log(response)
 
+            return response.data.is_favorite;
+        } catch (error) {
+            console.error('Error checking favorite status:', error);
+            return false;
+        }
+    };
+
+    const fetchFavoriteCount = async (placeName) => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/favorite_count/?place=${encodeURIComponent(placeName)}`);
+            return response.data.favorite_count;
+        } catch (error) {
+            console.error('Error fetching favorite count:', error);
+            return 0;
+        }
+    };
 
     return (
         <div className="recommendation">
@@ -171,7 +232,7 @@ const Recommendation = () => {
                             >
                                 <Tooltip>
                                     <div className="custom-tooltip">
-                                        <h2>{place.place}</h2>
+                                        <h2>{place.place} ❤ {place.favoriteCount ?? 0}</h2>
                                         <div className="tags-container">
                                           {place.keywords.map((keyword, i) => (
                                             <span key={i} className="tag">{keyword}</span>
@@ -188,7 +249,7 @@ const Recommendation = () => {
             {selectedPlace && (
                 <>
                   <div className="overlay" onClick={() => setSelectedPlace(null)} />
-                  <div className="sidebar active">
+                  <div className={`sidebar ${selectedPlace ? 'active' : ''}`}>
                     <div className="sidebar-content">
                       {selectedPlace.imageUrl && (
                         <img
@@ -197,34 +258,46 @@ const Recommendation = () => {
                           className="sidebar-image"
                         />
                       )}
-                    <div>
                       <h2>{selectedPlace.name}</h2>
                         <div className="tags-container">
                           {selectedPlace.tags.map((tag, index) => (
                             <span key={index} className="tag">{tag}</span>
                           ))}
                         </div>
-                        <p
-                          className="selected-place"
-                          dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
-                        />
-                        <div className="sidebar-buttons">
-                        <span className="favorite-count">
-                            ❤️ {selectedPlace.favoriteCount ?? 0}
-                        </span>
-                        <button onClick={() => addToFavorites(selectedPlace.name)}>
-                            Add to Favorites
-                        </button>
-                        <button onClick={() => alert('To be implemented')}>
-                            See More
-                        </button>
-                    </div>
+                          <div
+                            className="selected-place"
+                            dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
+                          />
+                          <div className="sidebar-buttons">
+                            <span
+                              className={`favorite-count ${isFavorite ? 'filled' : ''}`}
+                              onClick={() =>
+                                isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
+                              }
+                              style={{ cursor: 'pointer' }}
+                            >
+                              <motion.svg
+                                   xmlns="http://www.w3.org/2000/svg"
+                                   viewBox="0 0 24 24"
+                                   fill={isFavorite ? 'red' : 'none'}
+                                   stroke="currentColor"
+                                   strokeWidth="2"
+                                   className={`heart-icon ${isFavorite ? 'filled' : ''}`}
+                                   whileTap={{ scale: 1.7 }}
+                                   animate={{ scale: isFavorite ? [1, 1.7, 1] : 1 }}
+                                   transition={{ duration: 0.3 }}
+                                >
+                                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </motion.svg>
 
+                              {selectedPlace.favoriteCount ?? 0}
+                            </span>
+                            <button onClick={() => alert('To be implemented')}>See More</button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </>
-              )}
+                    </>
+                  )}
 
             <div className="button-group">
                 <button type="button-home" onClick={() => navigate('/')}>
