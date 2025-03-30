@@ -14,8 +14,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 
-
-
 @api_view(['POST'])
 @csrf_exempt
 def register_user(request):
@@ -54,10 +52,6 @@ def logout_user(request):
 @api_view(['POST'])
 def add_favorite(request):
     token = request.headers.get('Authorization')
-    print(token)
-    # if not token:
-    #     return Response({'error': 'Authorization token is required'}, status=401)
-
     try:
         user = User.objects.get(username=token)
     except User.DoesNotExist:
@@ -69,11 +63,47 @@ def add_favorite(request):
 
     favorite, created = UserFavorite.objects.get_or_create(user=user, place=place)
     favorite_count = UserFavorite.objects.filter(place=place).count()
-    print(favorite_count)
 
     if created:
         return Response({'message': 'Added to favorites'}, status=201)
     return Response({'message': 'Already in favorites', 'favorite_count': favorite_count}, status=200)
+
+@api_view(['GET', 'POST'])
+def is_favorite(request):
+    token = request.headers.get('Authorization')
+    try:
+        user = User.objects.get(username=token)
+    except User.DoesNotExist:
+        return Response({'error': 'Invalid token or user does not exist'}, status=401)
+    place = request.query_params.get('place')
+
+
+    if not place:
+        return Response({'error': 'Place not provided'}, status=400)
+
+    is_favorite = UserFavorite.objects.filter(user=user, place=place).exists()
+
+    return Response({'is_favorite': is_favorite})
+
+@api_view(['POST'])
+def remove_favorite(request):
+    token = request.headers.get('Authorization')
+    try:
+        user = User.objects.get(username=token)
+    except User.DoesNotExist:
+        return Response({'error': 'Invalid token or user does not exist'}, status=401)
+
+    place = request.data.get('place')
+    if not place:
+        return Response({'error': 'Place is required'}, status=400)
+
+    try:
+       favorite = UserFavorite.objects.get(user=user, place=place)
+       favorite.delete()
+       favorite_count = UserFavorite.objects.filter(place=place).count()
+       return Response({'message': 'Removed from favorites', 'favorite_count': favorite_count}, status=200)
+    except UserFavorite.DoesNotExist:
+        return Response({'error: Place is not in favorites'}, status=400)
 
 
 @api_view(['GET'])
@@ -96,8 +126,8 @@ def get_favorite_count(request):
     place = request.GET.get('place')
     if place:
         count = UserFavorite.objects.filter(place=place).count()
-        print(count)
         return Response({'favorite_count': count})
     return Response({'error': 'Place not provided'}, status=400)
+
 
 
