@@ -21,7 +21,8 @@ const Recommendation = () => {
     const [places, setPlaces] = useState([]);
     const [isFavorite, setIsFavorite] = useState(false);
     const [selectedPlace, setSelectedPlace] = useState(null);
-
+    const [nearbyPlaces, setNearbyPlaces] = useState({});
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -89,6 +90,7 @@ const Recommendation = () => {
             });
 
            setIsFavorite(isFavorite);
+           fetchPlaceDetails(place);
         } catch (error) {
             setSelectedPlace({
                 name: place.place,
@@ -210,6 +212,115 @@ const Recommendation = () => {
         }
     };
 
+    const fetchPlaceDetails = async (place) => {
+      try {
+        const nearbyRes = await axios.post('http://127.0.0.1:8000/places/nearby-places/', {
+          lat: place.coordinates.lat,
+          lng: place.coordinates.lng
+        });
+        if (nearbyRes.data && typeof nearbyRes.data === 'object') {
+          setSelectedPlace(prev => ({
+            ...prev,
+            nearby: nearbyRes.data || {}
+          }));
+        } else {
+          throw new Error('Invalid response format');
+        }
+      } catch (error) {
+        console.error('Error fetching details:', error);
+        setSelectedPlace(prev => ({
+          ...prev,
+          nearby: { error: error.message }
+        }));
+      }
+    };
+
+    const renderNearbyPlaces = () => {
+      if (!selectedPlace.nearby || typeof selectedPlace.nearby !== 'object') {
+        return <div className="loading-message">Loading nearby places...</div>;
+      }
+
+      if (Object.keys(selectedPlace.nearby).length === 0) {
+        return <div className="no-results">No nearby places found</div>;
+      }
+
+      if (selectedCategory) {
+        const categoryPlaces = selectedPlace.nearby[selectedCategory] || [];
+        return (
+            <div className="category-details">
+                <div className="places-list">
+                    {categoryPlaces.slice(0,5).map((place, index) => (
+                        <div key={index} className="place-card" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${place.photo || 'placeholder.jpg'})`}}>
+                            <div className="place-content">
+                                <div className="place-link" onClick={() => {
+                                    if (place.website) {
+                                        window.open(place.website, '_blank');
+                                    } else {
+                                        alert('No website available for this place');
+                                    }
+                                }} />
+
+                                <div className="place-header">
+                                    {place.rating && renderStarRating(place.rating)}
+                                </div>
+                                <h4>{place.name}</h4>
+                                <div className="place-footer">
+                                    {place.reviews?.[0]?.text && (
+                                        <p className="place-description">
+                                            "{place.reviews[0].text}"
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+      }
+
+      const categories = ['Accommodation', 'Food', 'Entertainment', 'Sightseeing'];
+
+      return (
+            <div className="category-grid">
+                {categories.map((category) => {
+                    const places = selectedPlace.nearby?.[category] || [];
+                    const firstPlace = places[0];
+                    const photoUrl = firstPlace?.photo || 'placeholder.jpg';
+
+                    return (
+                        <div
+                            key={category}
+                            className="category-card"
+                            onClick={() => setSelectedCategory(category)}
+                            style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${photoUrl})`, }} >
+                            <h3 className="category-title">{category}</h3>
+                            {firstPlace?.name && (
+                                <p className="place-name">{firstPlace.name}</p>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
+    const renderStarRating = (rating) => {
+        const fullStars = Math.floor(rating);
+        return (
+            <div className="rating-container">
+                <div className="star-rating">
+                    {[...Array(5)].map((_, index) => (
+                        <span key={index} className={index < fullStars ? "star" : "star empty-star"} >
+                            ★
+                        </span>
+                    ))}
+                </div>
+                <span className="rating-number">{rating.toFixed(1)}</span>
+            </div>
+        );
+    };
+
     return (
         <div className="recommendation">
             <h1 className="recommendation-heading">
@@ -223,13 +334,10 @@ const Recommendation = () => {
                     />
                     {places.map((place, index) =>
                         place.coordinates ? (
-                            <Marker
-                                key={index}
-                                position={[place.coordinates.lat, place.coordinates.lng]}
+                            <Marker key={index} position={[place.coordinates.lat, place.coordinates.lng]}
                                 eventHandlers={{
                                     click: () => handleMarkerClick(place),
-                                }}
-                            >
+                                }} >
                                 <Tooltip>
                                     <div className="custom-tooltip">
                                         <h2>{place.place} ❤ {place.favoriteCount ?? 0}</h2>
@@ -248,56 +356,67 @@ const Recommendation = () => {
 
             {selectedPlace && (
                 <>
-                  <div className="overlay" onClick={() => setSelectedPlace(null)} />
-                  <div className={`sidebar ${selectedPlace ? 'active' : ''}`}>
-                    <div className="sidebar-content">
-                      {selectedPlace.imageUrl && (
-                        <img
-                          src={selectedPlace.imageUrl}
-                          alt={selectedPlace.name}
-                          className="sidebar-image"
-                        />
-                      )}
-                      <h2>{selectedPlace.name}</h2>
-                        <div className="tags-container">
-                          {selectedPlace.tags.map((tag, index) => (
-                            <span key={index} className="tag">{tag}</span>
-                          ))}
-                        </div>
-                          <div
-                            className="selected-place"
-                            dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
-                          />
-                          <div className="sidebar-buttons">
-                            <span
-                              className={`favorite-count ${isFavorite ? 'filled' : ''}`}
-                              onClick={() =>
-                                isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
-                              }
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <motion.svg
-                                   xmlns="http://www.w3.org/2000/svg"
-                                   viewBox="0 0 24 24"
-                                   fill={isFavorite ? 'red' : 'none'}
-                                   stroke="currentColor"
-                                   strokeWidth="2"
-                                   className={`heart-icon ${isFavorite ? 'filled' : ''}`}
-                                   whileTap={{ scale: 1.7 }}
-                                   animate={{ scale: isFavorite ? [1, 1.7, 1] : 1 }}
-                                   transition={{ duration: 0.3 }}
-                                >
-                                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                </motion.svg>
+                    <div className="overlay" onClick={() => setSelectedPlace(null)} />
+                    <div className={`sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
+                        <div className="sidebar-content">
+                            {!selectedCategory ? (
+                            <>
+                                {selectedPlace.imageUrl && (
+                                    <img src={selectedPlace.imageUrl} alt={selectedPlace.name} className="sidebar-image" />
+                                )}
+                                <div>
+                                    <h2>{selectedPlace.name}</h2>
+                                    <div className="sidebar-buttons">
+                                        <span
+                                            className={`favorite-count ${isFavorite ? 'filled' : ''}`}
+                                            onClick={() =>
+                                                isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
+                                            }
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            <motion.svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill={isFavorite ? 'red' : 'none'}
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                className={`heart-icon ${isFavorite ? 'filled' : ''}`}
+                                                whileTap={{ scale: 1.7 }}
+                                                animate={{ scale: isFavorite ? [1, 1.7, 1] : 1 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                            </motion.svg>
+                                            {selectedPlace.favoriteCount ?? 0}
+                                        </span>
+                                    </div>
 
-                              {selectedPlace.favoriteCount ?? 0}
-                            </span>
-                            <button onClick={() => alert('To be implemented')}>See More</button>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
+                                    <div className="nearby-section">
+                                        {renderNearbyPlaces()}
+                                    </div>
+
+                                    <p
+                                        className="selected-place"
+                                        dangerouslySetInnerHTML={{ __html: selectedPlace.details }}
+                                    />
+                                </div>
+                            </>
+                        ) : (
+                            <div className="category-details">
+                                <button
+                                    className="button3"
+                                    onClick={() => setSelectedCategory(null)}
+                                >
+                                    &lt; Go back to {selectedPlace.name}
+                                </button>
+                                {renderNearbyPlaces()}
+                            </div>
+                        )}
+
+                    </div>
+                    </div>
+                </>
+            )}
 
             <div className="button-group">
                 <button type="button-home" onClick={() => navigate('/')}>
