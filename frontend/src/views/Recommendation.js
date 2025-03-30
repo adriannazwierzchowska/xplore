@@ -365,7 +365,7 @@ const Recommendation = () => {
                                     <img src={selectedPlace.imageUrl} alt={selectedPlace.name} className="sidebar-image" />
                                 )}
                                 <div>
-                                    <h2 className="place-name">
+                                    <h2 className="s-place-name">
                                         {selectedPlace.name}
                                         <span className="favorite-count">
                                             <motion.svg
