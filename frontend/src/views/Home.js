@@ -42,7 +42,7 @@ const Home = () => {
     return (
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white min-h-screen flex flex-col items-center justify-center relative">
             <motion.h1
-                className="text-5xl font-bold mb-8 drop-shadow-xl"
+                className="text-5xl font-bold mb-8"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
