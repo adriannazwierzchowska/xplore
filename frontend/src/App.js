@@ -18,7 +18,6 @@ function App() {
     <Router>
       <AnimatePresence>
         <Routes>
-          {/* Animacja tylko na kontenerach */}
           <Route
             path="/"
             element={
