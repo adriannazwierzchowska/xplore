@@ -49,6 +49,15 @@ form {
     padding-right: 220px;
 }
 
+.home-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  margin-left: 20px;
+  min-width: 300px;
+}
+
 
 label {
     margin-top: 10px;
@@ -94,6 +103,25 @@ select {
     margin-top: 10px;
 }
 
+.welcome-text {
+    font-size: 1.5rem;
+    color: var(--blue-2);
+    margin: 0 0 5px 0;
+    font-weight: 400;
+}
+
+.username {
+    font-weight: 600;
+    color: var(--blue-3);
+}
+
+.main-title {
+  color: var(--blue-3);
+  font-size: 3em;
+  margin: 0 0 10px 0;
+  white-space: nowrap;
+}
+
 .bottom-button-group {
     display: flex;
     justify-content: space-between;
@@ -104,6 +132,7 @@ select {
     padding: 0 20px;
     box-sizing: border-box;
 }
+
 .right-buttons {
     display: flex;
     gap: 10px;
@@ -114,37 +143,36 @@ button {
     border-radius: 10px;
     cursor: pointer;
     font-size: 0.9em;
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s, color 0.3s;
     align-items: center;
     justify-content: center;
     height: 45px;
     display: flex;
-    background-color: var(--blue-2);
     border: 1.5px solid var(--blue-2);
-
 }
 
 button[type="button1"] {
     background-color: var(--blue-2);
+    color: white;
+    width: 8rem;
 }
 
 button[type="button2"] {
-    background-color: var(--blue-2);
+    background-color: transparent;
+    color: var(--blue-2);
+    width: 7rem;
 }
 
-
 button[type="button3"] {
-    background-color: var(--blue-2);
+    background-color: var(--blue-1);
+    color: white;
 }
 
 button:hover {
     background-color: var(--beige-2);
     color: var(--blue-3);
 }
+
 button:hover .chevron-left {
     background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%2304384B" stroke-width="2" d="M14 6l-6 6 6 6"/%3E%3C/svg%3E');
     transition: background-image 0.3s;
@@ -739,4 +767,9 @@ button[type="button-home"] {
 .place-footer {
     margin-top: auto;
     width: 100%;
+}
+
+
+.absolute {
+    pointer-events: none;
 }
