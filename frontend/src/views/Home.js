@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaPlaneDeparture, FaHeart, FaSignOutAlt } from "react-icons/fa";
+import { FaPlaneDeparture, FaHeart, FaSignOutAlt, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { logoutUser } from "../api";
 import "../front.css";
+import { useSoundContext } from '../SoundContext';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Home = () => {
     const [username, setUsername] = useState(localStorage.getItem("authToken") || null);
     const [message, setMessage] = useState("");
     const [isAnimated, setIsAnimated] = useState(false);
+    const { isMuted, toggleMute, soundClick } = useSoundContext();
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -18,6 +20,7 @@ const Home = () => {
     }, []);
 
     const handleLetsGo = () => {
+        soundClick();
         setIsAnimated(true);
         setTimeout(() => {
             navigate(isAuthenticated ? "/month" : "/login");
@@ -25,6 +28,7 @@ const Home = () => {
     };
 
     const handleLogout = async () => {
+        soundClick();
         try {
             await logoutUser();
             localStorage.removeItem("authToken");
@@ -36,11 +40,25 @@ const Home = () => {
     };
 
     const handleFavorites = () => {
+        soundClick();
         navigate(isAuthenticated ? "/favorites" : "/login");
     };
 
     return (
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 text-white min-h-screen flex flex-col items-center justify-center relative">
+            {/* Sound toggle button */}
+            <motion.button
+                className="absolute top-4 right-4 p-2 bg-white bg-opacity-20 rounded-full"
+                onClick={toggleMute}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+            >
+                {isMuted ? 
+                    <FaVolumeMute size={24} /> : 
+                    <FaVolumeUp size={24} />
+                }
+            </motion.button>
+
             <motion.h1
                 className="text-5xl font-bold mb-8"
                 initial={{ opacity: 0, y: -20 }}

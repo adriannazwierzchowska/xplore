@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiLifebuoyThin } from "react-icons/pi";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const FormActivities = () => {
     const navigate = useNavigate();
     const [selectedTags, setSelectedTags] = useState([]);
+    const { soundClick, soundSelect } = useSoundContext();
     const activitiesTag = {
         act_water: 'Water activities',
         act_sightseeing: 'Sightseeing',
@@ -23,6 +25,7 @@ const FormActivities = () => {
     }, []);
 
     const handleTagClick = (tag) => {
+        soundSelect(); // Add sound on selection
         const updatedTags = selectedTags.includes(tag)
             ? selectedTags.filter(t => t !== tag)
             : [...selectedTags, tag];
@@ -34,6 +37,16 @@ const FormActivities = () => {
         } else {
             sessionStorage.removeItem(tag);
         }
+    };
+
+    const handleNext = () => {
+        soundClick(); // Add sound on button click
+        if (selectedTags.length === 0) {
+            alert("Please select at least one activity.");
+            return;
+        }
+
+        navigate('/cuisine');
     };
 
     return (
@@ -72,8 +85,11 @@ const FormActivities = () => {
                 transition={{ delay: 0.6, duration: 0.8 }}
             >
                 <motion.button
-                    type="button"
-                    onClick={() => navigate(-1)}
+                    type="button3"
+                    onClick={() => { 
+                        soundClick(); // Add sound on back button
+                        navigate(-1);
+                    }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -81,8 +97,9 @@ const FormActivities = () => {
                 </motion.button>
                 <div className="right-buttons">
                     <motion.button
-                        type="button"
+                        type="button3"
                         onClick={() => {
+                            soundClick(); // Add sound on skip button
                             selectedTags.forEach(tag => sessionStorage.removeItem(tag));
                             setSelectedTags([]);
                             navigate('/cuisine');
@@ -94,14 +111,8 @@ const FormActivities = () => {
                     </motion.button>
 
                     <motion.button
-                        type="button"
-                        onClick={() => {
-                            if (selectedTags.length === 0) {
-                                alert("Please select at least one activity.");
-                            } else {
-                                navigate('/cuisine');
-                            }
-                        }}
+                        type="button1"
+                        onClick={handleNext}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >

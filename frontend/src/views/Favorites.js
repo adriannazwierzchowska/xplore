@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
+import '../front.css';
 
 const Favorites = () => {
-    const [favorites, setFavorites] = useState([]);
     const navigate = useNavigate();
+    const [favorites, setFavorites] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { soundClick } = useSoundContext();
 
     useEffect(() => {
         const fetchFavorites = async () => {
@@ -22,51 +27,100 @@ const Favorites = () => {
                     },
                 });
                 setFavorites(response.data);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching favorites:', error);
-                alert('Failed to fetch favorites. Please try again.');
+                setError('Failed to fetch favorites. Please try again.');
+                setLoading(false);
             }
         };
         fetchFavorites();
     }, []);
+
+    const handleRemoveFavorite = async (place) => {
+        soundClick(); // Add sound when removing a favorite
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('You need to log in to remove favorites!');
+                return;
+            }
+
+            await axios.delete(`http://127.0.0.1:8000/api/favorites/${place.id}/`, {
+                headers: {
+                    Authorization: token,
+                },
+            });
+
+            setFavorites((prevFavorites) =>
+                prevFavorites.filter((favorite) => favorite.id !== place.id)
+            );
+        } catch (error) {
+            console.error('Error removing favorite:', error);
+            alert('Failed to remove favorite. Please try again.');
+        }
+    };
 
     return (
         <motion.div
             className="favorites-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.5 }}
         >
-            <h1>Your Favorite Places</h1>
+            <motion.h1
+                className="favorites-heading"
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+            >
+                Your Favorite Destinations
+            </motion.h1>
 
-            <motion.ul
+            {loading && <p>Loading your favorites...</p>}
+            {error && <p className="error">{error}</p>}
+
+            <motion.div
+                className="favorites-grid"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.2 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
             >
                 {favorites.map((favorite, index) => (
-                    <motion.li
+                    <motion.div
                         key={index}
+                        className="favorite-item"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: index * 0.1 }}
                     >
-                        {favorite.place}
-                    </motion.li>
+                        <p>{favorite.place}</p>
+                        <motion.button
+                            className="remove-button"
+                            onClick={() => handleRemoveFavorite(favorite)}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
+                            Remove
+                        </motion.button>
+                    </motion.div>
                 ))}
-            </motion.ul>
+            </motion.div>
 
-            <div className="button-group">
-                <motion.button
-                    type="button1"
-                    onClick={() => navigate('/')}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="back-button"
-                >
-                    Home
-                </motion.button>
-            </div>
+            <motion.button
+                className="back-button"
+                onClick={() => {
+                    soundClick(); // Add sound when going back
+                    navigate('/');
+                }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+            >
+                Return Home
+            </motion.button>
         </motion.div>
     );
 };

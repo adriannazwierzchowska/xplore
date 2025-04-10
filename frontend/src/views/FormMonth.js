@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiCalendarDate } from "react-icons/ci";
-import '../front.css';
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
+import '../front.css';
 
 const FormMonth = () => {
     const navigate = useNavigate();
     const [selectedMonths, setSelectedMonths] = useState([]);
+    const { soundClick, soundSelect } = useSoundContext();
     const months = {
         '1': 'January',
         '2': 'February',
@@ -22,21 +24,40 @@ const FormMonth = () => {
         '12': 'December'
     };
 
+    // Load saved values on component mount
+    useEffect(() => {
+        const savedMonths = sessionStorage.getItem('selectedMonths');
+        if (savedMonths) {
+            try {
+                const parsedMonths = JSON.parse(savedMonths);
+                setSelectedMonths(parsedMonths);
+            } catch (e) {
+                console.error('Error parsing saved months:', e);
+                sessionStorage.removeItem('selectedMonths');
+            }
+        }
+    }, []);
+
     const handleMonthClick = (monthValue) => {
+        soundSelect(); // Add sound when selecting a month
+        
         if (selectedMonths.includes(monthValue)) {
-            setSelectedMonths(selectedMonths.filter(m => m !== monthValue));
+            const updated = selectedMonths.filter(m => m !== monthValue);
+            setSelectedMonths(updated);
+            sessionStorage.setItem('selectedMonths', JSON.stringify(updated));
         } else if (selectedMonths.length < 2) {
-            setSelectedMonths([...selectedMonths, monthValue]);
+            const updated = [...selectedMonths, monthValue];
+            setSelectedMonths(updated);
+            sessionStorage.setItem('selectedMonths', JSON.stringify(updated));
         }
     };
 
     const handleNext = () => {
+        soundClick(); // Add sound when clicking next button
         if (selectedMonths.length === 0) {
             alert("Please select at least one month.");
             return;
         }
-
-        sessionStorage.setItem('selectedMonths', JSON.stringify(selectedMonths));
         navigate('/weather');
     };
 
@@ -82,7 +103,10 @@ const FormMonth = () => {
             >
                 <motion.button
                     type="button3"
-                    onClick={() => navigate(-1)}
+                    onClick={() => {
+                        soundClick(); // Add sound when clicking back button
+                        navigate('/');
+                    }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -91,7 +115,11 @@ const FormMonth = () => {
                 <div className="right-buttons">
                     <motion.button
                         type="button3"
-                        onClick={() => navigate('/weather')}
+                        onClick={() => {
+                            soundClick(); // Add sound when clicking skip button
+                            sessionStorage.removeItem('selectedMonths');
+                            navigate('/weather');
+                        }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >

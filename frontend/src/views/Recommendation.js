@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -23,6 +24,7 @@ const Recommendation = () => {
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [nearbyPlaces, setNearbyPlaces] = useState({});
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const { soundClick, soundPlaceSelect } = useSoundContext();
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -76,6 +78,7 @@ const Recommendation = () => {
     };
 
     const handleMarkerClick = async (place) => {
+        soundPlaceSelect();
         try {
             const summary = await fetchCitySummary(place.place);
             const favoriteCount = await fetchFavoriteCount(place.place);
@@ -253,6 +256,7 @@ const Recommendation = () => {
                         <div key={index} className="place-card" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${place.photo || 'placeholder.jpg'})`}}>
                             <div className="place-content">
                                 <div className="place-link" onClick={() => {
+                                    
                                     if (place.website) {
                                         window.open(place.website, '_blank');
                                     } else {
@@ -431,7 +435,7 @@ const Recommendation = () => {
             )}
 
             <div className="button-group">
-                <button type="button-home" onClick={() => navigate('/')}>
+                <button type="button-home" onClick={() => {soundClick(); navigate('/');}}>
                     Home
                 </button>
             </div>
