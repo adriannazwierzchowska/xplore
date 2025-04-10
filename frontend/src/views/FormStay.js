@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiHouseSimple } from "react-icons/pi";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const FormStay = () => {
     const navigate = useNavigate();
     const [selectedTags, setSelectedTags] = useState([]);
+    const { soundClick, soundSelect } = useSoundContext();
     const destinationKeys = {
         acc_hotel: 'Hotel',
         acc_hostel: 'Hostel',
@@ -22,6 +24,7 @@ const FormStay = () => {
     }, []);
 
     const handleTagClick = (tag) => {
+        soundSelect(); // Add sound when selecting a tag
         const updatedTags = selectedTags.includes(tag)
             ? selectedTags.filter(t => t !== tag)
             : [...selectedTags, tag];
@@ -71,8 +74,11 @@ const FormStay = () => {
                 transition={{ delay: 0.6, duration: 0.8 }}
             >
                 <motion.button
-                    type="button"
-                    onClick={() => navigate(-1)}
+                    type="button3"
+                    onClick={() => {
+                        soundClick(); // Add sound when going back
+                        navigate(-1);
+                    }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -80,8 +86,9 @@ const FormStay = () => {
                 </motion.button>
                 <div className="right-buttons">
                     <motion.button
-                        type="button"
+                        type="button3"
                         onClick={() => {
+                            soundClick(); // Add sound when skipping
                             selectedTags.forEach(tag => sessionStorage.removeItem(tag));
                             setSelectedTags([]);
                             navigate('/landscape');
@@ -93,8 +100,9 @@ const FormStay = () => {
                     </motion.button>
 
                     <motion.button
-                        type="button"
+                        type="button1"
                         onClick={() => {
+                            soundClick(); // Add sound when clicking next
                             if (selectedTags.length === 0) {
                                 alert("Please select at least one type of accommodation.");
                             } else {

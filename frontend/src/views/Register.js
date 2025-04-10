@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { registerUser } from "../api";
 import { useNavigate } from 'react-router-dom';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const Register = () => {
@@ -9,10 +10,12 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const { soundClick } = useSoundContext();
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        soundClick(); // Add sound when registering
 
         try {
             const response = await registerUser(username, password, email);
@@ -75,12 +78,24 @@ const Register = () => {
 
                 <motion.div className="button-group">
                     <motion.button
+                        type="button"
+                        onClick={() => {
+                            soundClick(); // Add sound when going back
+                            navigate('/login');
+                        }}
+                        whileHover={{ scale: 1.1, backgroundColor: "#3700b3" }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <span className="chevron-left"></span> Back to Login
+                    </motion.button>
+                    <motion.button
                         type="submit"
                         whileHover={{ scale: 1.1, backgroundColor: "#3700b3" }}
                         whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                     >
-                        Register
+                        Register <span className="chevron-right"></span>
                     </motion.button>
                 </motion.div>
 

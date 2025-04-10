@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiForkAndKnife } from "react-icons/ci";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const FormCuisine = () => {
     const navigate = useNavigate();
-    const [cuisine, setCuisineRange] = useState(0);
+    const [cuisineValue, setCuisineValue] = useState("3");  // Default middle value
+    const { soundClick, soundSelect } = useSoundContext();
 
-    const addCuisine = async (e) => {
-        e.preventDefault();
-        sessionStorage.setItem('cuisine', cuisine);
+    // Load saved value on component mount
+    useEffect(() => {
+        const savedValue = sessionStorage.getItem('cuisine');
+        if (savedValue) {
+            setCuisineValue(savedValue);
+        }
+    }, []);
+
+    const handleSliderChange = (e) => {
+        soundSelect(); // Add sound for slider movement
+        setCuisineValue(e.target.value);
+    };
+
+    const handleNext = () => {
+        soundClick(); // Add sound effect when clicking next
+        sessionStorage.setItem('cuisine', cuisineValue);
         navigate('/analise');
     };
 
@@ -36,10 +51,10 @@ const FormCuisine = () => {
                         type="range"
                         min="1"
                         max="5"
-                        value={cuisine}
                         className="slider"
-                        id="weatherRange"
-                        onChange={(e) => setCuisineRange(e.target.value)}
+                        id="cuisineRange"
+                        value={cuisineValue}
+                        onChange={handleSliderChange}
                         initial={{ scale: 0.8 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 0.6 }}
@@ -47,7 +62,6 @@ const FormCuisine = () => {
                 </div>
             </motion.form>
 
-            {/* Sekcja przycisków */}
             <motion.div
                 className="bottom-button-group"
                 initial={{ opacity: 0 }}
@@ -55,8 +69,11 @@ const FormCuisine = () => {
                 transition={{ delay: 0.6, duration: 0.8 }}
             >
                 <motion.button
-                    type="button"
-                    onClick={() => navigate(-1)}
+                    type="button3"
+                    onClick={() => {
+                        soundClick(); // Add sound effect for back button
+                        navigate(-1);
+                    }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -64,8 +81,12 @@ const FormCuisine = () => {
                 </motion.button>
                 <div className="right-buttons">
                     <motion.button
-                        type="button"
-                        onClick={() => navigate('/analise')}
+                        type="button3"
+                        onClick={() => {
+                            soundClick(); // Add sound effect for skip button
+                            sessionStorage.removeItem('cuisine');
+                            navigate('/analise');
+                        }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -73,8 +94,8 @@ const FormCuisine = () => {
                     </motion.button>
 
                     <motion.button
-                        type="button"
-                        onClick={addCuisine}
+                        type="button1"
+                        onClick={handleNext}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -83,7 +104,6 @@ const FormCuisine = () => {
                 </div>
             </motion.div>
 
-            {/* Ikona na dole */}
             <motion.div
                 className="page-icon"
                 initial={{ opacity: 0 }}

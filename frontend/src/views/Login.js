@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Importujemy framer-motion
+import { motion } from 'framer-motion';
+import { loginUser } from '../api';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
-import { loginUser } from "../api";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const navigate = useNavigate();
+    const { soundClick } = useSoundContext();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        soundClick(); // Add sound when logging in
 
         try {
             const response = await loginUser(username, password);
@@ -23,75 +26,74 @@ const Login = () => {
     };
 
     return (
-        <motion.div
-            className="login-form"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+        <motion.div 
+            className="login-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
         >
-            <motion.form
+            <motion.form 
                 onSubmit={handleLogin}
-                initial={{ y: -20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
             >
-                <h1>Log in</h1>
-                <label htmlFor="login">Login</label>
-                <motion.input
-                    type="text"
-                    id="login"
-                    name="login"
-                    placeholder="Enter your login"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    whileFocus={{ scale: 1.05 }} // Zmiana rozmiaru po kliknięciu w input
-                    transition={{ duration: 0.2 }}
-                />
-                <label htmlFor="password">Password</label>
-                <motion.input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    whileFocus={{ scale: 1.05 }} // Zmiana rozmiaru po kliknięciu w input
-                    transition={{ duration: 0.2 }}
-                />
+                <h1>Login</h1>
+                <div className="form-group">
+                    <label>Username:</label>
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Password:</label>
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                {message && <p className="message">{message}</p>}
                 <motion.div
                     className="button-group"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6, duration: 1 }}
+                    transition={{ delay: 0.4, duration: 0.5 }}
                 >
-                    <motion.button
+                    <motion.button 
+                        type="button" 
+                        onClick={() => {
+                            soundClick(); // Add sound when going back
+                            navigate('/');
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <span className="chevron-left"></span> Go Back
+                    </motion.button>
+                    <motion.button 
+                        type="button" 
+                        onClick={() => {
+                            soundClick(); // Add sound when going to register
+                            navigate('/register');
+                        }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        Register
+                    </motion.button>
+                    <motion.button 
                         type="submit"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
                     >
-                        Login
-                    </motion.button>
-                    <motion.button
-                        type="button"
-                        onClick={() => navigate('/register')}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        Sign Up
+                        Login <span className="chevron-right"></span>
                     </motion.button>
                 </motion.div>
-                {message &&
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4, duration: 0.8 }}
-                        className="error-message"
-                    >
-                        {message}
-                    </motion.p>
-                }
             </motion.form>
         </motion.div>
     );

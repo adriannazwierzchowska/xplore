@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiMountainsLight } from "react-icons/pi";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const FormLandscape = () => {
     const navigate = useNavigate();
     const [selectedTags, setSelectedTags] = useState([]);
+    const { soundClick, soundSelect } = useSoundContext();
     const landscapeKeys = {
         land_mountains: 'Mountains',
         land_sea: 'Sea',
@@ -20,6 +22,7 @@ const FormLandscape = () => {
     }, []);
 
     const handleTagClick = (tag) => {
+        soundSelect();
         const updatedTags = selectedTags.includes(tag)
             ? selectedTags.filter(t => t !== tag)
             : [...selectedTags, tag];
@@ -34,6 +37,7 @@ const FormLandscape = () => {
     };
 
     const handleNext = () => {
+        soundClick();
         if (selectedTags.length === 0) {
             alert("Please select at least one type of landscape.");
             return;
