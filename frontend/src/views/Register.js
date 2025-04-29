@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { registerUser } from "../api";
 import { useNavigate } from 'react-router-dom';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const Register = () => {
@@ -10,9 +11,11 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const { soundClick } = useSoundContext();
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        soundClick();
 
         try {
             const response = await registerUser(username, password, email);
@@ -74,6 +77,15 @@ const Register = () => {
                 />
 
                 <motion.div className="button-group">
+                     <motion.button
+                         type="button"
+                         onClick={() => { soundClick(); navigate('/login'); }}
+                         whileHover={{ scale: 1.1, backgroundColor: "#3700b3" }}
+                         whileTap={{ scale: 0.95 }}
+                         transition={{ duration: 0.2 }}
+                     >
+                         Back to Login
+                     </motion.button>
                     <motion.button
                         type="submit"
                         whileHover={{ scale: 1.1, backgroundColor: "#3700b3" }}
@@ -92,6 +104,21 @@ const Register = () => {
                     {message}
                 </motion.p>}
             </motion.form>
+             <motion.div
+                 className="bottom-button-group"
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ delay: 0.6, duration: 0.8 }}
+             >
+                 <motion.button
+                     type="button"
+                     onClick={() => { soundClick(); navigate('/login'); }}
+                     whileHover={{ scale: 1.1 }}
+                     whileTap={{ scale: 0.95 }}
+                 >
+                     <span className="chevron-left"></span> Go Back
+                 </motion.button>
+             </motion.div>
         </motion.div>
     );
 };

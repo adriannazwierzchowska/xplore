@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiLifebuoyThin } from "react-icons/pi";
 import '../front.css';
 import axios from 'axios';
-
+import { useSoundContext } from '../SoundContext';
 import { notifyError } from '../utils/toast';
 
 const FormAnalise = () => {
     const navigate = useNavigate();
+    const { soundClick } = useSoundContext();
 
     useEffect(() => {
         const analyzeData = async () => {
@@ -72,7 +73,7 @@ const FormAnalise = () => {
             <h1 className="analyzing-text">Analyzing...</h1>
 
             <div className="bottom-button-group">
-                <button type="button3" onClick={() => navigate(-1)}>
+                <button type="button3" onClick={() => { soundClick(); navigate(-1); }}>
                     <span className="chevron-left"></span> Go Back
                 </button>
             </div>

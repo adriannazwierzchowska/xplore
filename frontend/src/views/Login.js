@@ -3,15 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion'; // Importujemy framer-motion
 import '../front.css';
 import { loginUser } from "../api";
+import { useSoundContext } from '../SoundContext';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const { soundClick } = useSoundContext();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        soundClick();
 
         try {
             const response = await loginUser(username, password);
@@ -74,7 +77,7 @@ const Login = () => {
                     </motion.button>
                     <motion.button
                         type="button"
-                        onClick={() => navigate('/register')}
+                        onClick={() => { soundClick(); navigate('/register'); }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.2 }}
@@ -93,6 +96,21 @@ const Login = () => {
                     </motion.p>
                 }
             </motion.form>
+             <motion.div
+                 className="bottom-button-group"
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ delay: 0.6, duration: 0.8 }}
+             >
+                 <motion.button
+                     type="button"
+                     onClick={() => { soundClick(); navigate('/'); }}
+                     whileHover={{ scale: 1.1 }}
+                     whileTap={{ scale: 0.95 }}
+                 >
+                     <span className="chevron-left"></span> Go Back
+                 </motion.button>
+            </motion.div>
         </motion.div>
     );
 };
