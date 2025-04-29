@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiCalendarDate } from "react-icons/ci";
 import '../front.css';
 import { motion } from 'framer-motion';
-
+import { useSoundContext } from '../SoundContext';
 import { notifyInfo } from '../utils/toast';
 
 const FormMonth = () => {
     const navigate = useNavigate();
     const [selectedMonths, setSelectedMonths] = useState([]);
+    const { soundClick, soundSelect } = useSoundContext();
     const months = {
         '1': 'January',
         '2': 'February',
@@ -24,7 +25,22 @@ const FormMonth = () => {
         '12': 'December'
     };
 
+    useEffect(() => {
+        const savedMonths = sessionStorage.getItem('selectedMonths');
+        if (savedMonths) {
+            try {
+                const parsedMonths = JSON.parse(savedMonths);
+                setSelectedMonths(parsedMonths);
+            } catch (e) {
+                console.error('Error parsing saved months:', e);
+                sessionStorage.removeItem('selectedMonths');
+            }
+        }
+    }, []);
+
+
     const handleMonthClick = (monthValue) => {
+        soundSelect();
         if (selectedMonths.includes(monthValue)) {
             setSelectedMonths(selectedMonths.filter(m => m !== monthValue));
         } else if (selectedMonths.length < 2) {
@@ -32,7 +48,9 @@ const FormMonth = () => {
         }
     };
 
+
     const handleNext = () => {
+        soundClick();
         if (selectedMonths.length === 0) {
             notifyInfo("Please select at least one month.");
             return;
@@ -84,7 +102,7 @@ const FormMonth = () => {
             >
                 <motion.button
                     type="button3"
-                    onClick={() => navigate(-1)}
+                    onClick={() => { soundClick(); navigate('/'); }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -93,7 +111,7 @@ const FormMonth = () => {
                 <div className="right-buttons">
                     <motion.button
                         type="button3"
-                        onClick={() => navigate('/weather')}
+                        onClick={() => { soundClick(); sessionStorage.removeItem('selectedMonths'); navigate('/weather'); }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >

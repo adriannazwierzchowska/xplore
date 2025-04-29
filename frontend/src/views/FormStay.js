@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiHouseSimple } from "react-icons/pi";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 import { notifyInfo } from '../utils/toast';
 
 const FormStay = () => {
     const navigate = useNavigate();
     const [selectedTags, setSelectedTags] = useState([]);
+    const { soundClick, soundSelect } = useSoundContext();
     const destinationKeys = {
         acc_hotel: 'Hotel',
         acc_hostel: 'Hostel',
@@ -23,6 +25,7 @@ const FormStay = () => {
     }, []);
 
     const handleTagClick = (tag) => {
+        soundSelect();
         const updatedTags = selectedTags.includes(tag)
             ? selectedTags.filter(t => t !== tag)
             : [...selectedTags, tag];
@@ -35,6 +38,22 @@ const FormStay = () => {
             sessionStorage.removeItem(tag);
         }
     };
+
+    const handleNext = () => {
+        soundClick();
+        if (selectedTags.length === 0) {
+            notifyInfo("Please select at least one type of accommodation.");
+        } else {
+            navigate('/landscape');
+        }
+    };
+
+     const handleSkip = () => {
+         soundClick();
+         selectedTags.forEach(tag => sessionStorage.removeItem(tag));
+         setSelectedTags([]);
+         navigate('/landscape');
+     };
 
     return (
         <motion.div
@@ -73,7 +92,7 @@ const FormStay = () => {
             >
                 <motion.button
                     type="button"
-                    onClick={() => navigate(-1)}
+                    onClick={() => { soundClick(); navigate(-1); }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -82,11 +101,7 @@ const FormStay = () => {
                 <div className="right-buttons">
                     <motion.button
                         type="button"
-                        onClick={() => {
-                            selectedTags.forEach(tag => sessionStorage.removeItem(tag));
-                            setSelectedTags([]);
-                            navigate('/landscape');
-                        }}
+                        onClick={handleSkip}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -95,13 +110,7 @@ const FormStay = () => {
 
                     <motion.button
                         type="button"
-                        onClick={() => {
-                            if (selectedTags.length === 0) {
-                                notifyInfo("Please select at least one type of accommodation.");
-                            } else {
-                                navigate('/landscape');
-                            }
-                        }}
+                        onClick={handleNext}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >
