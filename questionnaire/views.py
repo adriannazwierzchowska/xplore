@@ -104,6 +104,28 @@ def classify(request):
         print(e)
         return Response({'error': str(e)}, status=500)
 
+
+@api_view(['GET'])
+def get_place_coordinates(request):
+    place = request.GET.get('place')
+    if not place:
+        return Response({'error': 'Place not provided'}, status=400)
+
+    try:
+        geocoder = OpenCageGeocode(settings.OPENCAGE_API_KEY)
+        result = geocoder.geocode(place)
+
+        if result and len(result) > 0:
+            coordinates = {
+                "lat": result[0]["geometry"]["lat"],
+                "lng": result[0]["geometry"]["lng"]
+            }
+            return Response({'coordinates': coordinates})
+        else:
+            return Response({'coordinates': {"lat": None, "lng": None}})
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
 class UserResponseCreateView(generics.CreateAPIView):
     queryset = UserResponse.objects.all()
     serializer_class = UserResponseSerializer

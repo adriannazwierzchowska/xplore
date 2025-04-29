@@ -773,3 +773,16 @@ button[type="button-home"] {
 .absolute {
     pointer-events: none;
 }
+
+.favorites-container h1 {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.favorites-container .button-group {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+}
