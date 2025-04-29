@@ -5,7 +5,6 @@ from django.conf import settings
 from .utils import normalize_coordinates, process_google_response
 import time
 
-
 # PLACE_TYPES = [
 #   {'category': 'Accommodation', 'types': ['bed_and_breakfast','budget_japanese_inn', 'campground',  'camping_cabin'
 #                                           'cottage', 'extended_stay_hotel', 'farmstay', 'guest_house', 'hostel',
