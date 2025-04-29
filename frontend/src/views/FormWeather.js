@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiCloud } from "react-icons/ci";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const FormWeather = () => {
     const navigate = useNavigate();
     const [weather, setWeatherRange] = useState(0);
+    const { soundClick, soundSelect } = useSoundContext();
+
+    const handleSliderChange = (e) => {
+        soundSelect();
+        setWeatherRange(e.target.value);
+    };
 
     const addWeather = async (e) => {
         e.preventDefault();
+        soundClick();
         sessionStorage.setItem('weather', weather);
         navigate('/stay');
     };
@@ -39,12 +47,11 @@ const FormWeather = () => {
                         value={weather}
                         className="slider"
                         id="weatherRange"
-                        onChange={(e) => setWeatherRange(e.target.value)}
+                        onChange={handleSliderChange}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
                         whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
                     />
                 </div>
             </motion.form>
@@ -57,7 +64,7 @@ const FormWeather = () => {
             >
                 <motion.button
                     type="button"
-                    onClick={() => navigate(-1)}
+                    onClick={() => { soundClick(); navigate(-1); }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -66,7 +73,7 @@ const FormWeather = () => {
                 <div className="right-buttons">
                     <motion.button
                         type="button"
-                        onClick={() => navigate('/stay')}
+                        onClick={() => { soundClick(); navigate('/stay'); }}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >

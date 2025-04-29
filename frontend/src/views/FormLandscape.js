@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiMountainsLight } from "react-icons/pi";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 import { notifyInfo } from '../utils/toast';
@@ -9,6 +10,7 @@ import { notifyInfo } from '../utils/toast';
 const FormLandscape = () => {
     const navigate = useNavigate();
     const [selectedTags, setSelectedTags] = useState([]);
+    const { soundClick, soundSelect } = useSoundContext();
     const landscapeKeys = {
         land_mountains: 'Mountains',
         land_sea: 'Sea',
@@ -22,6 +24,7 @@ const FormLandscape = () => {
     }, []);
 
     const handleTagClick = (tag) => {
+        soundSelect();
         const updatedTags = selectedTags.includes(tag)
             ? selectedTags.filter(t => t !== tag)
             : [...selectedTags, tag];
@@ -36,6 +39,7 @@ const FormLandscape = () => {
     };
 
     const handleNext = () => {
+        soundClick();
         if (selectedTags.length === 0) {
             notifyInfo("Please select at least one type of landscape.");
             return;
@@ -43,6 +47,14 @@ const FormLandscape = () => {
 
         navigate('/activities');
     };
+
+    const handleSkip = () => {
+        soundClick();
+        selectedTags.forEach(tag => sessionStorage.removeItem(tag));
+        setSelectedTags([]);
+        navigate('/activities');
+    }
+
 
     return (
         <motion.div
@@ -86,7 +98,7 @@ const FormLandscape = () => {
             >
                 <motion.button
                     type="button3"
-                    onClick={() => navigate(-1)}
+                    onClick={() => { soundClick(); navigate(-1); }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -95,11 +107,7 @@ const FormLandscape = () => {
                 <div className="right-buttons">
                     <motion.button
                         type="button3"
-                        onClick={() => {
-                            selectedTags.forEach(tag => sessionStorage.removeItem(tag));
-                            setSelectedTags([]);
-                            navigate('/activities');
-                        }}
+                        onClick={handleSkip}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >

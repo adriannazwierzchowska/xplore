@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiForkAndKnife } from "react-icons/ci";
 import { motion } from 'framer-motion';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 
 const FormCuisine = () => {
     const navigate = useNavigate();
-    const [cuisine, setCuisineRange] = useState(0);
+    const [cuisine, setCuisineRange] = useState("3");
+    const { soundClick, soundSelect } = useSoundContext();
+
+    useEffect(() => {
+        const savedValue = sessionStorage.getItem('cuisine');
+        if (savedValue) {
+            setCuisineRange(savedValue);
+        }
+    }, []);
+
+    const handleSliderChange = (e) => {
+        soundSelect();
+        setCuisineRange(e.target.value);
+    };
+
 
     const addCuisine = async (e) => {
         e.preventDefault();
+        soundClick();
         sessionStorage.setItem('cuisine', cuisine);
         navigate('/analise');
     };
+
+     const handleSkip = () => {
+         soundClick();
+         sessionStorage.removeItem('cuisine');
+         navigate('/analise');
+     };
 
     return (
         <motion.div
@@ -39,7 +61,7 @@ const FormCuisine = () => {
                         value={cuisine}
                         className="slider"
                         id="weatherRange"
-                        onChange={(e) => setCuisineRange(e.target.value)}
+                        onChange={handleSliderChange}
                         initial={{ scale: 0.8 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 0.6 }}
@@ -55,7 +77,7 @@ const FormCuisine = () => {
             >
                 <motion.button
                     type="button"
-                    onClick={() => navigate(-1)}
+                    onClick={() => { soundClick(); navigate(-1); }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -64,7 +86,7 @@ const FormCuisine = () => {
                 <div className="right-buttons">
                     <motion.button
                         type="button"
-                        onClick={() => navigate('/analise')}
+                        onClick={handleSkip}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                     >

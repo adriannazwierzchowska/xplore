@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaPlaneDeparture, FaHeart, FaSignOutAlt } from "react-icons/fa";
+import { FaPlaneDeparture, FaHeart, FaSignOutAlt, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { logoutUser } from "../api";
+import { useSoundContext } from '../SoundContext';
 import "../front.css";
 import "../flight.css";
 import FlightBoard from "./FlightBoard";
@@ -14,6 +15,7 @@ const Home = () => {
     const [username, setUsername] = useState(localStorage.getItem("authToken") || null);
     const [message, setMessage] = useState("");
     const [isAnimated, setIsAnimated] = useState(false);
+    const { isMuted, toggleMute, soundClick } = useSoundContext();
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -21,11 +23,13 @@ const Home = () => {
     }, []);
 
     const handleLetsGo = () => {
+        soundClick();
         setIsAnimated(true);
         navigate(isAuthenticated ? "/month" : "/login");
     };
 
     const handleLogout = async () => {
+        soundClick();
         try {
             await logoutUser();
             localStorage.removeItem("authToken");
@@ -37,11 +41,23 @@ const Home = () => {
     };
 
     const handleFavorites = () => {
+        soundClick();
         navigate(isAuthenticated ? "/favorites" : "/login");
     };
 
     return (
         <div className="home-container">
+             <motion.button
+                 className={`sound-toggle ${isMuted ? 'muted' : ''}`}
+                 onClick={toggleMute}
+                 whileHover={{ scale: 1.1 }}
+                 whileTap={{ scale: 0.95 }}
+             >
+                 {isMuted ?
+                     <FaVolumeMute size={20} color="#04384B"/> :
+                     <FaVolumeUp size={20} color="#04384B"/>
+                 }
+             </motion.button>
             <form className="home-form">
                 {username && (
                     <p className="welcome-text">Hi, <span className="username">{username}</span></p>
