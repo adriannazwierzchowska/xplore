@@ -29,4 +29,6 @@ def process_google_response(response):
             'photo': photo_url
         })
 
+    processed.sort(key=lambda x: x['rating'], reverse=True)
+
     return processed

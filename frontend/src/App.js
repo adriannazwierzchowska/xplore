@@ -13,6 +13,9 @@ import FormAnalise from './views/FormAnalise';
 import Recommendation from './views/Recommendation';
 import Favorites from './views/Favorites';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   return (
     <Router>
@@ -199,6 +202,7 @@ function App() {
           />
         </Routes>
       </AnimatePresence>
+      <ToastContainer />
     </Router>
   );
 }

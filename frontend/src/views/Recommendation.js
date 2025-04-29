@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import L from 'leaflet';
 import { motion } from "framer-motion";
-
+import { notifyError, notifyInfo } from '../utils/toast';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -108,7 +108,7 @@ const Recommendation = () => {
         try {
             const token = localStorage.getItem('authToken');
             if (!token) {
-                alert('You need to log in to add favorites!');
+                notifyInfo('You need to log in to add favorites!');
                 return;
             }
 
@@ -132,10 +132,10 @@ const Recommendation = () => {
             );
 
             setIsFavorite(true);
-            alert(response.data.message);
+            notifyInfo(response.data.message);
         } catch (error) {
             console.error('Error adding to favorites:', error);
-            alert('Failed to add to favorites. Please try again.');
+            notifyError('Failed to add to favorites. Please try again.');
         }
     };
 
@@ -144,7 +144,7 @@ const Recommendation = () => {
             const token = localStorage.getItem('authToken');
             console.log('Token:', token);
             if (!token) {
-                alert('You need to log in to add favorites!');
+                notifyInfo ('You need to log in to add favorites!');
                 return;
             }
             const response = await axios.post(
@@ -169,13 +169,13 @@ const Recommendation = () => {
                 )
             );
             setIsFavorite(false)
-            alert(response.data.message);
+            notifyInfo(response.data.message);
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                alert('You need to log in again! Your session has expired.');
+                notifyError('You need to log in again! Your session has expired.');
             } else {
                 console.error('Error removing from favorites:', error);
-                alert('Failed to remove from favorites. Please try again.');
+                notifyError('Failed to remove from favorites. Please try again.');
             }
         }
     };
@@ -184,7 +184,7 @@ const Recommendation = () => {
         try {
             const token = localStorage.getItem('authToken');
             if (!token) {
-                alert('You need to log in to add favorites!');
+                notifyInfo('You need to log in to add favorites!');
                 return;
             }
             const response = await axios.get(
@@ -256,7 +256,7 @@ const Recommendation = () => {
                                     if (place.website) {
                                         window.open(place.website, '_blank');
                                     } else {
-                                        alert('No website available for this place');
+                                        notifyInfo('No website available for this place');
                                     }
                                 }} />
 

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { notifyError, notifySuccess, notifyInfo, notifyWarning } from '../utils/toast';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -25,7 +26,7 @@ const Favorites = () => {
             try {
                 const token = localStorage.getItem('authToken');
                 if (!token) {
-                    alert('You need to log in to view favorites!');
+                    notifyError('You need to log in to view favorites!');
                     return;
                 }
 
@@ -61,7 +62,7 @@ const Favorites = () => {
                 setFavorites(favoritesWithDetails);
             } catch (error) {
                 console.error('Error fetching favorites:', error);
-                alert('Failed to fetch favorites. Please try again.');
+                notifyError('Failed to fetch favorites. Please try again.');
             }
         };
         fetchFavorites();
@@ -152,7 +153,7 @@ const Favorites = () => {
         try {
             const token = localStorage.getItem('authToken');
             if (!token) {
-                alert('You need to log in to remove favorites!');
+                notifyWarning('You need to log in to remove favorites!');
                 return;
             }
 
@@ -168,14 +169,12 @@ const Favorites = () => {
 
             setFavorites(favorites.filter(fav => fav.place !== placeName));
             setSelectedPlace(null);
-
-            alert(response.data.message);
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                alert('You need to log in again! Your session has expired.');
+                notifyWarning('You need to log in again! Your session has expired.');
             } else {
                 console.error('Error removing from favorites:', error);
-                alert('Failed to remove from favorites. Please try again.');
+                notifyError('Failed to remove from favorites. Please try again.');
             }
         }
     };
@@ -201,7 +200,7 @@ const Favorites = () => {
                                         if (place.website) {
                                             window.open(place.website, '_blank');
                                         } else {
-                                            alert('No website available for this place');
+                                            notifyInfo('No website available for this place');
                                         }
                                     }} />
 
