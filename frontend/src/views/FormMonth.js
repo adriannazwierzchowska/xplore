@@ -4,6 +4,8 @@ import { CiCalendarDate } from "react-icons/ci";
 import '../front.css';
 import { motion } from 'framer-motion';
 
+import { notifyInfo } from '../utils/toast';
+
 const FormMonth = () => {
     const navigate = useNavigate();
     const [selectedMonths, setSelectedMonths] = useState([]);
@@ -32,7 +34,7 @@ const FormMonth = () => {
 
     const handleNext = () => {
         if (selectedMonths.length === 0) {
-            alert("Please select at least one month.");
+            notifyInfo("Please select at least one month.");
             return;
         }
 

@@ -4,6 +4,8 @@ import { PiLifebuoyThin } from "react-icons/pi";
 import '../front.css';
 import axios from 'axios';
 
+import { notifyError } from '../utils/toast';
+
 const FormAnalise = () => {
     const navigate = useNavigate();
 
@@ -58,7 +60,7 @@ const FormAnalise = () => {
                 navigate('/recommendation', { state: { recommendation: response.data.predictions } });
             } catch (error) {
                 console.error('Error analyzing data:', error);
-                alert('Failed to analyze data. Please try again.');
+                notifyError('Failed to analyze data. Please try again.');
             }
         };
 
