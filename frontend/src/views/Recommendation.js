@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSoundContext } from '../SoundContext';
 import '../front.css';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -23,6 +24,7 @@ const Recommendation = () => {
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [nearbyPlaces, setNearbyPlaces] = useState({});
     const [selectedCategory, setSelectedCategory] = useState(null);
+    const { soundClick, soundPlaceSelect } = useSoundContext();
 
     useEffect(() => {
         const fetchRecommendations = async () => {
@@ -76,6 +78,7 @@ const Recommendation = () => {
     };
 
     const handleMarkerClick = async (place) => {
+        soundPlaceSelect();
         try {
             const summary = await fetchCitySummary(place.place);
             const favoriteCount = await fetchFavoriteCount(place.place);
@@ -83,7 +86,7 @@ const Recommendation = () => {
 
             setSelectedPlace({
                 name: place.place,
-                tags: place.keywords,
+                tags: place.keywords || [],
                 details: summary.details,
                 imageUrl: summary.imageUrl,
                 favoriteCount: favoriteCount,
@@ -94,7 +97,7 @@ const Recommendation = () => {
         } catch (error) {
             setSelectedPlace({
                 name: place.place,
-                tags: place.keywords,
+                tags: place.keywords || [],
                 details: "No description for this city.",
                 imageUrl: null,
                 favoriteCount: 0,
@@ -103,6 +106,7 @@ const Recommendation = () => {
             setIsFavorite(false);
         }
     };
+
 
     const addToFavorites = async (placeName) => {
         try {
@@ -356,7 +360,7 @@ const Recommendation = () => {
 
             {selectedPlace && (
                 <>
-                    <div className="overlay" onClick={() => setSelectedPlace(null)} />
+                    <div className="overlay" onClick={() => { soundClick(); setSelectedPlace(null);}} />
                     <div className={`sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
                         <div className="sidebar-content">
                             {!selectedCategory ? (
@@ -422,7 +426,7 @@ const Recommendation = () => {
                             <div className="category-details">
                                 <button
                                     className="button3"
-                                    onClick={() => setSelectedCategory(null)}
+                                    onClick={() => { soundClick(); setSelectedCategory(null); }}
                                 >
                                     &lt; Go back to {selectedPlace.name}
                                 </button>

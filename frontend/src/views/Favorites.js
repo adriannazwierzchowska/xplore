@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useSoundContext } from '../SoundContext';
 import { notifyError, notifySuccess, notifyInfo, notifyWarning } from '../utils/toast';
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -20,6 +21,7 @@ const Favorites = () => {
     const [nearbyPlaces, setNearbyPlaces] = useState({});
     const [selectedCategory, setSelectedCategory] = useState(null);
     const navigate = useNavigate();
+    const { soundClick, soundPlaceSelect } = useSoundContext();
 
     useEffect(() => {
         const fetchFavorites = async () => {
@@ -103,6 +105,7 @@ const Favorites = () => {
     };
 
     const handleMarkerClick = async (place) => {
+        soundPlaceSelect();
         try {
             setSelectedPlace({
                 name: place.place,
@@ -150,6 +153,7 @@ const Favorites = () => {
     };
 
     const removeFromFavorites = async (placeName) => {
+        soundClick();
         try {
             const token = localStorage.getItem('authToken');
             if (!token) {
@@ -166,7 +170,6 @@ const Favorites = () => {
                     },
                 }
             );
-
             setFavorites(favorites.filter(fav => fav.place !== placeName));
             setSelectedPlace(null);
         } catch (error) {
@@ -180,13 +183,15 @@ const Favorites = () => {
     };
 
     const renderNearbyPlaces = () => {
-        if (!selectedPlace?.nearby || typeof selectedPlace.nearby !== 'object') {
-            return <div className="loading-message">Loading nearby places...</div>;
-        }
-
-        if (Object.keys(selectedPlace.nearby).length === 0) {
-            return <div className="no-results">No nearby places found</div>;
-        }
+         if (!selectedPlace || !selectedPlace.nearby) {
+             return <div className="loading-message">Loading nearby places...</div>;
+         }
+         if (selectedPlace.nearby.error) {
+            return <div className="no-results">Error fetching nearby places: {selectedPlace.nearby.error}</div>;
+         }
+         if (Object.keys(selectedPlace.nearby).length === 0 || !Object.values(selectedPlace.nearby).some(arr => arr.length > 0)) {
+             return <div className="no-results">No nearby places found</div>;
+         }
 
         if (selectedCategory) {
             const categoryPlaces = selectedPlace.nearby[selectedCategory] || [];
@@ -197,6 +202,7 @@ const Favorites = () => {
                             <div key={index} className="place-card" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${place.photo || 'placeholder.jpg'})` }}>
                                 <div className="place-content">
                                     <div className="place-link" onClick={() => {
+                                        soundClick();
                                         if (place.website) {
                                             window.open(place.website, '_blank');
                                         } else {
@@ -236,7 +242,7 @@ const Favorites = () => {
                         <div
                             key={category}
                             className="category-card"
-                            onClick={() => setSelectedCategory(category)}
+                            onClick={() => { soundClick(); setSelectedCategory(category); }}
                             style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${photoUrl})` }}>
                             <h3 className="category-title">{category}</h3>
                             {firstPlace?.name && (
@@ -282,6 +288,7 @@ const Favorites = () => {
         return [sumLat / validCoordinates.length, sumLng / validCoordinates.length];
     };
 
+
     return (
         <motion.div
             className="favorites-container"
@@ -319,8 +326,8 @@ const Favorites = () => {
 
             {selectedPlace && (
                 <>
-                    <div className="overlay" onClick={() => setSelectedPlace(null)} />
-                    <div className={`sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
+                     <div className="overlay" onClick={() => { soundClick(); setSelectedPlace(null); }} />
+                     <div className={`sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
                         <div className="sidebar-content">
                             {!selectedCategory ? (
                                 <>
@@ -370,7 +377,7 @@ const Favorites = () => {
                                 <div className="category-details">
                                     <button
                                         className="button3"
-                                        onClick={() => setSelectedCategory(null)}
+                                         onClick={() => { soundClick(); setSelectedCategory(null); }}
                                     >
                                         &lt; Go back to {selectedPlace.name}
                                     </button>
@@ -383,7 +390,7 @@ const Favorites = () => {
             )}
 
             <div className="button-group">
-                <motion.button type="button2" onClick={() => navigate('/')}
+                 <motion.button type="button2" onClick={() => { soundClick(); navigate('/'); }}
                 >
                     Home
                 </motion.button>
