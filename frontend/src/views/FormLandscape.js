@@ -4,6 +4,8 @@ import { PiMountainsLight } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import '../front.css';
 
+import { notifyInfo } from '../utils/toast';
+
 const FormLandscape = () => {
     const navigate = useNavigate();
     const [selectedTags, setSelectedTags] = useState([]);
@@ -35,7 +37,7 @@ const FormLandscape = () => {
 
     const handleNext = () => {
         if (selectedTags.length === 0) {
-            alert("Please select at least one type of landscape.");
+            notifyInfo("Please select at least one type of landscape.");
             return;
         }
 

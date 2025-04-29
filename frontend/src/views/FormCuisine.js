@@ -47,7 +47,6 @@ const FormCuisine = () => {
                 </div>
             </motion.form>
 
-            {/* Sekcja przycisków */}
             <motion.div
                 className="bottom-button-group"
                 initial={{ opacity: 0 }}
@@ -83,7 +82,6 @@ const FormCuisine = () => {
                 </div>
             </motion.div>
 
-            {/* Ikona na dole */}
             <motion.div
                 className="page-icon"
                 initial={{ opacity: 0 }}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PiLifebuoyThin } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import '../front.css';
+import { notifyInfo } from '../utils/toast';
 
 const FormActivities = () => {
     const navigate = useNavigate();
@@ -97,7 +98,7 @@ const FormActivities = () => {
                         type="button"
                         onClick={() => {
                             if (selectedTags.length === 0) {
-                                alert("Please select at least one activity.");
+                                notifyInfo("Please select at least one activity.");
                             } else {
                                 navigate('/cuisine');
                             }
