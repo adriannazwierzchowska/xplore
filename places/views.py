@@ -56,7 +56,7 @@ def get_nearby_places(request):
                                 'latitude': normalized_lat,
                                 'longitude': normalized_lng
                             },
-                            'radius': 500.0
+                            'radius': 2000.0
                         }
                     },
                 },

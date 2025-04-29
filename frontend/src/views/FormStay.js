@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PiHouseSimple } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import '../front.css';
+import { notifyInfo } from '../utils/toast';
 
 const FormStay = () => {
     const navigate = useNavigate();
@@ -96,7 +97,7 @@ const FormStay = () => {
                         type="button"
                         onClick={() => {
                             if (selectedTags.length === 0) {
-                                alert("Please select at least one type of accommodation.");
+                                notifyInfo("Please select at least one type of accommodation.");
                             } else {
                                 navigate('/landscape');
                             }
