@@ -49,6 +49,8 @@ def get_nearby_places(request):
         normalized_lat, normalized_lng = normalize_coordinates(lat, lng)
         places_data = {}
 
+        print(lat, lng)
+
         key = settings.GOOGLE_API_KEY
 
         for category in PLACE_TYPES:
@@ -56,14 +58,14 @@ def get_nearby_places(request):
                 'https://places.googleapis.com/v1/places:searchNearby',
                 json={
                     'includedTypes': category['types'],
-                    'maxResultCount': 4,
+                    'maxResultCount': 5,
                     'locationRestriction': {
                         'circle': {
                             'center': {
                                 'latitude': normalized_lat,
                                 'longitude': normalized_lng
                             },
-                            'radius': 5000.0
+                            'radius': 10000.0
                         }
                     },
                 },
@@ -73,7 +75,8 @@ def get_nearby_places(request):
                     'X-Goog-FieldMask': 'places.displayName,places.rating,places.reviews,places.formattedAddress,places.location,places.websiteUri,places.userRatingCount,places.accessibilityOptions,places.parkingOptions,places.paymentOptions,places.photos'
                 }
             )
-            time.sleep(0.5)
+            #print("GOOGLE RESPONSE:", response.json())
+            time.sleep(0.2)
 
             places_data[category['category']] = process_google_response(response.json())
 

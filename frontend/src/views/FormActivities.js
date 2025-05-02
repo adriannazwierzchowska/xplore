@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PiLifebuoyThin } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
-import '../front.css';
+import '../css/front.css';
 import { notifyInfo } from '../utils/toast';
 import FormDots from './FormDots';
 
