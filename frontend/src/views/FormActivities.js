@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
 import '../front.css';
 import { notifyInfo } from '../utils/toast';
+import FormDots from './FormDots';
 
 const FormActivities = () => {
     const navigate = useNavigate();
@@ -99,6 +100,7 @@ const FormActivities = () => {
                 >
                     <span className="chevron-left"></span> Go Back
                 </motion.button>
+                <FormDots />
                 <div className="right-buttons">
                     <motion.button
                         type="button"
