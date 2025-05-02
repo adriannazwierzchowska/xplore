@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from .views import get_nearby_places, get_place_summary
 
 urlpatterns = [
-    path('nearby-places/', views.get_nearby_places, name='nearby_places'),
-    path('city-summary/', views.get_place_summary, name='city_summary'),
+    path('nearby-places/', get_nearby_places, name='nearby_places'),
+    path('city-summary/', get_place_summary, name='city_summary'),
 ]

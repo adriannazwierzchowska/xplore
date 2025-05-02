@@ -5,6 +5,9 @@ from django.conf import settings
 from .utils import normalize_coordinates, process_google_response
 import time
 
+
+DESTINATION_KEYWORDS_PATH = "./model/destinations_key_words.csv"
+
 # PLACE_TYPES = [
 #   {'category': 'Accommodation', 'types': ['bed_and_breakfast','budget_japanese_inn', 'campground',  'camping_cabin'
 #                                           'cottage', 'extended_stay_hotel', 'farmstay', 'guest_house', 'hostel',
@@ -15,29 +18,33 @@ import time
 # max 5 miejsc na zapytanie mozna
 
 PLACE_TYPES = [
-  {
-    'category': 'Accommodation',
-    'types': ['hotel', 'motel', 'bed_and_breakfast', 'inn', 'guest_house']
-  },
-  {
-    'category': 'Food',
-    'types': ['restaurant', 'cafe', 'bakery', 'bar', 'wine_bar']
-  },
-  {
-    'category': 'Entertainment',
-    'types': ['art_gallery', 'tourist_attraction', 'amusement_park', 'museum', 'park']
-  },
-  {
-    'category': 'Sightseeing',
-    'types': ['historical_landmark', 'monument', 'national_park', 'beach', 'church']
-  }
+    {
+        'category': 'Accommodation',
+        'types': ['hotel', 'motel', 'bed_and_breakfast', 'inn', 'guest_house']
+    },
+    {
+        'category': 'Food',
+        'types': ['restaurant', 'cafe', 'bakery', 'bar', 'wine_bar']
+    },
+    {
+        'category': 'Entertainment',
+        'types': ['art_gallery', 'tourist_attraction', 'amusement_park', 'museum', 'park']
+    },
+    {
+        'category': 'Sightseeing',
+        'types': ['historical_landmark', 'monument', 'national_park', 'beach', 'church']
+    }
 ]
+
 
 @api_view(['POST'])
 def get_nearby_places(request):
     try:
         lat = request.data.get('lat')
         lng = request.data.get('lng')
+
+        if lat is None or lng is None:
+            return Response({'error': 'Missing lat/lng parameters'}, status=400)
 
         normalized_lat, normalized_lng = normalize_coordinates(lat, lng)
         places_data = {}
@@ -56,7 +63,7 @@ def get_nearby_places(request):
                                 'latitude': normalized_lat,
                                 'longitude': normalized_lng
                             },
-                            'radius': 2000.0
+                            'radius': 5000.0
                         }
                     },
                 },
