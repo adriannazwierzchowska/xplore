@@ -4,6 +4,7 @@ import { PiMountainsLight } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
 import '../front.css';
+import FormDots from './FormDots';
 
 import { notifyInfo } from '../utils/toast';
 
@@ -104,6 +105,7 @@ const FormLandscape = () => {
                 >
                     <span className="chevron-left"></span> Go Back
                 </motion.button>
+                <FormDots />
                 <div className="right-buttons">
                     <motion.button
                         type="button3"
