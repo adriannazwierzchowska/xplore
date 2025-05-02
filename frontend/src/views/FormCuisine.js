@@ -4,6 +4,7 @@ import { CiForkAndKnife } from "react-icons/ci";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
 import '../front.css';
+import FormDots from './FormDots';
 
 const FormCuisine = () => {
     const navigate = useNavigate();
@@ -83,6 +84,7 @@ const FormCuisine = () => {
                 >
                     <span className="chevron-left"></span> Go Back
                 </motion.button>
+                <FormDots />
                 <div className="right-buttons">
                     <motion.button
                         type="button"
