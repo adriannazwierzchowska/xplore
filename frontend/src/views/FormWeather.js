@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CiCloud } from "react-icons/ci";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
-import '../front.css';
+import '../css/front.css';
 import FormDots from './FormDots';
 
 

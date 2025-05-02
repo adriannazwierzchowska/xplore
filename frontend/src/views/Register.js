@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { registerUser } from "../api";
 import { useNavigate } from 'react-router-dom';
 import { useSoundContext } from '../SoundContext';
-import '../front.css';
+import '../css/front.css';
 
 const Register = () => {
     const [username, setUsername] = useState('');

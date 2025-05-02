@@ -49,16 +49,6 @@ form {
     padding-right: 220px;
 }
 
-.home-form {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px;
-  margin-left: 20px;
-  min-width: 300px;
-}
-
-
 label {
     margin-top: 10px;
     font-weight: 300;
@@ -101,25 +91,6 @@ select {
     display: flex;
     gap: 10px;
     margin-top: 10px;
-}
-
-.welcome-text {
-    font-size: 1.5rem;
-    color: var(--blue-2);
-    margin: 0 0 5px 0;
-    font-weight: 400;
-}
-
-.username {
-    font-weight: 600;
-    color: var(--blue-3);
-}
-
-.main-title {
-  color: var(--blue-3);
-  font-size: 3em;
-  margin: 0 0 10px 0;
-  white-space: nowrap;
 }
 
 .bottom-button-group {
@@ -297,18 +268,37 @@ button .chevron-right {
   color: #03607E;
 }
 
-.analyzing-container {
-  display: flex !important;
-  justify-content: center !important;
-  width: 1500px;
-  margin: 0 auto;
+.analyzing-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.analyzing-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: 480%;
 }
 
 .analyzing-text {
-  text-align: center !important;
+  text-align: center;
+  font-size: 3rem;
+  color: var(--blue-3);
+  animation: pulse 1.5s infinite ease-in-out;
+  margin: 0 0 2rem 0;
   width: 100%;
-  margin: 0;
-  padding: 20px 0;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
 }
 
 .back-button {
@@ -359,4 +349,50 @@ button .chevron-right {
 .sound-toggle.muted:hover {
     background-color: var(--beige-1);
     opacity: 1;
+}
+
+.back-button-fixed {
+  background-color: var(--blue-1);
+  color: white;
+  border: 1.5px solid var(--blue-2);
+  border-radius: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s, color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+}
+
+.back-button-fixed:hover {
+  background-color: var(--beige-2);
+  color: var(--blue-3);
+}
+
+.back-button-fixed:hover .chevron-left {
+  background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="%2304384B" stroke-width="2" d="M14 6l-6 6 6 6"/%3E%3C/svg%3E');
+}
+
+.loading-spinner {
+  width: 80px;
+  height: 80px;
+  border: 6px solid var(--beige-1);
+  border-radius: 50%;
+  border-top-color: var(--blue-2);
+  animation: spinner 1.2s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spinner {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.bottom-button-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: auto;
 }

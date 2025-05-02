@@ -4,8 +4,9 @@ import { FaPlaneDeparture, FaHeart, FaSignOutAlt, FaVolumeUp, FaVolumeMute } fro
 import { motion } from "framer-motion";
 import { logoutUser } from "../api";
 import { useSoundContext } from '../SoundContext';
-import "../front.css";
-import "../flight.css";
+import "../css/front.css";
+import "../css/flight.css";
+import "../css/home.css";
 import FlightBoard from "./FlightBoard";
 
 
@@ -62,7 +63,9 @@ const Home = () => {
                 {username && (
                     <p className="welcome-text">Hi, <span className="username">{username}</span></p>
                 )}
-                 <h1 className="main-title">Let's xplore</h1>
+                 <h1 className="main-title">
+                  Let's <span className="highlight-blue">xplore</span>!
+                </h1>
                 <div className="button-group">
                     <button type="button1" onClick={handleLetsGo}>Let's Go!</button>
                     <button type="button2" onClick={handleFavorites}>Favorites</button>

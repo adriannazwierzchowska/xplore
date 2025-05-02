@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import "../flight.css";
+import "../css/flight.css";
 
 const destinations = [
   { time: "19:35", airline: "xplore", city: "Warsaw", gate: "Gate 5" },
