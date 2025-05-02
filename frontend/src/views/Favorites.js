@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useSoundContext } from '../SoundContext';
 import { notifyError, notifySuccess, notifyInfo, notifyWarning } from '../utils/toast';
+import '../recommendation.css';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -48,15 +49,29 @@ const Favorites = () => {
                             `http://127.0.0.1:8000/api/favorite_count/?place=${encodeURIComponent(favorite.place)}`
                         );
 
-                        const summary = await fetchCitySummary(favorite.place);
 
+
+                        let keywords = ['favorite'];
+                        try {
+                            const keywordsResponse = await axios.get(
+                                `http://127.0.0.1:8000/questionnaire/keywords?destination=${encodeURIComponent(favorite.place)}`
+                            );
+                            if (keywordsResponse.data && keywordsResponse.data.keywords) {
+                                keywords = keywordsResponse.data.keywords;
+                            }
+                        } catch (keywordsError) {
+                            console.warn(`Failed to fetch keywords for ${favorite.place}:`, keywordsError);
+                        }
+
+
+                        const summary = await fetchCitySummary(favorite.place);
                         return {
                             ...favorite,
                             coordinates: coordsResponse.data.coordinates,
                             favoriteCount: countResponse.data.favorite_count,
                             details: summary.details,
                             imageUrl: summary.imageUrl,
-                            keywords: summary.keywords || ['favorite']
+                            keywords: keywords
                         };
                     })
                 );
@@ -109,7 +124,7 @@ const Favorites = () => {
         try {
             setSelectedPlace({
                 name: place.place,
-                tags: place.keywords || ['favorite'],
+                tags: place.keywords || [],
                 details: place.details || "No description for this city.",
                 imageUrl: place.imageUrl,
                 favoriteCount: place.favoriteCount || 0,
@@ -256,17 +271,21 @@ const Favorites = () => {
     };
 
     const renderStarRating = (rating) => {
-        const fullStars = Math.floor(rating);
+        const parsedRating = typeof rating === 'string' ? parseFloat(rating) : rating;
+        const roundedRating = Math.round(parsedRating);
+
         return (
             <div className="rating-container">
                 <div className="star-rating">
                     {[...Array(5)].map((_, index) => (
-                        <span key={index} className={index < fullStars ? "star" : "star empty-star"}>
-                            ★
-                        </span>
+                        index < roundedRating ? (
+                            <span key={index} className="star">★</span>
+                        ) : (
+                            <span key={index} className="star empty-star">★</span>
+                        )
                     ))}
                 </div>
-                <span className="rating-number">{rating.toFixed(1)}</span>
+                <span className="rating-number">{parsedRating.toFixed(1)}</span>
             </div>
         );
     };
@@ -313,11 +332,16 @@ const Favorites = () => {
                                     click: () => handleMarkerClick(favorite),
                                 }}
                             >
-                                <Tooltip>
-                                    <div className="custom-tooltip">
-                                        <h2>{favorite.place} ❤ {favorite.favoriteCount ?? 0}</h2>
+                            <Tooltip>
+                                <div className="custom-tooltip">
+                                    <h2>{favorite.place} ❤ {favorite.favoriteCount ?? 0}</h2>
+                                    <div className="tags-container">
+                                        {favorite.keywords && favorite.keywords.map((keyword, i) => (
+                                            <span key={i} className="tag">{keyword}</span>
+                                        ))}
                                     </div>
-                                </Tooltip>
+                                </div>
+                            </Tooltip>
                             </Marker>
                         ) : null
                     )}
@@ -358,8 +382,8 @@ const Favorites = () => {
                                         </h2>
 
                                         <div className="tags-container">
-                                            {selectedPlace.tags.map((tag, index) => (
-                                                <span key={index} className="tag">{tag}</span>
+                                            {(selectedPlace.tags || []).map((tag, index) => (
+                                              <span key={index} className="tag">{tag}</span>
                                             ))}
                                         </div>
 

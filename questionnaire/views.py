@@ -7,6 +7,7 @@ import joblib
 from opencage.geocoder import OpenCageGeocode
 import pandas as pd
 from django.conf import settings
+import urllib.parse
 
 OPENCAGE_API_KEY = settings.OPENCAGE_API_KEY
 geocoder = OpenCageGeocode(OPENCAGE_API_KEY)
@@ -123,6 +124,33 @@ def get_place_coordinates(request):
             return Response({'coordinates': coordinates})
         else:
             return Response({'coordinates': {"lat": None, "lng": None}})
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+def get_keywords(request):
+    try:
+        destination = request.GET.get('destination', None)
+        if not destination:
+            return Response({'error': 'Destination parameter is required'}, status=400)
+
+        destination = urllib.parse.unquote(destination)
+        destination_keywords_df = pd.read_csv(DESTINATION_KEYWORDS_PATH)
+
+        matching_row = destination_keywords_df[destination_keywords_df['destination'] == destination]
+
+        if matching_row.empty:
+            return Response({'error': f'No keywords found for destination: {destination}'}, status=404)
+
+        keywords = [
+            matching_row['w1'].values[0],
+            matching_row['w2'].values[0],
+            matching_row['w3'].values[0]
+        ]
+
+        return Response({
+            'keywords': keywords
+        })
     except Exception as e:
         return Response({'error': str(e)}, status=500)
 
