@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PiMountainsLight } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
-import '../front.css';
+import '../css/front.css';
 import FormDots from './FormDots';
 
 import { notifyInfo } from '../utils/toast';

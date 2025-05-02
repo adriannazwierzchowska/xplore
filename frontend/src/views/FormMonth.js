@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiCalendarDate } from "react-icons/ci";
-import '../front.css';
+import '../css/front.css';
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
 import { notifyInfo } from '../utils/toast';

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PiLifebuoyThin } from "react-icons/pi";
-import '../front.css';
+import '../css/front.css';
 import axios from 'axios';
 import { useSoundContext } from '../SoundContext';
 import { notifyError } from '../utils/toast';
@@ -69,11 +69,15 @@ const FormAnalise = () => {
     }, [navigate]);
 
     return (
-        <div className="analyzing-container">
-            <h1 className="analyzing-text">Analyzing...</h1>
+        <div className="analyzing-wrapper">
+            <div className="analyzing-content">
+                <h1 className="analyzing-text">Analyzing...</h1>
+                <div className="loading-spinner"></div>
+            </div>
 
-            <div className="bottom-button-group">
-                <button type="button3" onClick={() => { soundClick(); navigate(-1); }}>
+            <div className="bottom-button-container">
+                <button type="button3" className="back-button-fixed"
+                onClick={() => { soundClick(); navigate(-1); }}>
                     <span className="chevron-left"></span> Go Back
                 </button>
             </div>

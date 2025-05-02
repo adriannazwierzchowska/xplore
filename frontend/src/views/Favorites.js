@@ -7,7 +7,8 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useSoundContext } from '../SoundContext';
 import { notifyError, notifySuccess, notifyInfo, notifyWarning } from '../utils/toast';
-import '../recommendation.css';
+import '../css/recommendation.css';
+import '../css/front.css';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
