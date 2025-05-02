@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Importujemy framer-motion
-import '../front.css';
+import { motion } from 'framer-motion';
+import '../css/front.css';
 import { loginUser } from "../api";
 import { useSoundContext } from '../SoundContext';
 
@@ -47,7 +47,7 @@ const Login = () => {
                     placeholder="Enter your login"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    whileFocus={{ scale: 1.05 }} // Zmiana rozmiaru po kliknięciu w input
+                    whileFocus={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                 />
                 <label htmlFor="password">Password</label>
@@ -58,7 +58,7 @@ const Login = () => {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    whileFocus={{ scale: 1.05 }} // Zmiana rozmiaru po kliknięciu w input
+                    whileFocus={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                 />
                 <motion.div

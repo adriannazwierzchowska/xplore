@@ -8,14 +8,15 @@ def normalize_coordinates(lat, lng):
 def process_google_response(response):
     processed = []
     for place in response.get('places', []):
+        if not place.get('photos'):
+            continue
         # cache_key = f"place_photo_{place.get('websiteUri')}"
         # photo_url = cache.get(cache_key)
 
         # if not photo_url and place.get('photos'):
-        if place.get('photos'):
-            photo_ref = place['photos'][0]['name']
-            photo_url = f"https://places.googleapis.com/v1/{photo_ref}/media?key={settings.GOOGLE_API_KEY}&maxHeightPx=400"
-            # cache.set(cache_key, photo_url, 86400)
+        photo_ref = place['photos'][0]['name']
+        photo_url = f"https://places.googleapis.com/v1/{photo_ref}/media?key={settings.GOOGLE_API_KEY}&maxHeightPx=400"
+        # cache.set(cache_key, photo_url, 86400)
 
         processed.append({
             'name': place.get('displayName', {}).get('text'),

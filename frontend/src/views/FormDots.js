@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import '../formdots.css';
+import '../css/formdots.css';
 
 const steps = [
   { path: '/month', label: 'Month' },
