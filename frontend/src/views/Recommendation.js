@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSoundContext } from '../SoundContext';
 import '../front.css';
+import '../recommendation.css';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
@@ -310,17 +311,21 @@ const Recommendation = () => {
     };
 
     const renderStarRating = (rating) => {
-        const fullStars = Math.floor(rating);
+        const parsedRating = typeof rating === 'string' ? parseFloat(rating) : rating;
+        const roundedRating = Math.round(parsedRating);
+
         return (
             <div className="rating-container">
                 <div className="star-rating">
                     {[...Array(5)].map((_, index) => (
-                        <span key={index} className={index < fullStars ? "star" : "star empty-star"} >
-                            ★
-                        </span>
+                        index < roundedRating ? (
+                            <span key={index} className="star">★</span>
+                        ) : (
+                            <span key={index} className="star empty-star">★</span>
+                        )
                     ))}
                 </div>
-                <span className="rating-number">{rating.toFixed(1)}</span>
+                <span className="rating-number">{parsedRating.toFixed(1)}</span>
             </div>
         );
     };
