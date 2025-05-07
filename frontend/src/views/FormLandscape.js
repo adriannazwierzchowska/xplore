@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { PiMountainsLight } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
@@ -10,6 +10,7 @@ import { notifyInfo } from '../utils/toast';
 
 const FormLandscape = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedTags, setSelectedTags] = useState([]);
     const { soundClick, soundSelect } = useSoundContext();
     const landscapeKeys = {
@@ -22,7 +23,8 @@ const FormLandscape = () => {
     useEffect(() => {
         const storedTags = Object.keys(landscapeKeys).filter(tag => sessionStorage.getItem(tag) === 'true');
         setSelectedTags(storedTags);
-    }, []);
+        sessionStorage.setItem('lastFormPath', location.pathname);
+    }, [location.pathname]);
 
     const handleTagClick = (tag) => {
         soundSelect();
