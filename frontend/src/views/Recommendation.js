@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSoundContext } from '../SoundContext';
 import '../css/front.css';
@@ -47,6 +47,18 @@ const Recommendation = () => {
 
         fetchRecommendations();
     }, [location.state]);
+
+    useEffect(() => {
+        if (selectedPlace) {
+            document.body.classList.add('place-sidebar-active');
+        } else {
+            document.body.classList.remove('place-sidebar-active');
+        }
+
+        return () => {
+            document.body.classList.remove('place-sidebar-active');
+        };
+    }, [selectedPlace]);
 
     const getCityNameForWikipedia = (fullCityName) => {
         if (fullCityName.includes(',')) {
@@ -336,7 +348,7 @@ const Recommendation = () => {
               You should <span className="turquoise-text">xplore</span> these places
             </h1>
             <div className="map-container">
-                <MapContainer center={[30.8566, 31.3522]} zoom={3} style={{ height: "500px", width: "1400px" }}>
+                <MapContainer center={[30.8566, 31.3522]} zoom={3} style={{ height: "500px", width: "100%", maxWidth: "1400px" }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; OpenStreetMap contributors"
@@ -366,8 +378,8 @@ const Recommendation = () => {
             {selectedPlace && (
                 <>
                     <div className="overlay" onClick={() => { soundClick(); setSelectedPlace(null);}} />
-                    <div className={`sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
-                        <div className="sidebar-content">
+                    <div className={`place-details-sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
+                        <div className="place-details-sidebar-content">
                             {!selectedCategory ? (
                             <>
                                 {selectedPlace.imageUrl && (

@@ -96,10 +96,10 @@ select {
 .bottom-button-group {
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    width: calc(100% - var(--main-content-left-offset));
     position: fixed;
     bottom: 20px;
-    left: 0;
+    left: var(--main-content-left-offset);
     padding: 0 20px;
     box-sizing: border-box;
 }
@@ -283,7 +283,6 @@ button .chevron-right {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-left: 480%;
 }
 
 .analyzing-text {
@@ -393,6 +392,6 @@ button .chevron-right {
 .bottom-button-container {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  left: calc(var(--main-content-left-offset) + 20px);
   width: auto;
 }

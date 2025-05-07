@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react'; // Add useCallback
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -50,8 +50,6 @@ const Favorites = () => {
                             `http://127.0.0.1:8000/api/favorite_count/?place=${encodeURIComponent(favorite.place)}`
                         );
 
-
-
                         let keywords = ['favorite'];
                         try {
                             const keywordsResponse = await axios.get(
@@ -63,7 +61,6 @@ const Favorites = () => {
                         } catch (keywordsError) {
                             console.warn(`Failed to fetch keywords for ${favorite.place}:`, keywordsError);
                         }
-
 
                         const summary = await fetchCitySummary(favorite.place);
                         return {
@@ -85,6 +82,20 @@ const Favorites = () => {
         };
         fetchFavorites();
     }, []);
+
+    useEffect(() => {
+        if (selectedPlace) {
+            document.body.classList.add('place-sidebar-active');
+        } else {
+            document.body.classList.remove('place-sidebar-active');
+        }
+
+        // Cleanup function to remove the class when the component unmounts
+        // or before the effect runs again if selectedPlace was previously truthy.
+        return () => {
+            document.body.classList.remove('place-sidebar-active');
+        };
+    }, [selectedPlace]); // Re-run when selectedPlace changes
 
     const getCityNameForWikipedia = (fullCityName) => {
         if (fullCityName.includes(',')) {
@@ -308,7 +319,6 @@ const Favorites = () => {
         return [sumLat / validCoordinates.length, sumLng / validCoordinates.length];
     };
 
-
     return (
         <motion.div
             className="favorites-container"
@@ -319,7 +329,7 @@ const Favorites = () => {
             <h1>Your favorite places</h1>
 
             <div className="map-container">
-                <MapContainer center={calculateMapCenter()} zoom={3} style={{ height: "500px", width: "1400px" }}>
+                <MapContainer center={calculateMapCenter()} zoom={3} style={{ height: "500px", width: "100%", maxWidth: "1400px" }}>
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; OpenStreetMap contributors"
@@ -352,8 +362,8 @@ const Favorites = () => {
             {selectedPlace && (
                 <>
                      <div className="overlay" onClick={() => { soundClick(); setSelectedPlace(null); }} />
-                     <div className={`sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
-                        <div className="sidebar-content">
+                     <div className={`place-details-sidebar ${selectedCategory ? 'expanded' : ''} ${selectedPlace ? 'active' : ''}`}>
+                        <div className="place-details-sidebar-content">
                             {!selectedCategory ? (
                                 <>
                                     {selectedPlace.imageUrl && (

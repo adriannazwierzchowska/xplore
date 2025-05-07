@@ -58,6 +58,7 @@ const FormAnalise = () => {
 
             try {
                 const response = await axios.post('http://127.0.0.1:8000/questionnaire/classify/', data);
+                sessionStorage.removeItem('lastFormPath');
                 navigate('/recommendation', { state: { recommendation: response.data.predictions } });
             } catch (error) {
                 console.error('Error analyzing data:', error);
