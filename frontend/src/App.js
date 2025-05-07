@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Home from './views/Home';
 import Login from './views/Login';
@@ -12,19 +12,27 @@ import FormCuisine from './views/FormCuisine';
 import FormAnalise from './views/FormAnalise';
 import Recommendation from './views/Recommendation';
 import Favorites from './views/Favorites';
+import Sidebar from './Sidebar';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+  const location = useLocation();
+  const username = localStorage.getItem("username");
+
+  const isHome = location.pathname === '/';
+
   return (
-    <Router>
-      <AnimatePresence>
-        <Routes>
+    <>
+      <Sidebar username={username} isHome={isHome} />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
           <Route
             path="/"
             element={
               <motion.div
+                className="animation-stage"
                 key="/"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -40,13 +48,16 @@ function App() {
             path="/login"
             element={
               <motion.div
+                className="animation-stage"
                 key="/login"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <Login />
+                <div className="page-container">
+                  <Login />
+                </div>
               </motion.div>
             }
           />
@@ -55,13 +66,16 @@ function App() {
             path="/register"
             element={
               <motion.div
+                className="animation-stage"
                 key="/register"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <Register />
+                <div className="page-container">
+                  <Register />
+                </div>
               </motion.div>
             }
           />
@@ -70,13 +84,16 @@ function App() {
             path="/month"
             element={
               <motion.div
+                className="animation-stage"
                 key="/month"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <FormMonth />
+                <div className="page-container">
+                  <FormMonth />
+                </div>
               </motion.div>
             }
           />
@@ -85,13 +102,16 @@ function App() {
             path="/weather"
             element={
               <motion.div
+                className="animation-stage"
                 key="/weather"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <FormWeather />
+                <div className="page-container">
+                  <FormWeather />
+                </div>
               </motion.div>
             }
           />
@@ -100,13 +120,16 @@ function App() {
             path="/stay"
             element={
               <motion.div
+                className="animation-stage"
                 key="/stay"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <FormStay />
+                <div className="page-container">
+                  <FormStay />
+                </div>
               </motion.div>
             }
           />
@@ -115,13 +138,16 @@ function App() {
             path="/landscape"
             element={
               <motion.div
+                className="animation-stage"
                 key="/landscape"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <FormLandscape />
+                <div className="page-container">
+                  <FormLandscape />
+                </div>
               </motion.div>
             }
           />
@@ -130,13 +156,16 @@ function App() {
             path="/activities"
             element={
               <motion.div
+                className="animation-stage"
                 key="/activities"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <FormActivities />
+                <div className="page-container">
+                  <FormActivities />
+                </div>
               </motion.div>
             }
           />
@@ -145,13 +174,16 @@ function App() {
             path="/cuisine"
             element={
               <motion.div
+                className="animation-stage"
                 key="/cuisine"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <FormCuisine />
+                <div className="page-container">
+                  <FormCuisine />
+                </div>
               </motion.div>
             }
           />
@@ -160,13 +192,16 @@ function App() {
             path="/analise"
             element={
               <motion.div
+                className="animation-stage"
                 key="/analise"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <FormAnalise />
+                <div className="page-container">
+                  <FormAnalise />
+                </div>
               </motion.div>
             }
           />
@@ -175,13 +210,16 @@ function App() {
             path="/recommendation"
             element={
               <motion.div
+                className="animation-stage"
                 key="/recommendation"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <Recommendation />
+                <div className="page-container recommendation-page-container">
+                  <Recommendation />
+                </div>
               </motion.div>
             }
           />
@@ -190,20 +228,23 @@ function App() {
             path="/favorites"
             element={
               <motion.div
+                className="animation-stage"
                 key="/favorites"
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <Favorites />
+                <div className="page-container recommendation-page-container">
+                  <Favorites />
+                </div>
               </motion.div>
             }
           />
         </Routes>
       </AnimatePresence>
       <ToastContainer />
-    </Router>
+    </>
   );
 }
 

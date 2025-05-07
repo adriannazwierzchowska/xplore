@@ -10,18 +10,20 @@
 .home-container {
   width: 100%;
   max-width: 1400px;
-  margin: 0 auto;
+  margin-left: 0;
+  margin-right: auto;
   padding: 40px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 20px;
   flex-wrap: nowrap;
   box-sizing: border-box;
   min-height: 100vh;
 }
 
 .home-form {
-  flex: 1 1 50%;
+  flex: 0 1 auto;
   min-width: 300px;
   max-width: 500px;
   padding: 20px;
@@ -54,9 +56,14 @@
 }
 
 .flight-board-wrapper {
-  flex: 1 1 50%;
+  flex: 0 1 auto;
   max-width: 700px;
   padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 364px;
+  margin-right: 0;
 }
 
 @media (max-width: 768px) {

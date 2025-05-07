@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CiCloud } from "react-icons/ci";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
@@ -9,8 +9,17 @@ import FormDots from './FormDots';
 
 const FormWeather = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [weather, setWeatherRange] = useState(0);
     const { soundClick, soundSelect } = useSoundContext();
+
+    useEffect(() => {
+        const savedWeather = sessionStorage.getItem('weather');
+        if (savedWeather !== null) {
+            setWeatherRange(savedWeather);
+        }
+        sessionStorage.setItem('lastFormPath', location.pathname);
+    }, [location.pathname]);
 
     const handleSliderChange = (e) => {
         soundSelect();

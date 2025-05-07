@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CiCalendarDate } from "react-icons/ci";
 import '../css/front.css';
 import { motion } from 'framer-motion';
@@ -9,6 +9,7 @@ import FormDots from './FormDots';
 
 const FormMonth = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedMonths, setSelectedMonths] = useState([]);
     const { soundClick, soundSelect } = useSoundContext();
     const months = {

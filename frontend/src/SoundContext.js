@@ -23,7 +23,6 @@ const SoundManager = (() => {
       _ambientSound.loop = true;
       _ambientSound.volume = 0.5;
 
-
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden' && !_isMuted) {
           _ambientSound.pause();
@@ -131,7 +130,6 @@ export const SoundProvider = ({ children }) => {
   const [isMuted, setIsMuted] = useState(SoundManager.getMuted());
 
   useEffect(() => {
-
     SoundManager.initialize();
 
     if (!isMuted) {
@@ -139,7 +137,6 @@ export const SoundProvider = ({ children }) => {
     }
 
     return () => {
-
     };
   }, []);
 
@@ -148,17 +145,14 @@ export const SoundProvider = ({ children }) => {
   }, [isMuted]);
 
   const soundClick = () => {
-
     SoundManager.playSound(SOUND_FILES.click, 1.0);
   };
 
   const soundSelect = () => {
-
     SoundManager.playSound(SOUND_FILES.select, 1.0);
   };
 
   const soundPlaceSelect = () => {
-
     SoundManager.playSound(SOUND_FILES.placeSelect, 1.0);
   };
 

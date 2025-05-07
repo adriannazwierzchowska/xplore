@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CiForkAndKnife } from "react-icons/ci";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
@@ -8,6 +8,7 @@ import FormDots from './FormDots';
 
 const FormCuisine = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [cuisine, setCuisineRange] = useState("3");
     const { soundClick, soundSelect } = useSoundContext();
 
@@ -16,7 +17,8 @@ const FormCuisine = () => {
         if (savedValue) {
             setCuisineRange(savedValue);
         }
-    }, []);
+        sessionStorage.setItem('lastFormPath', location.pathname);
+    }, [location.pathname]);
 
     const handleSliderChange = (e) => {
         soundSelect();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { PiHouseSimple } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import { useSoundContext } from '../SoundContext';
@@ -9,6 +9,7 @@ import FormDots from './FormDots';
 
 const FormStay = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [selectedTags, setSelectedTags] = useState([]);
     const { soundClick, soundSelect } = useSoundContext();
     const destinationKeys = {
@@ -23,7 +24,8 @@ const FormStay = () => {
     useEffect(() => {
         const storedTags = Object.keys(destinationKeys).filter(tag => sessionStorage.getItem(tag) === 'true');
         setSelectedTags(storedTags);
-    }, []);
+        sessionStorage.setItem('lastFormPath', location.pathname);
+    }, [location.pathname]);
 
     const handleTagClick = (tag) => {
         soundSelect();
