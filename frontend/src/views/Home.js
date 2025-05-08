@@ -25,8 +25,10 @@ const Home = () => {
 
     const handleLetsGo = () => {
         soundClick();
-        setIsAnimated(true);
-        navigate(isAuthenticated ? "/month" : "/login");
+        //setIsAnimated(true);
+        setTimeout(() => {
+            navigate(isAuthenticated ? "/month" : "/login");
+        }, 300);
     };
 
     const handleLogout = async () => {
@@ -59,7 +61,7 @@ const Home = () => {
                      <FaVolumeUp size={20} color="#04384B"/>
                  }
              </motion.button>
-            <form className="home-form">
+            <div className="home-form">
                 {username && (
                     <p className="welcome-text">Hi, <span className="username">{username}</span></p>
                 )}
@@ -71,7 +73,7 @@ const Home = () => {
                     <button type="button2" onClick={handleFavorites}>Favorites</button>
                     {isAuthenticated && <button type="button2" onClick={handleLogout}>Log Out</button>}
                 </div>
-            </form>
+            </div>
 
             {isAnimated && (
                 <motion.div
