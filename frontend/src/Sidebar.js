@@ -37,9 +37,9 @@ const Sidebar = ({ username, isHome }) => {
     };
 
     const navItems = [
-        { icon: <FaHome />, text: 'Home', path: '/' },
-        { icon: <FaHeart />, text: 'Favourites', path: '/favorites' },
-        { icon: <FaCompass />, text: 'Xplore', path: '/xplore' },
+        { icon: <FaHome />, text: 'home', path: '/' },
+        { icon: <FaHeart />, text: 'favourites', path: '/favorites' },
+        { icon: <FaCompass />, text: 'xplore', path: '/xplore' },
     ];
 
     return (
