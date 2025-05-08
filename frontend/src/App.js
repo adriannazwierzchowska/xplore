@@ -19,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const location = useLocation();
-  const username = localStorage.getItem("username");
+  const username = localStorage.getItem("authToken");
 
   const isHome = location.pathname === '/';
 

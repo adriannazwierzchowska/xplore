@@ -283,6 +283,7 @@ button .chevron-right {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-right: 50px;
 }
 
 .analyzing-text {

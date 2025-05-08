@@ -353,7 +353,7 @@ const Recommendation = () => {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; OpenStreetMap contributors"
                     />
-                    {places.map((place, index) =>
+                    {places?.map((place, index) =>
                         place.coordinates ? (
                             <Marker key={index} position={[place.coordinates.lat, place.coordinates.lng]}
                                 eventHandlers={{
@@ -455,12 +455,6 @@ const Recommendation = () => {
                     </div>
                 </>
             )}
-
-            <div className="button-group">
-                <button type="button-home" onClick={() => navigate('/')}>
-                    Home
-                </button>
-            </div>
         </div>
     );
 };

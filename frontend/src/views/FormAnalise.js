@@ -75,13 +75,6 @@ const FormAnalise = () => {
                 <h1 className="analyzing-text">Analyzing...</h1>
                 <div className="loading-spinner"></div>
             </div>
-
-            <div className="bottom-button-container">
-                <button type="button3" className="back-button-fixed"
-                onClick={() => { soundClick(); navigate(-1); }}>
-                    <span className="chevron-left"></span> Go Back
-                </button>
-            </div>
         </div>
     );
 };

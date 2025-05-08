@@ -423,13 +423,6 @@ const Favorites = () => {
                     </div>
                 </>
             )}
-
-            <div className="button-group">
-                 <motion.button type="button2" onClick={() => { soundClick(); navigate('/'); }}
-                >
-                    Home
-                </motion.button>
-            </div>
         </motion.div>
     );
 };
