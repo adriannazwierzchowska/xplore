@@ -11,7 +11,7 @@ const SOUND_FILES = {
 
 const SoundManager = (() => {
   let _ambientSound = null;
-  let _isMuted = false;
+  let _isMusicMuted = false;
   let _isInitialized = false;
   let _activeListeners = new Set();
 
@@ -24,9 +24,9 @@ const SoundManager = (() => {
       _ambientSound.volume = 0.5;
 
       document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden' && !_isMuted) {
+        if (document.visibilityState === 'hidden' && !_isMusicMuted) {
           _ambientSound.pause();
-        } else if (document.visibilityState === 'visible' && !_isMuted) {
+        } else if (document.visibilityState === 'visible' && !_isMusicMuted) {
           _playAmbient();
         }
       });
@@ -37,7 +37,7 @@ const SoundManager = (() => {
   };
 
   const _playAmbient = () => {
-    if (!_ambientSound || _isMuted) return;
+    if (!_ambientSound || _isMusicMuted) return;
 
     try {
       const playPromise = _ambientSound.play();
@@ -86,7 +86,6 @@ const SoundManager = (() => {
     },
 
     playSound: (soundFile, volume = 1.0) => {
-      if (_isMuted) return;
 
       try {
         const audio = new Audio(soundFile);
@@ -103,8 +102,8 @@ const SoundManager = (() => {
       }
     },
 
-    setMuted: (muted) => {
-      _isMuted = muted;
+    setMusicMuted: (muted) => {
+      _isMusicMuted = muted;
       if (_ambientSound) {
         if (muted) {
           _ambientSound.pause();
@@ -114,7 +113,7 @@ const SoundManager = (() => {
       }
     },
 
-    getMuted: () => _isMuted,
+    getMusicMuted: () => _isMusicMuted,
 
     cleanup: () => {
       if (_ambientSound) {
@@ -127,12 +126,12 @@ const SoundManager = (() => {
 })();
 
 export const SoundProvider = ({ children }) => {
-  const [isMuted, setIsMuted] = useState(SoundManager.getMuted());
+  const [isMusicMuted, setIsMusicMuted] = useState(SoundManager.getMusicMuted());
 
   useEffect(() => {
     SoundManager.initialize();
 
-    if (!isMuted) {
+    if (!isMusicMuted) {
       SoundManager.playAmbient();
     }
 
@@ -141,8 +140,8 @@ export const SoundProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    SoundManager.setMuted(isMuted);
-  }, [isMuted]);
+    SoundManager.setMusicMuted(isMusicMuted);
+  }, [isMusicMuted]);
 
   const soundClick = () => {
     SoundManager.playSound(SOUND_FILES.click, 1.0);
@@ -156,14 +155,14 @@ export const SoundProvider = ({ children }) => {
     SoundManager.playSound(SOUND_FILES.placeSelect, 1.0);
   };
 
-  const toggleMute = () => {
-    setIsMuted(prev => !prev);
+  const toggleMusicMute = () => {
+    setIsMusicMuted(prev => !prev);
   };
 
   return (
     <SoundContext.Provider value={{
-      isMuted,
-      toggleMute,
+      isMusicMuted,
+      toggleMusicMute,
       soundClick,
       soundSelect,
       soundPlaceSelect
@@ -178,8 +177,8 @@ export const useSoundContext = () => {
   if (!context) {
     console.warn('useSoundContext must be used within a SoundProvider');
     return {
-      isMuted: false,
-      toggleMute: () => {},
+      isMusicMuted: false,
+      toggleMusicMute: () => {},
       soundClick: () => {},
       soundSelect: () => {},
       soundPlaceSelect: () => {}

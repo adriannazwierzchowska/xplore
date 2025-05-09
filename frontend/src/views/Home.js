@@ -16,7 +16,7 @@ const Home = () => {
     const [username, setUsername] = useState(localStorage.getItem("authToken") || null);
     const [message, setMessage] = useState("");
     const [isAnimated, setIsAnimated] = useState(false);
-    const { isMuted, toggleMute, soundClick } = useSoundContext();
+    const { isMusicMuted, toggleMusicMute, soundClick } = useSoundContext();
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -51,12 +51,15 @@ const Home = () => {
     return (
         <div className="home-container">
              <motion.button
-                 className={`sound-toggle ${isMuted ? 'muted' : ''}`}
-                 onClick={toggleMute}
+                 className={`sound-toggle ${isMusicMuted ? 'muted' : ''}`}
+                 onClick={() => {
+                    soundClick();
+                    toggleMusicMute();
+                 }}
                  whileHover={{ scale: 1.1 }}
                  whileTap={{ scale: 0.95 }}
              >
-                 {isMuted ?
+                 {isMusicMuted ?
                      <FaVolumeMute size={20} color="#04384B"/> :
                      <FaVolumeUp size={20} color="#04384B"/>
                  }

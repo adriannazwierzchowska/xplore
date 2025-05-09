@@ -254,8 +254,13 @@ const Recommendation = () => {
 
     const renderNearbyPlaces = () => {
       if (!selectedPlace.nearby || typeof selectedPlace.nearby !== 'object') {
-        return <div className="loading-message">Loading nearby places...</div>;
+        return (
+          <div className="loading-wrapper-small">
+            <div className="loading-spinner small"></div>
+          </div>
+        );
       }
+
 
       if (Object.keys(selectedPlace.nearby).length === 0) {
         return <div className="no-results">No nearby places found</div>;
@@ -392,8 +397,8 @@ const Recommendation = () => {
                                             <motion.svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 viewBox="0 0 24 24"
-                                                fill={isFavorite ? 'red' : 'none'}
-                                                stroke="currentColor"
+                                                fill={isFavorite ? '#03607E' : 'none'}
+                                                stroke="#03607E"
                                                 strokeWidth="2"
                                                 className={`heart-icon ${isFavorite ? 'filled' : ''}`}
                                                 whileTap={{ scale: 1.7 }}
