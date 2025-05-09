@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'; // Add useCallback
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -210,9 +210,13 @@ const Favorites = () => {
     };
 
     const renderNearbyPlaces = () => {
-         if (!selectedPlace || !selectedPlace.nearby) {
-             return <div className="loading-message">Loading nearby places...</div>;
-         }
+          if (!selectedPlace.nearby || typeof selectedPlace.nearby !== 'object') {
+            return (
+              <div className="loading-wrapper-small">
+                <div className="loading-spinner small"></div>
+              </div>
+            );
+          }
          if (selectedPlace.nearby.error) {
             return <div className="no-results">Error fetching nearby places: {selectedPlace.nearby.error}</div>;
          }
@@ -376,8 +380,8 @@ const Favorites = () => {
                                                 <motion.svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 24 24"
-                                                    fill="red"
-                                                    stroke="currentColor"
+                                                    fill="#03607E"
+                                                    stroke="#03607E"
                                                     strokeWidth="2"
                                                     className="heart-icon filled"
                                                     whileTap={{ scale: 1.7 }}
