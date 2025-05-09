@@ -15,31 +15,33 @@ A travel recommendation system that helps users discover destinations based on t
 - **Machine learning recommendation model**: 
   - Destination suggestions based on user input
   - Geographical coordinates lookup via OpenCage API
-- **Favorites System**: Save and manage preferred destinations
+- **Favorites System**: Save and manage preferred destinations, display global favorites
+- Google Places API integration for showing nearby attractions, user reviews
 
 ### Frontend (React)
 - Interactive questionnaire form
 - Interactive map visualization (Leaflet)
 - Destination recommendations with Wikipedia integration
-- Favorites management
-
-### Running the project
-```bash
-start_xplore.bat
-```
+- Food, accommodation, attractions with ratings, opinions, photos for each place pulled from Google Places API 
+- Favorite places management
 
 ### Preview
+##### Homepage
+![](views/homepage.jpg)
+
 ##### Choosing your preferences - activities
-![](views/activities.png)
+![](views/activities2.jpg)
 
 ##### Recommended destinations
-![](views/recommendations.png)
+![](views/map.jpg)
 
 ##### Destination details
-![](views/place.png)
+![](views/place2.jpg)
 
-### Future improvements 
-- Google Places API integration for showing nearby attractions, user reviews
+##### Best hotels near your destination
+![](views/details.jpg)
+
+### Future improvements
 - Trip planning dashboard
 - Technical improvements such as docker deployment, automated testing, enhanced responsive design
 
