@@ -223,6 +223,9 @@
   border-radius: 15px !important;
   box-shadow: none !important;
   padding: 10px !important;
+  min-width: 210px;
+  max-width: 350px;
+  width: auto !important;
 }
 
 .leaflet-tooltip ul {
@@ -231,7 +234,6 @@
   margin: 5px 0 0 0;
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .leaflet-tooltip li {
@@ -245,19 +247,21 @@
 }
 
 .leaflet-tooltip h2 {
-  margin: 0 0 8px 0;
+  margin: 0 0 2px 0;
   font-size: 1.2em;
   color: var(--blue-3);
 }
 
 .custom-tooltip {
-  min-width: 200px;
+  width: 100%;
 }
 
 .tags-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   flex-wrap: wrap;
+  margin-top: 5px;
 }
 
 .tag {
@@ -344,7 +348,7 @@ button[type="button-home"] {
 }
 
 .s-place-name {
-    margin: 2px 5px 5px;
+    margin: 2px 5px 0px;
     font-size: 1.5em;
     opacity: 0.9;
     z-index: 1;
@@ -474,4 +478,22 @@ button[type="button-home"] {
   display: flex;
   justify-content: flex-start;
   width: 100%;
+}
+
+
+.loading-wrapper-small {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+}
+
+.loading-spinner.small {
+  width: 40px;
+  height: 40px;
+  border-width: 4px;
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
 }
