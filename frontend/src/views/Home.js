@@ -8,6 +8,7 @@ import "../css/front.css";
 import "../css/flight.css";
 import "../css/home.css";
 import FlightBoard from "./FlightBoard";
+import LogoX from "../static/logo512.png";
 
 
 const Home = () => {
