@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSoundContext } from '../SoundContext';
 import '../css/front.css';
 import '../css/recommendation.css';
+import '../css/flightsearch.css';
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 import L from 'leaflet';
 import { motion } from "framer-motion";
 import { notifyError, notifyInfo } from '../utils/toast';
+import { Plane } from 'lucide-react';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -347,6 +349,10 @@ const Recommendation = () => {
         );
     };
 
+    const handleFlightSearch = (placeName) => {
+        navigate('/flights', { state: { place: placeName } });
+    };
+
     return (
         <div className="recommendation">
             <h1 className="recommendation-heading">
@@ -393,27 +399,48 @@ const Recommendation = () => {
                                 <div>
                                     <h2 className="s-place-name">
                                         {selectedPlace.name}
-                                        <span className="favorite-count">
-                                            <motion.svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                fill={isFavorite ? '#03607E' : 'none'}
-                                                stroke="#03607E"
-                                                strokeWidth="2"
-                                                className={`heart-icon ${isFavorite ? 'filled' : ''}`}
-                                                whileTap={{ scale: 1.7 }}
-                                                animate={{ scale: isFavorite ? [1, 1.7, 1] : 1 }}
-                                                transition={{ duration: 0.3 }}
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() =>
-                                                    isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
-                                                }
-                                            >
-                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                            </motion.svg>
+                                        <div className="place-actions">
+                                            <span className="favorite-count">
+                                                <motion.svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    fill={isFavorite ? '#03607E' : 'none'}
+                                                    stroke="#03607E"
+                                                    strokeWidth="2"
+                                                    className={`heart-icon ${isFavorite ? 'filled' : ''}`}
+                                                    whileTap={{ scale: 1.7 }}
+                                                    animate={{ scale: isFavorite ? [1, 1.7, 1] : 1 }}
+                                                    transition={{ duration: 0.3 }}
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() =>
+                                                        isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
+                                                    }
+                                                >
+                                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                </motion.svg>
+                                                {selectedPlace.favoriteCount ?? 0}
+                                            </span>
 
-                                            {selectedPlace.favoriteCount ?? 0}
-                                        </span>
+                                            <motion.div
+                                                className="flight-icon"
+                                                whileTap={{ scale: 1.3 }}
+                                                whileHover={{ scale: 1.1 }}
+                                                transition={{ duration: 0.2 }}
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => handleFlightSearch(selectedPlace.name)}
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="#03607E"
+                                                    strokeWidth="2"
+                                                    className="plane-icon"
+                                                >
+                                                    <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L11 10l-8.2-1.8c-.5-.1-.9.1-1.1.5-.2.4-.1.9.2 1.2L7 15l-1.8 8.2c-.1.5.1.9.5 1.1.4.2.9.1 1.2-.2L12 19l5.1 5.1c.3.3.8.4 1.2.2.4-.2.6-.6.5-1.1z"/>
+                                                </svg>
+                                            </motion.div>
+                                        </div>
                                     </h2>
 
                                     <div className="sidebar-buttons">

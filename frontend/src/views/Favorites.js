@@ -90,12 +90,10 @@ const Favorites = () => {
             document.body.classList.remove('place-sidebar-active');
         }
 
-        // Cleanup function to remove the class when the component unmounts
-        // or before the effect runs again if selectedPlace was previously truthy.
         return () => {
             document.body.classList.remove('place-sidebar-active');
         };
-    }, [selectedPlace]); // Re-run when selectedPlace changes
+    }, [selectedPlace]);
 
     const getCityNameForWikipedia = (fullCityName) => {
         if (fullCityName.includes(',')) {

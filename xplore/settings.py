@@ -77,7 +77,10 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
-        'POOL_MODE': os.getenv('POOL_MODE'),
+        'OPTIONS': {
+            # Supabase Shared Pooler does not support PREPARE statements
+            'sslmode': 'require',  # Supabase wymaga połączeń przez SSL
+        }
     }
 }
 

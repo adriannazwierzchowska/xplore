@@ -10,22 +10,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='userlike',
-            unique_together=None,
-        ),
-        migrations.RemoveField(
-            model_name='userlike',
-            name='place',
-        ),
-        migrations.RemoveField(
-            model_name='userlike',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='Place',
-        ),
-        migrations.DeleteModel(
-            name='UserLike',
-        ),
     ]

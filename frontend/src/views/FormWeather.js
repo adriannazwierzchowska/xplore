@@ -83,7 +83,6 @@ const FormWeather = () => {
                 </motion.button>
                 <FormDots />
                 <div className="right-buttons">
-
                     <motion.button
                         type="button"
                         onClick={addWeather}

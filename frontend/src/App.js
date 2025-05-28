@@ -14,6 +14,8 @@ import Recommendation from './views/Recommendation';
 import AskToContinue from './views/AskToContinue';
 import Favorites from './views/Favorites';
 import Sidebar from './Sidebar';
+import FlightSearch from './views/FlightSearch';
+
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -238,6 +240,23 @@ function App() {
               >
                 <div className="page-container recommendation-page-container">
                   <Favorites />
+                </div>
+              </motion.div>
+            }
+          />
+          <Route
+            path="/flights"
+            element={
+              <motion.div
+                className="animation-stage"
+                key="/flights"
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 100 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="page-container">
+                  <FlightSearch />
                 </div>
               </motion.div>
             }

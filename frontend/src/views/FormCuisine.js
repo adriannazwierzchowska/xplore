@@ -88,7 +88,6 @@ const FormCuisine = () => {
                 </motion.button>
                 <FormDots />
                 <div className="right-buttons">
-
                     <motion.button
                         type="button"
                         onClick={addCuisine}
