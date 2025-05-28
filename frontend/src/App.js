@@ -244,7 +244,7 @@ function App() {
               </motion.div>
             }
           />
-          <Route
+                    <Route
             path="/flights"
             element={
               <motion.div
