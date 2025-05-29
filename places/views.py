@@ -124,7 +124,7 @@ def search_flights(request):
                 'error': 'Missing required parameters: origin, destination, month, year'
             }, status=400)
 
-        API_TOKEN = '91c93597821882db500c1b0f18685d46'
+        API_TOKEN = settings.TRAVEL_PAYOUTS_TOKEN
 
         month_formatted = f"{int(month):02d}"
         departure_at = f"{year}-{month_formatted}"
