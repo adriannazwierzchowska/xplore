@@ -9,9 +9,10 @@ import "../css/flight.css";
 import "../css/home.css";
 import "../css/home-extended.css";
 import FlightBoard from "./FlightBoard";
-import CommunityFavoritesDisplay from './CommunityFavoritesDisplay';
-import LastViewedPlacesDisplay from './LastViewedPlacesDisplay'; // Import the new component
-import PlaceDetailsSidebar from './PlaceDetailsSidebar';
+import CommunityFavoritesDisplay from '../components/CommunityFavoritesDisplay';
+import LastViewedPlacesDisplay from '../components/LastViewedPlacesDisplay';
+import LastFlightsDisplay from '../components/LastFlightsDisplay';
+import PlaceDetailsSidebar from '../components/PlaceDetailsSidebar';
 import '../css/recommendation.css';
 
 const Home = () => {
@@ -22,7 +23,7 @@ const Home = () => {
     const [isAnimated, setIsAnimated] = useState(false);
     const { isMusicMuted, toggleMusicMute, soundClick } = useSoundContext();
     const [activeTab, setActiveTab] = useState('places');
-    const [placeForSidebar, setPlaceForSidebar] = useState(null); // State for sidebar
+    const [placeForSidebar, setPlaceForSidebar] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -55,8 +56,7 @@ const Home = () => {
     };
 
     const handleOpenPlaceSidebar = (placeData) => {
-        // Ensure placeData has all necessary fields: name, keywords, imageUrl, details, favoriteCount, coordinates
-        soundClick(); // Or soundPlaceSelect from context if more appropriate
+        soundClick();
         setPlaceForSidebar(placeData);
     };
 
@@ -120,7 +120,7 @@ const Home = () => {
                         </div>
                         <div className="home-dynamic-content-area">
                             {activeTab === 'places' && <LastViewedPlacesDisplay onPlaceCardClick={handleOpenPlaceSidebar} />}
-                            {activeTab === 'flights' && <p>Panels for "Your last flights" will be displayed here.</p>}
+                            {activeTab === 'flights' && <LastFlightsDisplay />}
                             {activeTab === 'community' && <CommunityFavoritesDisplay onPlaceCardClick={handleOpenPlaceSidebar} />}
                         </div>
                     </div>
