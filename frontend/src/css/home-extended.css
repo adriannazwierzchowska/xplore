@@ -1,0 +1,395 @@
+.home-dynamic-section {
+    margin-top: 30px;
+    width: 100%;
+}
+
+.home-section-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--beige-1);
+    padding-bottom: 10px;
+}
+
+.toggle-button {
+    background-color: transparent;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--blue-3);
+    cursor: pointer;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.toggle-button.active {
+    color: var(--blue-2);
+    font-weight: 700;
+    border-bottom: 3px solid var(--blue-2);
+}
+
+.toggle-button:hover {
+    color: var(--blue-2);
+}
+
+.home-dynamic-content-area {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: var(--beige-2);
+  border-radius: 8px;
+  min-height: 150px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-dynamic-content-area p {
+  color: var(--blue-3);
+  text-align: center;
+  font-style: italic;
+  margin: 0;
+}
+
+.loading-text, .no-items-text, .error-text {
+  padding: 20px;
+  color: var(--blue-2);
+  text-align: center;
+  font-style: italic;
+}
+
+.error-text {
+  color: var(--red-accent);
+}
+
+.home-community-favorites-section {
+  width: 100%;
+}
+
+.home-community-favorites-title {
+  font-size: 1.8rem;
+  color: var(--blue-3);
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.home-community-favorites-list {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 15px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.home-community-favorites-list::-webkit-scrollbar {
+  display: none;
+}
+
+.home-community-place-card {
+  flex: 0 0 280px;
+  height: 220px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.home-community-place-card:hover {
+  transform: translateY(-5px);
+}
+
+.home-community-place-card-top-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.home-community-place-card-fav-icon,
+.home-community-place-card-arrow {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.home-community-place-card-fav-icon svg {
+  color: #ffc107;
+}
+.home-community-place-card-arrow svg {
+  color: white;
+}
+
+
+.home-community-place-card-bottom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.home-community-place-card-name {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+.home-community-place-card-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.home-community-place-card-tag {
+  background-color: var(--blue-1-transparent);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.home-places-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.home-place-card {
+    background-color: var(--beige-2);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-place-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.home-place-card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.home-place-card-overlay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+}
+
+.home-place-card-fav-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.home-place-card-fav-icon svg {
+    color: #ffc107;
+}
+
+
+.home-place-card-arrow {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 1rem;
+}
+
+.home-place-card-content {
+    padding: 15px;
+    background-color: white;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.home-place-card-content h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--blue-3);
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+}
+
+.home-place-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.home-place-tag {
+    background-color: var(--beige-1);
+    color: var(--blue-3);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.home-flights-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.home-flight-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.home-flight-card-dates {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+    text-align: center;
+}
+.home-flight-card-dates .date-separator {
+    color: var(--blue-2);
+    font-weight: bold;
+}
+
+.home-flight-card-route {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--blue-3);
+}
+
+.home-flight-route-line {
+    flex-grow: 1;
+    height: 2px;
+    background-color: var(--beige-1);
+    min-width: 30px;
+    max-width: 50px;
+}
+
+
+.home-flight-card-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--blue-2);
+    margin-right: auto;
+}
+
+.home-flight-card-button {
+    background-color: var(--blue-2);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: auto;
+    align-self: flex-end;
+}
+.home-flight-card-button:hover {
+    background-color: var(--blue-3);
+}
+
+.place-details-sidebar-content {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+.sidebar-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+.loading-spinner.large {
+    width: 60px;
+    height: 60px;
+    border-width: 5px;
+}
+
+.selected-place-details {
+    margin-top: 15px;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: #333;
+}
+.selected-place-details p {
+    margin-bottom: 1em;
+}
+.selected-place-details a {
+    color: var(--blue-2);
+    text-decoration: none;
+}
+.selected-place-details a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .home-places-grid, .home-flights-list {
+        grid-template-columns: 1fr;
+    }
+    .home-place-card {
+        height: auto;
+    }
+    .home-place-card-img {
+        height: 180px;
+    }
+    .home-place-card-content h3 {
+        font-size: 1.4rem;
+    }
+    .home-flight-card-route {
+        font-size: 1.1rem;
+    }
+    .home-flight-card-price {
+        font-size: 1.3rem;
+    }
+    .home-flight-card-button {
+        width: 100%;
+        margin-top: 10px;
+    }
+    .home-dynamic-section {
+        max-width: 100%;
+    }
+}

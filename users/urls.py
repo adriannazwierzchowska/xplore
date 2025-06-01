@@ -11,5 +11,6 @@ urlpatterns = [
     path('is_favorite/', views.is_favorite, name='is_favorite'),
     path('favorites/', views.list_favorites, name='list_favorites'),
     path('favorite_count/', views.get_favorite_count, name='favorite_count'),
+    path('community_top_favorites/', views.community_top_favorites, name='community_top_favorites'),
 
 ]

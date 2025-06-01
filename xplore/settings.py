@@ -9,6 +9,7 @@ load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 OPENCAGE_API_KEY = os.getenv('OPENCAGE_API_KEY')
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+TRAVEL_PAYOUTS_TOKEN  = os.getenv('TRAVEL_PAYOUTS_TOKEN')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/

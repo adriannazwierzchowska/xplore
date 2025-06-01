@@ -13,6 +13,7 @@ from .serializers import UserFavoriteSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from django.db.models import Count
 
 @api_view(['POST'])
 @csrf_exempt
@@ -128,6 +129,11 @@ def get_favorite_count(request):
         count = UserFavorite.objects.filter(place=place).count()
         return Response({'favorite_count': count})
     return Response({'error': 'Place not provided'}, status=400)
+
+@api_view(['GET'])
+def community_top_favorites(request):
+    top_favorites = UserFavorite.objects.values('place').annotate(favorite_count=Count('place')).order_by('-favorite_count')
+    return Response(list(top_favorites))
 
 
 
