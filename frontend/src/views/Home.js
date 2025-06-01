@@ -28,7 +28,19 @@ const Home = () => {
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         setIsAuthenticated(!!token);
-    }, []);
+
+        const lastViewed = JSON.parse(localStorage.getItem('lastViewedPlaces')) || [];
+        const lastFlights = JSON.parse(localStorage.getItem('lastFlightSearches')) || [];
+
+        if (isAuthenticated) {
+            if (lastViewed.length === 0) {
+                setActiveTab('community');
+            } else {
+                setActiveTab('places');
+            }
+        }
+
+    }, [isAuthenticated]);
 
     const handleLetsGo = () => {
         soundClick();
