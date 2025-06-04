@@ -19,6 +19,20 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
+const MAX_LAST_VIEWED = 5;
+
+const addPlaceToLastViewed = (placeData) => {
+    if (!placeData || !placeData.name) return;
+
+    let lastViewed = JSON.parse(localStorage.getItem('lastViewedPlaces')) || [];
+    lastViewed = lastViewed.filter(p => p.name !== placeData.name);
+    lastViewed.unshift(placeData);
+    if (lastViewed.length > MAX_LAST_VIEWED) {
+        lastViewed = lastViewed.slice(0, MAX_LAST_VIEWED);
+    }
+    localStorage.setItem('lastViewedPlaces', JSON.stringify(lastViewed));
+};
+
 const Recommendation = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -97,18 +111,30 @@ const Recommendation = () => {
         try {
             const summary = await fetchCitySummary(place.place);
             const favoriteCount = await fetchFavoriteCount(place.place);
-            const isFavorite = await checkIfFavorite(place.place);
+            const isFav = await checkIfFavorite(place.place);
 
-            setSelectedPlace({
+            const placeDetailsForSidebar = {
                 name: place.place,
                 tags: place.keywords || [],
+                keywords: place.keywords || [],
                 details: summary.details,
                 imageUrl: summary.imageUrl,
                 favoriteCount: favoriteCount,
+                coordinates: place.coordinates,
+            };
+
+            setSelectedPlace(placeDetailsForSidebar);
+            setIsFavorite(isFav);
+            fetchPlaceDetails(place);
+
+            addPlaceToLastViewed({
+                name: place.place,
+                keywords: place.keywords || [],
+                imageUrl: summary.imageUrl,
+                details: summary.details,
+                coordinates: place.coordinates,
             });
 
-           setIsFavorite(isFavorite);
-           fetchPlaceDetails(place);
         } catch (error) {
             setSelectedPlace({
                 name: place.place,

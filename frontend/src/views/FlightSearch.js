@@ -7,6 +7,27 @@ import '../css/flightsearch.css';
 import '../css/front.css';
 import { Search, ArrowLeftRight } from 'lucide-react';
 
+const MAX_LAST_FLIGHTS = 5;
+
+const addFlightToLastSearched = (flightSearchData) => {
+    if (!flightSearchData || !flightSearchData.flightDetails) return;
+
+    let lastFlights = JSON.parse(localStorage.getItem('lastFlightSearches')) || [];
+    lastFlights = lastFlights.filter(f =>
+        !(f.originAirport === flightSearchData.originAirport &&
+          f.destinationAirport === flightSearchData.destinationAirport &&
+          f.searchMonth === flightSearchData.searchMonth &&
+          f.searchYear === flightSearchData.searchYear)
+    );
+
+    lastFlights.unshift(flightSearchData);
+
+    if (lastFlights.length > MAX_LAST_FLIGHTS) {
+        lastFlights = lastFlights.slice(0, MAX_LAST_FLIGHTS);
+    }
+    localStorage.setItem('lastFlightSearches', JSON.stringify(lastFlights));
+};
+
 const FlightSearch = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -149,6 +170,25 @@ const FlightSearch = () => {
             });
 
             setFlights(response.data.flights);
+
+            if (response.data.flights.length > 0) {
+                const firstFlight = response.data.flights[0];
+                addFlightToLastSearched({
+                    originPlace: originPlace,
+                    destinationPlace: destinationPlace,
+                    originAirport: originAirport,
+                    destinationAirport: destinationAirport,
+                    searchMonth: selectedMonth,
+                    searchYear: selectedYear,
+                    flightDetails: {
+                        price: `${firstFlight.price} EUR`,
+                        departure_date: firstFlight.departure_date,
+                        return_date: firstFlight.return_date,
+                        booking_link: firstFlight.booking_link,
+                        seller: firstFlight.seller
+                    }
+                });
+            }
 
             if (response.data.flights.length === 0) {
                 notifyInfo('No flights found for the selected criteria');

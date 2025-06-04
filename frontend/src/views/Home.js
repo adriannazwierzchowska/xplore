@@ -7,8 +7,13 @@ import { useSoundContext } from '../SoundContext';
 import "../css/front.css";
 import "../css/flight.css";
 import "../css/home.css";
+import "../css/home-extended.css";
 import FlightBoard from "./FlightBoard";
-
+import CommunityFavoritesDisplay from '../components/CommunityFavoritesDisplay';
+import LastViewedPlacesDisplay from '../components/LastViewedPlacesDisplay';
+import LastFlightsDisplay from '../components/LastFlightsDisplay';
+import PlaceDetailsSidebar from '../components/PlaceDetailsSidebar';
+import '../css/recommendation.css';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -17,11 +22,25 @@ const Home = () => {
     const [message, setMessage] = useState("");
     const [isAnimated, setIsAnimated] = useState(false);
     const { isMusicMuted, toggleMusicMute, soundClick } = useSoundContext();
+    const [activeTab, setActiveTab] = useState('places');
+    const [placeForSidebar, setPlaceForSidebar] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
         setIsAuthenticated(!!token);
-    }, []);
+
+        const lastViewed = JSON.parse(localStorage.getItem('lastViewedPlaces')) || [];
+        const lastFlights = JSON.parse(localStorage.getItem('lastFlightSearches')) || [];
+
+        if (isAuthenticated) {
+            if (lastViewed.length === 0) {
+                setActiveTab('community');
+            } else {
+                setActiveTab('places');
+            }
+        }
+
+    }, [isAuthenticated]);
 
     const handleLetsGo = () => {
         soundClick();
@@ -48,6 +67,16 @@ const Home = () => {
         navigate(isAuthenticated ? "/favorites" : "/login");
     };
 
+    const handleOpenPlaceSidebar = (placeData) => {
+        soundClick();
+        setPlaceForSidebar(placeData);
+    };
+
+    const handleClosePlaceSidebar = () => {
+        soundClick();
+        setPlaceForSidebar(null);
+    };
+
     return (
         <div className="home-container">
              {/* <motion.button
@@ -64,18 +93,50 @@ const Home = () => {
                      <FaVolumeUp size={20} color="#04384B"/>
                  }
              </motion.button> */}
-            <div className="home-form">
-                {username && (
-                    <p className="welcome-text">Hi, <span className="username">{username}</span></p>
-                )}
-                 <h1 className="main-title">
-                  Let's <span className="highlight-blue">xplore</span>!
-                </h1>
-                <div className="button-group">
-                    <button type="button1" onClick={handleLetsGo}>Let's Go!</button>
-                    <button type="button2" onClick={handleFavorites}>Favorites</button>
-                    {isAuthenticated && <button type="button2" onClick={handleLogout}>Log Out</button>}
+            <div className="home-content-wrapper">
+                <div className="home-form">
+                    {username && (
+                        <p className="welcome-text">Hi, <span className="username">{username}</span></p>
+                    )}
+                    <h1 className="main-title">
+                        Let's <span className="highlight-blue">xplore</span>!
+                    </h1>
+                    <div className="button-group">
+                        <button type="button1" onClick={handleLetsGo}>Let's Go!</button>
+                        <button type="button2" onClick={handleFavorites}>Favorites</button>
+                        {isAuthenticated && <button type="button2" onClick={handleLogout}>Log Out</button>}
+                    </div>
                 </div>
+
+                {isAuthenticated && (
+                    <div className="home-dynamic-section">
+                        <div className="home-section-toggle">
+                            <button
+                                className={`toggle-button ${activeTab === 'places' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('places')}
+                            >
+                                Your last places
+                            </button>
+                            <button
+                                className={`toggle-button ${activeTab === 'flights' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('flights')}
+                            >
+                                Your last flights
+                            </button>
+                            <button
+                                className={`toggle-button ${activeTab === 'community' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('community')}
+                            >
+                                Community favorites
+                            </button>
+                        </div>
+                        <div className="home-dynamic-content-area">
+                            {activeTab === 'places' && <LastViewedPlacesDisplay onPlaceCardClick={handleOpenPlaceSidebar} />}
+                            {activeTab === 'flights' && <LastFlightsDisplay />}
+                            {activeTab === 'community' && <CommunityFavoritesDisplay onPlaceCardClick={handleOpenPlaceSidebar} />}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {isAnimated && (
@@ -96,9 +157,20 @@ const Home = () => {
                     <FaPlaneDeparture className="text-4xl text-yellow-500" />
                 </motion.div>
             )}
-            <div className="flight-board-wrapper">
-                <FlightBoard />
-            </div>
+            {!isAuthenticated && (
+                <div className="flight-board-wrapper">
+                    <FlightBoard />
+                </div>
+            )}
+
+            {placeForSidebar && (
+                <PlaceDetailsSidebar
+                    selectedPlaceData={placeForSidebar}
+                    onClose={handleClosePlaceSidebar}
+                    isAuthenticated={isAuthenticated}
+                    username={username}
+                />
+            )}
         </div>
     );
 };
