@@ -14,6 +14,7 @@ import LastViewedPlacesDisplay from '../components/LastViewedPlacesDisplay';
 import LastFlightsDisplay from '../components/LastFlightsDisplay';
 import PlaceDetailsSidebar from '../components/PlaceDetailsSidebar';
 import '../css/recommendation.css';
+import LogoX from "../static/logo512.png";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -99,7 +100,12 @@ const Home = () => {
                         <p className="welcome-text">Hi, <span className="username">{username}</span></p>
                     )}
                     <h1 className="main-title">
-                        Let's <span className="highlight-blue">xplore</span>!
+                        Let's{" "}
+                        <span className="highlight-blue">
+                            <img src={LogoX} alt="X Logo" className="logo-x" />
+                            plore
+                        </span>
+                        !
                     </h1>
                     <div className="button-group">
                         <button type="button1" onClick={handleLetsGo}>Let's Go!</button>

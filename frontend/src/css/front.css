@@ -396,3 +396,10 @@ button .chevron-right {
   left: calc(var(--main-content-left-offset) + 20px);
   width: auto;
 }
+
+.logo-x {
+  height: 0.65em; 
+  vertical-align: middle;
+  margin-right: 1px;
+  margin-left: 4px;
+}
