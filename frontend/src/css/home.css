@@ -33,14 +33,14 @@
 }
 
 .main-title {
-  color: var(--blue-3);
+  color: var(--blue-2);
   font-size: 3em;
   margin: 0 0 10px 0;
   white-space: nowrap;
 }
 
 .highlight-blue {
-  color: var(--blue-2);
+  color: var(--blue-3);
 }
 
 .welcome-text {
@@ -67,6 +67,7 @@
 }
 
 .home-content-wrapper {
+  margin-top:50px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -94,6 +95,7 @@
   .main-title {
     font-size: 2.5em;
     text-align: center;
+    color: var(--blue-1) !important;
   }
 
   .button-group {

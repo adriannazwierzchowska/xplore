@@ -5,7 +5,7 @@ import { FaBars, FaHome, FaHeart, FaCompass, FaUserCircle, FaTimes, FaVolumeMute
 import './css/sidebar.css';
 import { useSoundContext } from './SoundContext';
 
-const Sidebar = ({ username, isHome }) => {
+const Sidebar = ({ username }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
@@ -37,8 +37,8 @@ const Sidebar = ({ username, isHome }) => {
     };
 
     const navItems = [
-        { icon: <FaHome />, text: 'home', path: '/' },
-        { icon: <FaHeart />, text: 'favourites', path: '/favorites' },
+        { icon: <FaHome />, text: 'Home', path: '/' },
+        { icon: <FaHeart />, text: 'Favorites', path: '/favorites' },
         { icon: <FaCompass />, text: 'xplore', path: '/xplore' },
     ];
 
@@ -47,8 +47,8 @@ const Sidebar = ({ username, isHome }) => {
             <motion.button
                 className="sidebar-toggle-button"
                 onClick={toggleSidebar}
-                animate={{ opacity: isHome ? 0 : 1 }}
-                style={{ pointerEvents: isHome ? 'none' : 'auto' }}
+                animate={{ opacity: 1 }}
+                style={{ pointerEvents: 'auto' }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
             >
@@ -59,7 +59,7 @@ const Sidebar = ({ username, isHome }) => {
                     <motion.div
                         className="sidebar expanded"
                         initial={{ x: '-100%' }}
-                        animate={{ x: isHome ? '-100%' : 0 }}
+                        animate={{ x: 0 }}
                         exit={{ x: '-100%' }}
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     >
@@ -73,10 +73,10 @@ const Sidebar = ({ username, isHome }) => {
                                 ))}
                             </ul>
                         </nav>
-                        <div className="sidebar-bottom-section"> 
+                        <div className="sidebar-bottom-section">
                             <div className="sidebar-mute-button" onClick={toggleMusicMute} title={isMusicMuted ? "Unmute" : "Mute"}>
                                 {isMusicMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                                <span>{isMusicMuted ? 'unmute' : 'mute'}</span>
+                                <span>{isMusicMuted ? 'Unmute' : 'Mute'}</span>
                             </div>
                             {username && isAuthenticated && (
                                 <div className="sidebar-user">
@@ -89,9 +89,9 @@ const Sidebar = ({ username, isHome }) => {
                 )}
             </AnimatePresence>
             {!isExpanded && (
-                <motion.div 
+                <motion.div
                     className="sidebar collapsed"
-                    animate={{ x: isHome ? -70 : 0 }}
+                    animate={{ x: 0 }}
                     transition={{ duration: 0.3 }}
                 >
                     <nav>

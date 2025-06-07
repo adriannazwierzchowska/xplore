@@ -446,40 +446,15 @@ const Recommendation = () => {
                                                 </motion.svg>
                                                 {selectedPlace.favoriteCount ?? 0}
                                             </span>
-
                                             <motion.div
-                                                className="flight-icon"
-                                                whileTap={{ scale: 1.3 }}
-                                                whileHover={{ scale: 1.1 }}
-                                                transition={{ duration: 0.2 }}
-                                                style={{ cursor: 'pointer' }}
-                                                onClick={() => handleFlightSearch(selectedPlace.name)}
+                                                className="flight-icon" whileTap={{ scale: 1.3 }} whileHover={{ scale: 1.1 }}
+                                                transition={{ duration: 0.2 }} style={{ cursor: 'pointer' }}
+                                                onClick={() => handleFlightSearch(selectedPlace.name)} title="Search flights"
                                             >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="#03607E"
-                                                    strokeWidth="2"
-                                                    className="plane-icon"
-                                                >
-                                                    <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L11 10l-8.2-1.8c-.5-.1-.9.1-1.1.5-.2.4-.1.9.2 1.2L7 15l-1.8 8.2c-.1.5.1.9.5 1.1.4.2.9.1 1.2-.2L12 19l5.1 5.1c.3.3.8.4 1.2.2.4-.2.6-.6.5-1.1z"/>
-                                                </svg>
+                                                <Plane size={24} strokeWidth={2} />
                                             </motion.div>
                                         </div>
                                     </h2>
-
-                                    <div className="sidebar-buttons">
-                                        <span
-                                            className={`favorite-count ${isFavorite ? 'filled' : ''}`}
-                                            onClick={() =>
-                                                isFavorite ? removeFromFavorites(selectedPlace.name) : addToFavorites(selectedPlace.name)
-                                            }
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                        </span>
-                                    </div>
-
 
                                     <div className="tags-container">
                                         {selectedPlace.tags.map((tag, index) => (
@@ -515,7 +490,7 @@ const Recommendation = () => {
             )}
 
             <motion.div
-                className="bottom-button-group"
+                className="edit-button-group"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.8 }}

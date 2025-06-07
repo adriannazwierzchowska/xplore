@@ -3,6 +3,23 @@ import axios from 'axios';
 import { FaHeart, FaChevronRight } from 'react-icons/fa';
 import '../css/home-extended.css';
 
+const checkIfFavorite = async (placeName, isAuthenticated) => {
+    if (!isAuthenticated || !placeName) return false;
+    try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return false;
+
+        const response = await axios.get(
+            `http://127.0.0.1:8000/api/is_favorite/?place=${encodeURIComponent(placeName)}`,
+            { headers: { Authorization: `${token}` } }
+        );
+        return response.data.is_favorite;
+    } catch (error) {
+        console.warn(`Error checking favorite status for ${placeName}:`, error);
+        return false;
+    }
+};
+
 const getProcessedCityNameForWikipedia = (fullCityName) => {
     if (!fullCityName) return '';
     if (fullCityName.includes(',')) {
@@ -62,7 +79,7 @@ const fetchCoordinates = async (placeName) => {
 };
 
 const PlaceCard = ({ placeData, onPlaceCardClick }) => {
-    const { name, imageUrl, favoriteCount, keywords } = placeData;
+    const { name, imageUrl, favoriteCount, keywords, isFavoritedByUser } = placeData;
 
     return (
         <div
@@ -71,7 +88,9 @@ const PlaceCard = ({ placeData, onPlaceCardClick }) => {
             onClick={() => onPlaceCardClick(placeData)}
         >
             <div className="home-community-place-card-top-icons">
-                <span className="home-community-place-card-fav-icon"><FaHeart /> {favoriteCount}</span> {}
+                <span className="home-community-place-card-fav-icon">
+                    <FaHeart className={isFavoritedByUser ? 'filled' : ''} /> {favoriteCount}
+                </span>
                 <span className="home-community-place-card-arrow"><FaChevronRight /></span>
             </div>
             <div className="home-community-place-card-bottom-content">
@@ -86,7 +105,7 @@ const PlaceCard = ({ placeData, onPlaceCardClick }) => {
     );
 };
 
-const CommunityFavoritesDisplay = ({ onPlaceCardClick }) => {
+const CommunityFavoritesDisplay = ({ onPlaceCardClick, isAuthenticated }) => {
     const [topPlaces, setTopPlaces] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -108,6 +127,7 @@ const CommunityFavoritesDisplay = ({ onPlaceCardClick }) => {
                         const imageAndDetails = await fetchPlaceImageAndDetails(p.place);
                         const keywords = await fetchPlaceKeywords(p.place);
                         const coordinates = await fetchCoordinates(p.place);
+                        const isFavorited = await checkIfFavorite(p.place, isAuthenticated);
                         return {
                             name: p.place,
                             favoriteCount: p.favorite_count,
@@ -115,10 +135,11 @@ const CommunityFavoritesDisplay = ({ onPlaceCardClick }) => {
                             details: imageAndDetails.details,
                             keywords: keywords,
                             coordinates: coordinates,
+                            isFavoritedByUser: isFavorited,
                         };
                     })
                 );
-                setTopPlaces(enrichedPlaces.slice(0, 10));
+                setTopPlaces(enrichedPlaces.slice(0, 4));
             } catch (err) {
                 console.error("Error fetching community favorites:", err);
                 setError(err.message || "Failed to load community favorites.");
@@ -127,15 +148,18 @@ const CommunityFavoritesDisplay = ({ onPlaceCardClick }) => {
             }
         };
         fetchTopFavorites();
-    }, []);
+    }, [isAuthenticated]);
 
-    if (loading) return <p className="loading-text">Loading community favorites...</p>;
+    if (loading) {
+        return (
+            <div className="loading-spinner"></div>
+        );
+    }
     if (error) return <p className="error-text">Error: {error}</p>;
     if (!topPlaces.length) return <p className="no-items-text">No community favorites to display yet.</p>;
 
     return (
         <div className="home-community-favorites-section">
-            <h2 className="home-community-favorites-title">Our users like:</h2>
             <div className="home-community-favorites-list">
                 {topPlaces.map(placeInfo => (
                     <PlaceCard key={placeInfo.name} placeData={placeInfo} onPlaceCardClick={onPlaceCardClick} />

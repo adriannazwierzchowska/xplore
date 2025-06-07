@@ -9,6 +9,8 @@ import { useSoundContext } from '../SoundContext';
 import { notifyError, notifySuccess, notifyInfo, notifyWarning } from '../utils/toast';
 import '../css/recommendation.css';
 import '../css/front.css';
+import { Plane } from 'lucide-react';
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -207,6 +209,10 @@ const Favorites = () => {
         }
     };
 
+    const handleFlightSearch = (placeName) => {
+        navigate('/flights', { state: { place: placeName } });
+    };
+
     const renderNearbyPlaces = () => {
           if (!selectedPlace.nearby || typeof selectedPlace.nearby !== 'object') {
             return (
@@ -374,24 +380,33 @@ const Favorites = () => {
                                     <div>
                                         <h2 className="s-place-name">
                                             {selectedPlace.name}
-                                            <span className="favorite-count">
-                                                <motion.svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    fill="#03607E"
-                                                    stroke="#03607E"
-                                                    strokeWidth="2"
-                                                    className="heart-icon filled"
-                                                    whileTap={{ scale: 1.7 }}
-                                                    animate={{ scale: [1, 1.7, 1] }}
-                                                    transition={{ duration: 0.3 }}
-                                                    onClick={() => removeFromFavorites(selectedPlace.name)}
-                                                    style={{ cursor: 'pointer' }}
+                                            <div className="place-actions">
+                                                <span className="favorite-count">
+                                                    <motion.svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                        fill="#03607E"
+                                                        stroke="#03607E"
+                                                        strokeWidth="2"
+                                                        className="heart-icon filled"
+                                                        whileTap={{ scale: 1.7 }}
+                                                        animate={{ scale: [1, 1.7, 1] }}
+                                                        transition={{ duration: 0.3 }}
+                                                        onClick={() => removeFromFavorites(selectedPlace.name)}
+                                                        style={{ cursor: 'pointer' }}
+                                                    >
+                                                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                    </motion.svg>
+                                                    {selectedPlace.favoriteCount ?? 0}
+                                                </span>
+                                                <motion.div
+                                                    className="flight-icon" whileTap={{ scale: 1.3 }} whileHover={{ scale: 1.1 }}
+                                                    transition={{ duration: 0.2 }} style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleFlightSearch(selectedPlace.name)} title="Search flights"
                                                 >
-                                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                                                </motion.svg>
-                                                {selectedPlace.favoriteCount ?? 0}
-                                            </span>
+                                                    <Plane size={24} strokeWidth={2} />
+                                                </motion.div>
+                                            </div>
                                         </h2>
 
                                         <div className="tags-container">

@@ -140,7 +140,11 @@ const PlaceDetailsSidebar = ({ selectedPlaceData, onClose, isAuthenticated, user
     };
 
     const renderNearbyPlacesContent = () => {
-        if (isLoadingNearby) return <div className="loading-message">Loading nearby places...</div>;
+        if (isLoadingNearby) {
+            return (
+                <div className="loading-spinner"></div>
+            );
+        }
         if (nearbyPlacesDetails.error) return <div className="no-results">Error: {nearbyPlacesDetails.error}</div>;
         if (Object.keys(nearbyPlacesDetails).length === 0) return <div className="no-results">No nearby places data.</div>;
 
@@ -213,7 +217,7 @@ const PlaceDetailsSidebar = ({ selectedPlaceData, onClose, isAuthenticated, user
                                         <span className={`favorite-count ${isFavorite ? 'filled' : ''}`}>
                                             <motion.svg
                                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill={isFavorite ? '#03607E' : 'none'} stroke="#03607E" strokeWidth="2"
+                                                fill={isFavorite ? '#90B6D1' : 'none'} stroke="#90B6D1" strokeWidth="2"
                                                 className={`heart-icon ${isFavorite ? 'filled' : ''}`}
                                                 whileTap={{ scale: 1.7 }}
                                                 animate={{ scale: isFavorite ? [1, 1.7, 1] : 1 }}

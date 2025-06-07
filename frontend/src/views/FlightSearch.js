@@ -36,7 +36,7 @@ const FlightSearch = () => {
     const [originPlace, setOriginPlace] = useState('Warsaw');
     const [originAirport, setOriginAirport] = useState('WAW');
     const [selectedMonth, setSelectedMonth] = useState('');
-    const [selectedYear, setSelectedYear] = useState('');
+    const [selectedYear, setSelectedYear] = useState('2025');
     const [flights, setFlights] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searched, setSearched] = useState(false);
@@ -45,6 +45,22 @@ const FlightSearch = () => {
     const [showAllFlights, setShowAllFlights] = useState(false);
 
     const debounceRef = useRef(null);
+
+    useEffect(() => {
+        const storedMonthsRaw = localStorage.getItem('selectedMonths');
+        if (storedMonthsRaw) {
+            try {
+                const storedMonthsArray = JSON.parse(storedMonthsRaw);
+                if (Array.isArray(storedMonthsArray) && storedMonthsArray.length > 0) {
+                    const monthValue = String(storedMonthsArray[0]);
+                    const formattedMonth = monthValue.padStart(2, '0');
+                    setSelectedMonth(formattedMonth);
+                }
+            } catch (error) {
+                console.error("Błąd parsowania 'selectedmonths' z localStorage:", error);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const place = location.state?.place || sessionStorage.getItem('destinationPlace');
@@ -240,34 +256,6 @@ const FlightSearch = () => {
                 </h1>
 
                 <div className="search-form">
-                    <div className="search-row search-row-direction">
-                        <div className="form-group direction-group">
-                            <label className="direction-label">Direction</label>
-                            <div className="direction-options">
-                                <label className="direction-option">
-                                    <input
-                                        type="radio"
-                                        name="direction"
-                                        value="roundtrip"
-                                        checked={direction === 'roundtrip'}
-                                        onChange={() => setDirection('roundtrip')}
-                                    />
-                                    Round trip
-                                </label>
-                                <label className="direction-option">
-                                    <input
-                                        type="radio"
-                                        name="direction"
-                                        value="oneway"
-                                        checked={direction === 'oneway'}
-                                        onChange={() => setDirection('oneway')}
-                                    />
-                                    One way
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
                     <div className="search-row">
                         <div className="form-group">
                             <label htmlFor="origin">From</label>
@@ -287,8 +275,10 @@ const FlightSearch = () => {
                                     ) : originAirport ? (
                                         <>Airport code: <b>{originAirport}</b></>
                                     ) : (
-                                        <span className="airport-placeholder">{originPlace && originPlace.trim().length > 2 && !originLoading ? 'Searching...' : ''}</span>
-                                    )}
+                                    <span className="airport-placeholder">
+                                        {originPlace && originPlace.trim().length > 2 && !originLoading ? 'Searching...' : '\u00A0'}
+                                    </span>
+                                  )}
                                 </div>
                             </div>
                         </div>
@@ -345,7 +335,7 @@ const FlightSearch = () => {
                             </div>
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group form-group-year">
                             <label htmlFor="year">Year</label>
                             <div className="input-container">
                                 <select
@@ -354,13 +344,38 @@ const FlightSearch = () => {
                                     onChange={(e) => setSelectedYear(e.target.value)}
                                     className="form-input"
                                 >
-                                    <option value="">Select year</option>
                                     {years.map((year) => (
                                         <option key={year} value={year}>
                                             {year}
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                        </div>
+
+                        <div className="form-group direction-group">
+                            <label className="direction-label">Direction</label>
+                            <div className="direction-options">
+                                <label className="direction-option">
+                                    <input
+                                        type="radio"
+                                        name="direction"
+                                        value="roundtrip"
+                                        checked={direction === 'roundtrip'}
+                                        onChange={() => setDirection('roundtrip')}
+                                    />
+                                    <span>Round trip</span>
+                                </label>
+                                <label className="direction-option">
+                                    <input
+                                        type="radio"
+                                        name="direction"
+                                        value="oneway"
+                                        checked={direction === 'oneway'}
+                                        onChange={() => setDirection('oneway')}
+                                    />
+                                    <span>One way</span>
+                                </label>
                             </div>
                         </div>
 
@@ -382,7 +397,6 @@ const FlightSearch = () => {
                     {loading && (
                         <div className="loading-wrapper">
                             <div className="loading-spinner"></div>
-                            <p>Searching for best flights...</p>
                         </div>
                     )}
 
@@ -398,47 +412,50 @@ const FlightSearch = () => {
                                 {(!showAllFlights ? flights.slice(0, 3) : flights).map((flight, index) => (
                                     <motion.div
                                         key={index}
-                                        className="flight-card-search"
+                                        className="flight-card-redesigned"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.05 }}
                                     >
-                                        <div className="flight-info">
-                                            <div className="flight-route">
-                                                <span className="airport-code">{flight.origin}</span>
-                                                <span className="arrow">?</span>
-                                                <span className="airport-code">{flight.destination}</span>
+                                        <div className="flight-leg">
+                                            <span className="leg-date">{flight.departure_date}</span>
+                                            <span className="leg-airport">{flight.origin}</span>
+                                            <div className="leg-line-container">
+                                                <div className="leg-line"></div>
                                             </div>
-                                            <div className="flight-dates">
-                                                <div className="date-info">
-                                                    <span className="date-label">Departure</span>
-                                                    <span className="date-value">{flight.departure_date}</span>
+                                            <span className="leg-airport">{flight.destination}</span>
+                                        </div>
+
+                                        {direction === 'roundtrip' && flight.return_date && (
+                                            <div className="flight-leg">
+                                                <span className="leg-date">{flight.return_date}</span>
+                                                <span className="leg-airport">{flight.destination}</span>
+                                                <div className="leg-line-container">
+                                                    <div className="leg-line"></div>
                                                 </div>
-                                                {flight.return_date && (
-                                                    <div className="date-info">
-                                                        <span className="date-label">Return</span>
-                                                        <span className="date-value">{flight.return_date}</span>
-                                                    </div>
-                                                )}
+                                                <span className="leg-airport">{flight.origin}</span>
                                             </div>
-                                            <div className="flight-price">
+                                        )}
+
+                                        <div className="flight-footer">
+                                            <div className="flight-price-info">
                                                 <span className="price">{flight.price} EUR</span>
                                                 <span className="seller">via {flight.seller}</span>
                                             </div>
+                                            <motion.button
+                                                onClick={() => handleBookFlight(flight.booking_link)}
+                                                className="book-button"
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                            >
+                                                Let's go
+                                            </motion.button>
                                         </div>
-                                        <motion.button
-                                            onClick={() => handleBookFlight(flight.booking_link)}
-                                            className="book-button"
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            Book now
-                                        </motion.button>
                                     </motion.div>
                                 ))}
                             </div>
                             {!showAllFlights && flights.length > 3 && (
-                                <div style={{ textAlign: 'center', marginTop: '18px' }}>
+                                <div className="show-more-container">
                                     <button
                                         className="icon-button"
                                         onClick={() => setShowAllFlights(true)}
@@ -448,7 +465,7 @@ const FlightSearch = () => {
                                 </div>
                             )}
                             {showAllFlights && (
-                                <div style={{ textAlign: 'center', marginTop: '18px' }}>
+                                <div className="show-more-container">
                                     <button
                                         className="icon-button"
                                         onClick={() => setShowAllFlights(false)}
@@ -466,15 +483,6 @@ const FlightSearch = () => {
                         </div>
                     )}
                 </div>
-
-                <motion.button
-                    type="button1"
-                    onClick={() => { navigate('/'); }}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    <span className="chevron-left"></span> Back to Home
-                </motion.button>
             </motion.div>
         </div>
     );

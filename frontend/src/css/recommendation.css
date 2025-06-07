@@ -73,11 +73,11 @@
 }
 
 .favorite-count.filled .heart-icon {
-  fill: red;
+  fill: #90B6D1;
 }
 
 .favorite-count.filled {
-  color: red;
+  color: #191919;
 }
 
 .sidebar-image {
@@ -348,14 +348,15 @@ button[type="button-home"] {
 }
 
 .s-place-name {
-    margin: 2px 5px 0px;
-    font-size: 1.5em;
-    opacity: 0.9;
-    z-index: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    gap: 1rem;
+    margin: 5px 0px 10px 0px;
+    font-size: 1.5em;
+    opacity: 0.9;
+    z-index: 1;
 }
 
 .category-card::after {
@@ -500,4 +501,20 @@ button[type="button-home"] {
 
 @keyframes spinner {
   to { transform: rotate(360deg); }
+}
+
+.place-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.edit-button-group {
+    display: flex;
+    justify-content: flex-start;
+    left: 20px;
+    bottom: 20px;
+    transform: translateX(15px);
+    box-sizing: border-box;
 }

@@ -77,13 +77,17 @@
 }
 
 .sidebar li.active {
-    background-color: var(--sidebar-active-bg);
-    font-weight: bold;
+    color: var(--blue-1);
+}
+
+.sidebar li.active svg {
+    color: var(--blue-1);
 }
 
 .sidebar li svg {
     font-size: 1.5em;
     color: var(--sidebar-icon-color);
+    transition: color 0.2s ease;
 }
 
 .sidebar.expanded li svg {

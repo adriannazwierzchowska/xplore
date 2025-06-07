@@ -24,11 +24,9 @@ function App() {
   const location = useLocation();
   const username = localStorage.getItem("authToken");
 
-  const isHome = location.pathname === '/';
-
   return (
     <>
-      <Sidebar username={username} isHome={isHome} />
+      <Sidebar username={username} />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route
@@ -42,7 +40,9 @@ function App() {
                 exit={{ opacity: 0, x: 100 }}
                 transition={{ duration: 0.5 }}
               >
-                <Home />
+                <div className="page-container">
+                  <Home />
+                </div>
               </motion.div>
             }
           />

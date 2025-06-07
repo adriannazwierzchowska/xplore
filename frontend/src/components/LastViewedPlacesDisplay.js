@@ -3,6 +3,23 @@ import axios from 'axios';
 import { FaHeart, FaChevronRight } from 'react-icons/fa';
 import '../css/home-extended.css';
 
+const checkIfFavorite = async (placeName, isAuthenticated) => {
+    if (!isAuthenticated || !placeName) return false;
+    try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return false;
+
+        const response = await axios.get(
+            `http://127.0.0.1:8000/api/is_favorite/?place=${encodeURIComponent(placeName)}`,
+            { headers: { Authorization: `${token}` } }
+        );
+        return response.data.is_favorite;
+    } catch (error) {
+        console.warn(`Error checking favorite status for ${placeName}:`, error);
+        return false;
+    }
+};
+
 const getProcessedCityNameForWikipedia = (fullCityName) => {
     if (!fullCityName) return '';
     if (fullCityName.includes(',')) {
@@ -86,7 +103,7 @@ const fetchFavoriteCountForPlace = async (placeName) => {
 };
 
 const PlaceCard = ({ placeData, onPlaceCardClick }) => {
-    const { name, imageUrl, favoriteCount, keywords } = placeData;
+    const { name, imageUrl, favoriteCount, keywords, isFavoritedByUser } = placeData;
 
     return (
         <div
@@ -95,7 +112,9 @@ const PlaceCard = ({ placeData, onPlaceCardClick }) => {
             onClick={() => onPlaceCardClick(placeData)}
         >
             <div className="home-community-place-card-top-icons">
-                <span className="home-community-place-card-fav-icon"><FaHeart /> {favoriteCount}</span>
+                <span className="home-community-place-card-fav-icon">
+                    <FaHeart className={isFavoritedByUser ? 'filled' : ''} /> {favoriteCount}
+                </span>
                 <span className="home-community-place-card-arrow"><FaChevronRight /></span>
             </div>
             <div className="home-community-place-card-bottom-content">
@@ -111,7 +130,7 @@ const PlaceCard = ({ placeData, onPlaceCardClick }) => {
 };
 
 
-const LastViewedPlacesDisplay = ({ onPlaceCardClick }) => {
+const LastViewedPlacesDisplay = ({ onPlaceCardClick, isAuthenticated }) => {
     const [lastViewedPlaces, setLastViewedPlaces] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -121,7 +140,7 @@ const LastViewedPlacesDisplay = ({ onPlaceCardClick }) => {
             try {
                 setLoading(true);
                 setError(null);
-                const storedPlaces = JSON.parse(localStorage.getItem('lastViewedPlaces')) || [];
+                const storedPlaces = (JSON.parse(localStorage.getItem('lastViewedPlaces')) || []).slice(0, 4);
 
                 if (storedPlaces.length === 0) {
                     setLastViewedPlaces([]);
@@ -136,9 +155,11 @@ const LastViewedPlacesDisplay = ({ onPlaceCardClick }) => {
                         place = await fetchPlaceKeywordsIfNeeded(place);
                         place = await fetchCoordinatesIfNeeded(place);
                         const favoriteCount = await fetchFavoriteCountForPlace(place.name);
+                        const isFavorited = await checkIfFavorite(place.name, isAuthenticated);
                         return {
                             ...place,
                             favoriteCount: favoriteCount,
+                            isFavoritedByUser: isFavorited,
                         };
                     })
                 );
@@ -151,15 +172,18 @@ const LastViewedPlacesDisplay = ({ onPlaceCardClick }) => {
             }
         };
         loadLastViewed();
-    }, []);
+    }, [isAuthenticated]);
 
-    if (loading) return <p className="loading-text">Loading your last viewed places...</p>;
+    if (loading) {
+        return (
+            <div className="loading-spinner"></div>
+        );
+    }
     if (error) return <p className="error-text">Error: {error}</p>;
     if (!lastViewedPlaces.length) return <p className="no-items-text">You haven't viewed any places recently.</p>;
 
     return (
-        <div className="home-community-favorites-section"> {/* Reusing class for layout */}
-            <h2 className="home-community-favorites-title">Your last viewed places:</h2>
+        <div className="home-community-favorites-section">
             <div className="home-community-favorites-list">
                 {lastViewedPlaces.map(placeInfo => (
                     <PlaceCard key={placeInfo.name} placeData={placeInfo} onPlaceCardClick={onPlaceCardClick} />

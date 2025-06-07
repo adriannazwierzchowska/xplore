@@ -103,14 +103,13 @@ const Home = () => {
                         Let's{" "}
                         <span className="highlight-blue">
                             <img src={LogoX} alt="X Logo" className="logo-x" />
-                            plore
+                            plore!
                         </span>
-                        !
                     </h1>
                     <div className="button-group">
-                        <button type="button1" onClick={handleLetsGo}>Let's Go!</button>
+                        <button type="button1" onClick={handleLetsGo}>Let's go!</button>
                         <button type="button2" onClick={handleFavorites}>Favorites</button>
-                        {isAuthenticated && <button type="button2" onClick={handleLogout}>Log Out</button>}
+                        {isAuthenticated && <button type="button2" onClick={handleLogout}>Log out</button>}
                     </div>
                 </div>
 
@@ -137,9 +136,9 @@ const Home = () => {
                             </button>
                         </div>
                         <div className="home-dynamic-content-area">
-                            {activeTab === 'places' && <LastViewedPlacesDisplay onPlaceCardClick={handleOpenPlaceSidebar} />}
+                            {activeTab === 'places' && <LastViewedPlacesDisplay onPlaceCardClick={handleOpenPlaceSidebar} isAuthenticated={isAuthenticated} />}
                             {activeTab === 'flights' && <LastFlightsDisplay />}
-                            {activeTab === 'community' && <CommunityFavoritesDisplay onPlaceCardClick={handleOpenPlaceSidebar} />}
+                            {activeTab === 'community' && <CommunityFavoritesDisplay onPlaceCardClick={handleOpenPlaceSidebar} isAuthenticated={isAuthenticated} />}
                         </div>
                     </div>
                 )}
