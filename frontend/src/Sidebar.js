@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaHome, FaHeart, FaCompass, FaUserCircle, FaTimes, FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
 import './css/sidebar.css';
 import { useSoundContext } from './SoundContext';
+import LogoX from "./static/logo512.png";
 
 const Sidebar = ({ username }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -52,7 +53,11 @@ const Sidebar = ({ username }) => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
             >
-                {isExpanded ? <FaTimes /> : <FaBars />}
+                {isExpanded ? (
+                    <img src={LogoX} alt="Close menu" className="sidebar-logo" />
+                ) : (
+                    <img src={LogoX} alt="Open menu" className="sidebar-logo" />
+                )}
             </motion.button>
             <AnimatePresence>
                 {isExpanded && (

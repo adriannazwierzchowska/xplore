@@ -10,7 +10,7 @@
 .sidebar-toggle-button {
     position: fixed;
     top: 20px;
-    left: 17px;
+    left: 15px;
     z-index: 1300;
     background-color: var(--sidebar-bg);
     color: var(--sidebar-text-color);
@@ -65,7 +65,7 @@
 .sidebar li {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
+    padding: 15px 23px;
     cursor: pointer;
     color: var(--sidebar-text-color);
     transition: background-color 0.2s ease;
@@ -211,4 +211,17 @@ body.place-sidebar-active .sidebar-toggle-button {
 .sidebar.collapsed .sidebar-user svg {
     margin-right: 0;
     font-size: 1.5em;
+}
+
+.sidebar-toggle-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0px;
+}
+
+.sidebar-logo {
+  width: 20px; 
+  height: 20px;
+  object-fit: contain;
 }
