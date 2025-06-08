@@ -57,7 +57,7 @@
   padding: 20px 20px 0px 20px;
   background-color: var(--background-color);
   border-radius: 8px;
-  min-height: 230px;
+  min-height: 250px;
   width: 100%;
   box-sizing: border-box;
   margin-bottom: -0px;
@@ -459,8 +459,8 @@
     z-index: 1001;
 }
 .loading-spinner.large {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-width: 5px;
 }
 

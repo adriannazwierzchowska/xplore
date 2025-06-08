@@ -23,45 +23,49 @@ const FlightCard = ({ flightSearchData, index }) => {
         }
     };
 
+    const isRoundTrip = return_date && return_date !== departure_date;
+
     return (
         <motion.div
-            className="flight-card-search"
+            className="flight-card-redesigned"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            style={{ flexGrow: 0 }}
         >
-            <div className="flight-info">
-                <div className="flight-route">
-                    <span className="airport-code">{originAirport}</span>
-                    <span className="arrow">?</span>
-                    <span className="airport-code">{destinationAirport}</span>
+            <div className="flight-leg">
+                <span className="leg-date">{departure_date}</span>
+                <span className="leg-airport">{originAirport}</span>
+                <div className="leg-line-container">
+                    <div className="leg-line"></div>
                 </div>
-                <div className="flight-dates">
-                    <div className="date-info">
-                        <span className="date-label">Departure</span>
-                        <span className="date-value">{departure_date}</span>
-                    </div>
-                    {return_date && (
-                        <div className="date-info">
-                            <span className="date-label">Return</span>
-                            <span className="date-value">{return_date}</span>
-                        </div>
-                    )}
-                </div>
-                <div className="flight-price">
-                    <span className="price">{price}</span>
-                    {seller && <span className="seller">via {seller}</span>}
-                </div>
+                <span className="leg-airport">{destinationAirport}</span>
             </div>
-            <motion.button
-                onClick={handleBookFlight}
-                className="book-button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-            >
-                Book now
-            </motion.button>
+
+            {isRoundTrip && (
+                <div className="flight-leg">
+                    <span className="leg-date">{return_date}</span>
+                    <span className="leg-airport">{destinationAirport}</span>
+                    <div className="leg-line-container">
+                        <div className="leg-line"></div>
+                    </div>
+                    <span className="leg-airport">{originAirport}</span>
+                </div>
+            )}
+
+            <div className="flight-footer">
+                <div className="flight-price-info">
+                    <span className="price">{price}</span>
+                    <span className="seller">via {seller}</span>
+                </div>
+                <motion.button
+                    onClick={handleBookFlight}
+                    className="book-button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                >
+                    Let's go
+                </motion.button>
+            </div>
         </motion.div>
     );
 };
@@ -74,7 +78,7 @@ const LastFlightsDisplay = () => {
     useEffect(() => {
         setLoading(true);
         const storedFlights = JSON.parse(localStorage.getItem('lastFlightSearches')) || [];
-        setLastFlights(storedFlights);
+        setLastFlights(storedFlights.slice(0, 4));
         setLoading(false);
     }, []);
 

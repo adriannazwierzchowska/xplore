@@ -15,7 +15,7 @@ import AskToContinue from './views/AskToContinue';
 import Favorites from './views/Favorites';
 import Sidebar from './Sidebar';
 import FlightSearch from './views/FlightSearch';
-
+import FlightBoard from './views/FlightBoard';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,10 +23,19 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const location = useLocation();
   const username = localStorage.getItem("authToken");
+  const showFlightBoard = ['/', '/login', '/register'].includes(location.pathname);
+  const isAuthenticated = !!username;
+  const shouldShowFlightBoard = showFlightBoard && (location.pathname !== '/' || !isAuthenticated);
+
 
   return (
     <>
       <Sidebar username={username} />
+      {shouldShowFlightBoard && (
+        <div className="flight-board-wrapper-fixed">
+          <FlightBoard />
+        </div>
+      )}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route

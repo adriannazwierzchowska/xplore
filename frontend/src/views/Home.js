@@ -162,11 +162,6 @@ const Home = () => {
                     <FaPlaneDeparture className="text-4xl text-yellow-500" />
                 </motion.div>
             )}
-            {!isAuthenticated && (
-                <div className="flight-board-wrapper">
-                    <FlightBoard />
-                </div>
-            )}
 
             {placeForSidebar && (
                 <PlaceDetailsSidebar

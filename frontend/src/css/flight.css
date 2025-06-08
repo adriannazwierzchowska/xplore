@@ -16,14 +16,14 @@
   justify-content: space-around;
 }
 
-.flight-board-wrapper {
+.flight-board-wrapper-fixed {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  margin-left: -40px !important;
-  margin-bottom: 5rem;
+  margin-left: 750px !important;
+  margin-bottom: 4rem;
 }
 
 .flight-container {
@@ -61,3 +61,8 @@ transform: translateX(-50%);
   color: var(--blue-2);
 }
 
+@media (max-width: 1200px) {
+  .flight-board-wrapper-fixed {
+    display: none;
+  }
+}

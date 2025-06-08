@@ -101,9 +101,6 @@ const Login = () => {
                 }
             </motion.form>
             </div>
-            <div className="flight-board-wrapper">
-                <FlightBoard />
-            </div>
              <motion.div
                  className="bottom-button-group"
                  initial={{ opacity: 0 }}
