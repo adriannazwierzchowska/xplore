@@ -403,3 +403,36 @@ button .chevron-right {
   margin-right: 1px;
   margin-left: 4px;
 }
+
+.login-btn {
+  background-color: var(--blue-2);
+  color: white;
+  border-color: var(--blue-2);
+}
+
+.login-btn:hover {
+  background-color: var(--beige-2);
+  color: var(--blue-3);
+  border-color: var(--blue-3);
+}
+
+.back-to-login-btn {
+  background-color: #f0f0f0;
+  color: var(--blue-3);
+  border-color: var(--blue-2);
+}
+
+.back-to-login-btn:hover {
+  background-color: var(--beige-2);
+  color: var(--blue-3);
+  border-color: var(--blue-3);
+}
+
+.register-form input {
+  width: 215px;
+}
+
+.login-page .flight-board-wrapper,
+.register-page .flight-board-wrapper {
+  margin-left: 260px !important;
+}

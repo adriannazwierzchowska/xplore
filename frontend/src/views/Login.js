@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import '../css/front.css';
 import { loginUser } from "../api";
 import { useSoundContext } from '../SoundContext';
+import FlightBoard from './FlightBoard';
+import '../css/flight.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -27,19 +29,20 @@ const Login = () => {
 
     return (
         <motion.div
-            className="login-form"
+            className="home-container login-page"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
         >
+        <div className="home-form">
             <motion.form
                 onSubmit={handleLogin}
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8 }}
             >
-                <h1>Log in</h1>
-                <label htmlFor="login">Login</label>
+                <h1>Log In</h1>
+                <label htmlFor="username">Username</label>
                 <motion.input
                     type="text"
                     id="login"
@@ -69,11 +72,12 @@ const Login = () => {
                 >
                     <motion.button
                         type="submit"
+                        className="login-btn"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                     >
-                        Login
+                        Log In
                     </motion.button>
                     <motion.button
                         type="button"
@@ -96,6 +100,10 @@ const Login = () => {
                     </motion.p>
                 }
             </motion.form>
+            </div>
+            <div className="flight-board-wrapper">
+                <FlightBoard />
+            </div>
              <motion.div
                  className="bottom-button-group"
                  initial={{ opacity: 0 }}
@@ -108,7 +116,7 @@ const Login = () => {
                      whileHover={{ scale: 1.1 }}
                      whileTap={{ scale: 0.95 }}
                  >
-                     <span className="chevron-left"></span> Go Back
+                     <span className="chevron-left"></span> Go back
                  </motion.button>
             </motion.div>
         </motion.div>

@@ -27,7 +27,7 @@
 }
 
 .sidebar-toggle-button:hover {
-    background-color: var(--sidebar-icon-color);
+    background-color: var(--background-color);
 }
 
 .sidebar {
